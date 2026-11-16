@@ -21,6 +21,10 @@
       return b.width > 0 && b.height > 0 && b.right > 0 && b.bottom > 0 && b.left < innerWidth && b.top < innerHeight;
     });
 
+  // Présent et affiché dans la page, même hors de la partie visible.
+  const affiche = (selecteur) =>
+    [...document.querySelectorAll(selecteur)].some((el) => el.getClientRects().length > 0);
+
   const estChampTexte = (el) => {
     if (!el || !el.tagName) return false;
     if (el.isContentEditable || el.tagName === 'TEXTAREA') return true;
@@ -47,6 +51,9 @@
     // La messagerie reste ouverte longtemps et vide ses champs elle-même :
     // seule la rédaction d'un message y bloque le rechargement.
     if (estMessagerie()) return aLEcran('.ZmComposeView');
+    // Formulaire d'édition, éditeur de texte ou fenêtre ouverte : même sans
+    // frappe (liste modifiée, pièce jointe ajoutée), recharger ferait tout perdre.
+    if (affiche('.js-editionActivity, .cke, .modal--show')) return true;
     return saisie || saisieActive(document.activeElement);
   };
 

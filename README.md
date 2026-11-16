@@ -14,10 +14,13 @@ place.
 | Messagerie | colonnes alignées sur leurs titres et rééquilibrées, barre d'outils qui tient dans la fenêtre, bandeau du haut sur une seule rangée, liste en pleine hauteur tant qu'aucun message n'est ouvert, fermeture du volet de lecture par Échap ou par un clic sur le message ouvert |
 | Aperçus PDF | fenêtre d'aperçu sur toute la hauteur, élargie en mode portrait |
 | Cahier de textes, vue agenda | grille étirée à la hauteur de la fenêtre, séances colorées par niveau et par classe (ou par matière dans le cahier d'une seule classe), cahier choisi mémorisé |
+| Cahier de textes, page d'une séance | page recentrée, rubriques en cartes ; en modification : boutons « Annuler » et « Valider » toujours à l'écran, validation par Ctrl+S ou Ctrl+Entrée, éditeur plus haut |
+| Cahier de textes, réservation de ressources | ressources regroupées par type, ajoutées ou retirées d'un clic, filtre |
+| Réservation de ressources, liste | lignes compactes, noms affichés en entier, boutons « consulter » et « réserver », familles dépliées mémorisées, tout déplier d'un clic |
 | Cahier de textes, vues en liste | séances en cartes, raccourcis de période, filtre instantané par classe et par texte, critères mémorisés, index par mois |
 | Évaluations | filtres et tri mémorisés, lignes colorées par classe, titres affichés en entier |
 | Appels | feuille d'appel remise dans la page, états colorés, bilan chiffré ; historique avec appels non saisis repérés et raccourcis de période |
-| Partout | infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie) |
+| Partout | infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie ni quand un formulaire de modification est ouvert) |
 
 Les couleurs de classe suivent une règle unique : une teinte par niveau
 (6e vert, 5e bleu, 4e orange, 3e violet), une nuance par classe.
@@ -67,7 +70,8 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `periodes.js` | bornes de l'année scolaire pour les périodes préréglées |
 | `messagerie.*`, `messagerie-moderne.css` | messagerie |
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
-| `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*` | cahier de textes |
+| `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*`, `ressources.*` | cahier de textes |
+| `reservations.*` | liste des ressources réservables |
 | `devoirs.*` | évaluations |
 | `appels.*` | appels |
 

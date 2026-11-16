@@ -143,3 +143,191 @@ html.mbn-moderne main.mbn-page-seance .empty-state__title {
   margin: 0;
   color: #7b8794;
 }
+
+/* ------------------------------------------------------------------
+   Mode édition : formulaire d'une activité (à faire, contenu, à l'issue)
+   ------------------------------------------------------------------ */
+
+/* La rubrique en cours de modification se détache des autres. */
+html.mbn-moderne main.mbn-page-seance .container--full > .panel:has(.js-editionActivity form) {
+  border-top-color: #9dbdf0;
+  border-right-color: #9dbdf0;
+  border-bottom-color: #9dbdf0;
+  box-shadow: 0 0 0 3px rgba(29, 95, 209, .13), 0 4px 14px rgba(31, 41, 51, .08);
+}
+
+/* Les boutons « Annuler » et « Valider » étaient en haut de la colonne de
+   droite : une fois le texte saisi et les pièces jointes ajoutées, il fallait
+   remonter pour valider. La colonne des réglages suit maintenant le
+   défilement, les boutons restent toujours à l'écran. */
+html.mbn-moderne main.mbn-page-seance .js-editionActivity form {
+  display: flow-root;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity form > .col--lg-3 {
+  position: sticky;
+  top: 52px;
+  z-index: 2;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity form > .col--lg-3 > ul {
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+/* Boutons d'action : plus grands, séparés des réglages. */
+html.mbn-moderne main.mbn-page-seance .js-editionActivity .form__line:has(> input[type="submit"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #e4e7eb;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity .form__line:has(> input[type="submit"]) > .btn {
+  height: auto;
+  margin: 0;
+  padding: 8px 16px !important;
+  border-radius: 6px;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity .form__line:has(> input[type="submit"]) > input[type="submit"] {
+  flex: 1 1 auto;
+  font-weight: 700;
+}
+html.mbn-moderne main.mbn-page-seance .mbn-aide-raccourci {
+  flex: 1 1 100%;
+  color: #7b8794;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* Champs */
+html.mbn-moderne main.mbn-page-seance .js-editionActivity .form__control {
+  border-radius: 6px;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity .form__control:focus {
+  border-color: #1d5fd1;
+  outline: 2px solid rgba(29, 95, 209, .25);
+  outline-offset: 0;
+}
+html.mbn-moderne main.mbn-page-seance .js-editionActivity textarea.form__control {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Éditeur de texte : zone de saisie plus haute sur un écran paysage, texte
+   à la taille où il sera affiché ensuite. Rien n'est forcé quand l'éditeur
+   est agrandi en plein écran. */
+html.mbn-moderne main.mbn-page-seance .cke:not(.cke_maximized) {
+  border-color: #cbd2d9;
+  border-radius: 8px;
+}
+html.mbn-moderne main.mbn-page-seance .cke:not(.cke_maximized) .cke_inner {
+  border-radius: 7px;
+}
+html.mbn-moderne main.mbn-page-seance .cke:not(.cke_maximized) .cke_top {
+  border-radius: 7px 7px 0 0;
+  background: #f4f6f9;
+}
+html.mbn-moderne main.mbn-page-seance .cke:not(.cke_maximized) .cke_bottom {
+  border-radius: 0 0 7px 7px;
+}
+html.mbn-moderne main.mbn-page-seance .cke:not(.cke_maximized) .cke_contents {
+  height: clamp(280px, 34vh, 560px) !important;
+}
+html.mbn-moderne main.mbn-page-seance .cke_editable {
+  padding: 10px 12px;
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.6;
+}
+html.mbn-moderne main.mbn-page-seance .cke:focus-within:not(.cke_maximized) {
+  border-color: #1d5fd1;
+  box-shadow: 0 0 0 2px rgba(29, 95, 209, .2);
+}
+
+/* Zone de dépôt des pièces jointes : centrée, bord en pointillés. (La règle
+   des rubriques vides, plus haut, la décalait à gauche.) */
+html.mbn-moderne main.mbn-page-seance .uploadzone {
+  border: 1.5px dashed #b8c2cb;
+  border-radius: 8px;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+html.mbn-moderne main.mbn-page-seance .uploadzone:hover,
+html.mbn-moderne main.mbn-page-seance .uploadzone.dz-drag-hover {
+  border-color: #1d5fd1;
+  background-color: #eef4fd;
+}
+html.mbn-moderne main.mbn-page-seance .uploadzone__message.empty-state {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+html.mbn-moderne main.mbn-page-seance .uploadzone__message .empty-state__title {
+  color: #52606d;
+}
+html.mbn-moderne main.mbn-page-seance .media-upload .panel--outlined {
+  border: 0;
+}
+
+/* Titres vides laissés par MBN dans la colonne de droite */
+html.mbn-moderne main.mbn-page-seance .container--full h4:empty {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   Fenêtre « pour quelle séance » (choix de la séance d'un travail à faire)
+   ------------------------------------------------------------------ */
+html.mbn-moderne body:has(main.mbn-page-seance) .js-current-modal .modal__dialog {
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(31, 41, 51, .3);
+}
+html.mbn-moderne body:has(main.mbn-page-seance) .js-current-modal .modal__header {
+  border-radius: 10px 10px 0 0;
+}
+html.mbn-moderne body:has(main.mbn-page-seance) .js-current-modal .modal__footer {
+  border-radius: 0 0 10px 10px;
+}
+/* Séances proposées : cartes qui réagissent au survol, bouton bien visible */
+html.mbn-moderne .js-diffusion-selecteur__item-infos {
+  border-radius: 8px;
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+html.mbn-moderne .js-diffusion-selecteur__item-infos:hover {
+  border-color: #1d5fd1;
+  box-shadow: 0 1px 6px rgba(29, 95, 209, .18);
+}
+html.mbn-moderne .js-diffusion-selecteur__item-infos .js-infos-groupe {
+  font-weight: 700;
+  color: #1f2933;
+}
+html.mbn-moderne .js-diffusion-selecteur__item-infos .js-diffusion-selecteur__item-btn {
+  margin-top: 4px;
+  padding: 3px 10px;
+  border: 1px solid #1d5fd1;
+  border-radius: 999px;
+  text-decoration: none;
+}
+html.mbn-moderne .js-diffusion-selecteur__item-infos .js-diffusion-selecteur__item-btn:hover {
+  background: #1d5fd1;
+  color: #fff;
+}
+/* Séance retenue, à droite : encadrée pour qu'on la repère */
+html.mbn-moderne .js-diffusion-selection__list > .js-selection__item {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #b7d98a;
+  border-radius: 8px;
+  background: #f6fbee;
+}
+/* Sur un écran large, la fenêtre s'étirait sur 90 % de la largeur (3 colonnes
+   presque vides). Elle est ramenée à une largeur lisible et centrée. */
+html.mbn-moderne .modal__dialog:has(.js-diffusion__content) {
+  max-width: min(90%, 1100px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.24.0",
+  "version": "0.27.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "permissions": [
     "scripting",
@@ -29,7 +29,7 @@
         "cahier-liste.css",
         "devoirs.css",
         "appels.css",
-        "seance.css"
+        "seance.css", "ressources.css", "reservations.css"
       ],
       "all_frames": true,
       "run_at": "document_start",
@@ -48,7 +48,7 @@
         "messagerie.js",
         "apercu-pdf.js",
         "agenda.js",
-        "seance.js",
+        "seance.js", "ressources.js", "reservations.js",
         "cahier-liste.js",
         "cahier-criteres.js",
         "cahier-choix.js",

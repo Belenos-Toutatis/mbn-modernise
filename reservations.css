@@ -1,0 +1,173 @@
+/* MBN modernisé — liste des ressources réservables (PROC=RESA_RESSOURCES).
+   reservations.js pose la classe « mbn-resa » sur <main>.
+
+   D'origine, chaque ligne faisait près de 100 px de haut : une colonne de
+   60 px contenait un texte de 28 caractères replié sur quatre lignes, le nom
+   de la ressource était coupé à 180 px, et le tiers droit restait vide. */
+
+html.mbn-moderne main.mbn-resa > .container {
+  max-width: 1200px;
+}
+
+/* ---- Une ligne = une grille : nom | consulter | réserver | info | abonnement ---- */
+html.mbn-moderne main.mbn-resa li.js-rubrique-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 96px minmax(0, 190px) auto;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 0;
+  padding: 7px 10px;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col {
+  float: none;
+  width: auto !important;
+  min-height: 0;
+  margin-left: 0 !important;
+  padding: 0;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > ul.js-sous-rubriques {
+  grid-column: 1 / -1;
+  margin: 6px 0 0 26px;
+  padding: 0;
+}
+
+/* Nom : en entier, sur plusieurs lignes s'il le faut */
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:first-of-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.35;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:first-of-type > button {
+  flex: 0 0 auto;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:first-of-type:has(> button) > span {
+  cursor: pointer;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:first-of-type:has(> button) > span:hover {
+  color: #1d5fd1;
+}
+
+/* Liens « consulter » et « réserver » : de vrais boutons */
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(2) > a,
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(3) > a {
+  display: block;
+  padding: 4px 8px;
+  border: 1px solid #1d5fd1;
+  border-radius: 999px;
+  color: #1d5fd1;
+  font-size: 12.5px;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .12s ease, color .12s ease;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(2) > a:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(3) > a {
+  background: #1d5fd1;
+  color: #fff;
+  font-weight: 700;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(3) > a:hover {
+  background: #174ea8;
+}
+
+/* Texte d'information : discret, sur une ou deux lignes */
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(4) {
+  color: #52606d;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* Abonnement et messages : regroupés à droite, sans colonnes vides */
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(5) > .row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+}
+html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:nth-of-type(5) > .row > .col {
+  float: none;
+  flex: 0 0 auto;
+  width: auto !important;
+  min-height: 0;
+}
+
+/* ---- Familles (premier niveau) en cartes, ressources en lignes ---- */
+html.mbn-moderne main.mbn-resa .js-liste-rubrique > ul {
+  margin: 0;
+  padding: 0;
+}
+html.mbn-moderne main.mbn-resa .js-liste-rubrique > ul > li.js-rubrique-item {
+  margin: 0 0 8px;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+html.mbn-moderne main.mbn-resa .js-liste-rubrique > ul > li.js-rubrique-item > div.col:first-of-type {
+  color: #1f2933;
+  font-size: 14px;
+  font-weight: 700;
+}
+html.mbn-moderne main.mbn-resa ul.js-sous-rubriques li.js-rubrique-item {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #e4e7eb;
+  border-radius: 0;
+  background: #fff;
+  transition: background-color .12s ease;
+}
+html.mbn-moderne main.mbn-resa ul.js-sous-rubriques > li.js-rubrique-item:first-child {
+  border-radius: 6px 6px 0 0;
+}
+html.mbn-moderne main.mbn-resa ul.js-sous-rubriques > li.js-rubrique-item:last-child {
+  border-radius: 0 0 6px 6px;
+}
+html.mbn-moderne main.mbn-resa ul.js-sous-rubriques li.js-rubrique-item:hover {
+  background: #eef4fd;
+}
+
+/* Bouton « Tout déplier » */
+.mbn-resa-tout {
+  float: right;
+  padding: 4px 12px;
+  border: 1px solid #b8c2cb;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2933;
+  font: 12.5px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+.mbn-resa-tout:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+html:not(.mbn-moderne) .mbn-resa-tout {
+  display: none;
+}
+
+/* Liste étroite (écran portrait, menu déplié) : le nom prend toute la ligne,
+   les boutons et le reste passent dessous. La largeur mesurée est celle de la
+   liste, pas celle de la fenêtre, puisque le menu de gauche peut en occuper
+   une bonne part. */
+html.mbn-moderne main.mbn-resa .js-liste-rubrique {
+  container-type: inline-size;
+}
+@container (max-width: 900px) {
+  html.mbn-moderne main.mbn-resa li.js-rubrique-item {
+    grid-template-columns: 96px 96px minmax(0, 1fr) auto;
+  }
+  html.mbn-moderne main.mbn-resa li.js-rubrique-item > div.col:first-of-type {
+    grid-column: 1 / -1;
+  }
+  html.mbn-moderne main.mbn-resa li.js-rubrique-item > ul.js-sous-rubriques {
+    margin-left: 14px;
+  }
+}
