@@ -1,0 +1,145 @@
+/* MBN modernisé — page de détail d'une séance du cahier de textes.
+   seance.js pose la classe « mbn-page-seance » sur <main>, et, s'il reconnaît
+   la classe de la séance, l'attribut data-mbn-classe et les variables
+   --mbn-classe-*. */
+
+/* Largeur lisible : sur un grand écran, la page s'étirait sur toute la
+   largeur (lignes de texte de plus de 2400 px, boutons d'action à 2500 px du
+   titre). Tout est ramené dans une colonne centrée. */
+html.mbn-moderne main.mbn-page-seance {
+  background: #f4f6f9;
+}
+html.mbn-moderne main.mbn-page-seance > :is(.content-toolbar, .panel, .content-filter, .container--full) {
+  max-width: 1280px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Bandeau de la séance : titre lisible, couleur de la classe. */
+html.mbn-moderne main.mbn-page-seance > .panel {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: 0 8px 8px 0;
+  background-color: #eef2f8 !important;
+}
+html.mbn-moderne main.mbn-page-seance > .panel h2 {
+  color: #1f2933;
+  font-size: 17px !important;
+  line-height: 1.4;
+}
+html.mbn-moderne main.mbn-page-seance > .panel h2 span:not(.screen-reader-text) {
+  font-size: 13.5px !important;
+}
+html.mbn-couleurs main.mbn-page-seance[data-mbn-classe] > .panel {
+  border-left-color: var(--mbn-classe-bord) !important;
+  background-color: var(--mbn-classe-pale) !important;
+}
+html.mbn-moderne main.mbn-page-seance > .content-filter {
+  border-radius: 0 0 8px 8px;
+}
+
+/* Rubriques (à faire, contenu, à l'issue…) : une carte chacune. */
+html.mbn-moderne main.mbn-page-seance > .container--full {
+  padding: 12px 0 24px;
+  background: transparent !important;
+}
+html.mbn-moderne main.mbn-page-seance > .container--full > .panel {
+  margin: 0 0 12px !important;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-top: 1px solid #e4e7eb;
+  border-right: 1px solid #e4e7eb;
+  border-bottom: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+html.mbn-moderne main.mbn-page-seance > .container--full > .divider {
+  display: none !important;
+}
+
+/* Titre de rubrique */
+html.mbn-moderne main.mbn-page-seance .container--full > .panel > .row--flex-auto:first-child {
+  align-items: center;
+  min-height: 0;
+  margin-bottom: 8px;
+}
+html.mbn-moderne main.mbn-page-seance .container--full h3 {
+  margin: 0 !important;
+  color: #1f2933;
+  font-size: 16px;
+  line-height: 1.5;
+}
+/* La colonne vide de 48 px qui décalait le contenu sous le pictogramme est
+   retirée : le contenu gagne cette largeur. */
+html.mbn-moderne main.mbn-page-seance .container--full .row--flex-auto > .col--flex-locked.hide--xs {
+  display: none !important;
+}
+
+/* Éléments d'une rubrique */
+html.mbn-moderne main.mbn-page-seance .container--full h4 {
+  margin-top: 0;
+  color: #1f2933;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+html.mbn-moderne main.mbn-page-seance .container--full > .panel > .divider {
+  margin: 10px 0;
+  background: #e4e7eb;
+}
+html.mbn-moderne main.mbn-page-seance .wysiwyg {
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.6;
+}
+html.mbn-moderne main.mbn-page-seance .wysiwyg :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
+}
+html.mbn-moderne main.mbn-page-seance .wysiwyg p {
+  margin: 0 0 8px;
+}
+html.mbn-moderne main.mbn-page-seance .wysiwyg :is(ul, ol) {
+  margin: 0 0 8px;
+  padding-left: 24px;
+}
+html.mbn-moderne main.mbn-page-seance .wysiwyg a {
+  color: #1d5fd1;
+  text-decoration: underline;
+}
+
+/* Boutons d'action à icône seule : cible plus grande, survol visible. */
+html.mbn-moderne main.mbn-page-seance .btn--icon-only {
+  padding: 7px !important;
+  border-radius: 6px;
+  line-height: 0;
+  transition: background-color .12s ease;
+}
+html.mbn-moderne main.mbn-page-seance .btn--icon-only:hover {
+  background-color: #eef4fd !important;
+}
+html.mbn-moderne main.mbn-page-seance .container--full ul.list--inlined > li {
+  margin-right: 2px;
+}
+
+/* Encadré d'information de la colonne de droite */
+html.mbn-moderne main.mbn-page-seance .container--full .panel .panel {
+  border-radius: 8px;
+}
+
+/* Rubrique vide : une ligne discrète */
+html.mbn-moderne main.mbn-page-seance .empty-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left !important;
+}
+html.mbn-moderne main.mbn-page-seance .empty-state__image .icon--xl {
+  width: 22px;
+  height: 22px;
+  background-size: contain;
+  opacity: .6;
+}
+html.mbn-moderne main.mbn-page-seance .empty-state__title {
+  margin: 0;
+  color: #7b8794;
+}

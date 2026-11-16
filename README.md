@@ -67,7 +67,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `periodes.js` | bornes de l'année scolaire pour les périodes préréglées |
 | `messagerie.*`, `messagerie-moderne.css` | messagerie |
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
-| `agenda.*`, `cahier-*.js`, `cahier-liste.css` | cahier de textes |
+| `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*` | cahier de textes |
 | `devoirs.*` | évaluations |
 | `appels.*` | appels |
 

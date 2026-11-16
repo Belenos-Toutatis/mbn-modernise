@@ -79,5 +79,20 @@ globalThis.mbnCouleurs = (() => {
     return { fond: `hsl(${t}, 45%, 86%)`, bord: `hsl(${t}, 40%, 42%)`, pale: `hsl(${t}, 45%, 97%)`, texte: '#10151c' };
   };
 
-  return { lireClasse, empreinte, pour };
+  // Cherche un nom de classe dans un texte libre (« PHYSIQUE-CHIMIE - 3B-GP1 »,
+  // « jeudi 3 septembre à 09:00 3A »…). Les horaires, les dates, les nombres
+  // seuls et les ordinaux (« 3e trimestre ») sont écartés : le chiffre du
+  // niveau doit être suivi d'une majuscule ou d'un chiffre.
+  const classeDansTexte = (texte) => {
+    for (const brut of String(texte).split(/[\s,;()|]+/)) {
+      const mot = brut.replace(/^[^0-9A-Za-z]+|[^0-9A-Za-z]+$/g, '');
+      if (mot.length < 2 || mot.length > 14) continue;
+      if (/^\d{1,2}[hH:]/.test(mot) || /^\d{1,4}[\/.]\d/.test(mot) || /^\d+$/.test(mot)) continue;
+      if (!/^\d[A-Z0-9]/.test(mot)) continue;
+      if (lireClasse(mot)) return mot;
+    }
+    return '';
+  };
+
+  return { lireClasse, empreinte, pour, classeDansTexte };
 })();

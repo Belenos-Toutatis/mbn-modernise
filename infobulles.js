@@ -7,11 +7,16 @@
 //
 // Le « title » est retiré le temps du survol, pour que le navigateur n'affiche
 // pas la sienne en plus, puis remis tel quel dès que la souris quitte l'élément.
+//
+// En plus : un bouton ou un lien réduit à une icône, sans « title », affiche en
+// infobulle le libellé que MBN réserve aux lecteurs d'écran.
 
 (() => {
   const DELAI = 450; // ms de survol avant l'affichage
   let bulle = null;
   let cible = null;
+  let libelle = '';
+  let titreRetire = false;
   let minuterie = 0;
   let x = 0;
   let y = 0;
@@ -19,13 +24,15 @@
   const cacher = () => {
     clearTimeout(minuterie);
     if (bulle) bulle.style.display = 'none';
-    if (cible) {
+    if (cible && titreRetire) {
       if (cible.dataset.mbnTitre !== undefined && !cible.hasAttribute('title')) {
         cible.setAttribute('title', cible.dataset.mbnTitre);
       }
       delete cible.dataset.mbnTitre;
-      cible = null;
     }
+    cible = null;
+    libelle = '';
+    titreRetire = false;
   };
 
   const montrer = () => {
@@ -39,7 +46,7 @@
         'box-shadow:0 2px 10px rgba(31,41,51,.35);pointer-events:none;display:none;';
       document.documentElement.appendChild(bulle);
     }
-    bulle.textContent = cible.dataset.mbnTitre;
+    bulle.textContent = libelle;
     bulle.style.display = 'block';
     // Sous le pointeur, sans sortir de la fenêtre ; au-dessus s'il n'y a pas la place.
     const boite = bulle.getBoundingClientRect();
@@ -50,16 +57,38 @@
     bulle.style.top = haut + 'px';
   };
 
+  // Libellé caché d'un bouton ou lien qui n'affiche qu'une icône.
+  const libelleCache = (bouton) => {
+    const cache = bouton.querySelector('.screen-reader-text, .visually-hidden');
+    if (!cache) return '';
+    const texte = cache.textContent.replace(/\s+/g, ' ').trim();
+    const visible = bouton.textContent.replace(cache.textContent, '').replace(/\s+/g, ' ').trim();
+    return texte && !visible ? texte : '';
+  };
+
   document.addEventListener('mouseover', (e) => {
-    const el = e.target instanceof Element ? e.target.closest('[title]') : null;
+    if (!(e.target instanceof Element)) return;
+    const avecTitre = e.target.closest('[title]');
+    const bouton = avecTitre ? null : e.target.closest('a, button');
+    const el = avecTitre || bouton;
     if (el === cible && cible) return;
     cacher();
     if (!el) return;
-    const texte = el.getAttribute('title');
-    if (!texte || !texte.trim()) return;
-    cible = el;
-    el.dataset.mbnTitre = texte;
-    el.removeAttribute('title');
+
+    if (avecTitre) {
+      const texte = el.getAttribute('title');
+      if (!texte || !texte.trim()) return;
+      cible = el;
+      libelle = texte;
+      titreRetire = true;
+      el.dataset.mbnTitre = texte;
+      el.removeAttribute('title');
+    } else {
+      const texte = libelleCache(el);
+      if (!texte) return;
+      cible = el;
+      libelle = texte;
+    }
     minuterie = setTimeout(montrer, DELAI);
   }, true);
 
