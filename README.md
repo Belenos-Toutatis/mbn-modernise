@@ -11,16 +11,17 @@ place.
 
 | Écran | Améliorations |
 |---|---|
-| Messagerie | colonnes alignées sur leurs titres et rééquilibrées, barre d'outils qui tient dans la fenêtre, bandeau du haut sur une seule rangée, liste en pleine hauteur tant qu'aucun message n'est ouvert, fermeture du volet de lecture par Échap ou par un clic sur le message ouvert |
+| Messagerie | colonnes alignées sur leurs titres et rééquilibrées, barre d'outils qui tient dans la fenêtre, bandeau du haut sur une seule rangée, liste en pleine hauteur tant qu'aucun message n'est ouvert, fermeture du volet de lecture par Échap ou par un clic sur le message ouvert (volet en bas, ou à droite quand la fenêtre est étroite) |
 | Aperçus PDF | fenêtre d'aperçu sur toute la hauteur, élargie en mode portrait |
 | Cahier de textes, vue agenda | grille étirée à la hauteur de la fenêtre, séances colorées par niveau et par classe (ou par matière dans le cahier d'une seule classe), cahier choisi mémorisé |
 | Cahier de textes, page d'une séance | page recentrée, rubriques en cartes ; en modification : boutons « Annuler » et « Valider » toujours à l'écran, validation par Ctrl+S ou Ctrl+Entrée, éditeur plus haut |
 | Cahier de textes, réservation de ressources | ressources regroupées par type, ajoutées ou retirées d'un clic, filtre |
 | Réservation de ressources, liste | lignes compactes, noms affichés en entier, boutons « consulter » et « réserver », familles dépliées mémorisées, tout déplier d'un clic |
+| Réservation de ressources, planning et formulaire | clic dans toute la case libre, vos réservations en bleu, week-end vide masqué ; date de fin qui suit la date de début, heures choisies sur des molettes à faire défiler, durées toutes faites, Ctrl+S pour valider |
 | Cahier de textes, vues en liste | séances en cartes, raccourcis de période, filtre instantané par classe et par texte, critères mémorisés, index par mois |
 | Évaluations | filtres et tri mémorisés, lignes colorées par classe, titres affichés en entier |
 | Appels | feuille d'appel remise dans la page, états colorés, bilan chiffré ; historique avec appels non saisis repérés et raccourcis de période |
-| Partout | infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie ni quand un formulaire de modification est ouvert) |
+| Partout | menu latéral réduit qui se déplie au survol sans décaler la page, infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie ni quand un formulaire de modification est ouvert) |
 
 Les couleurs de classe suivent une règle unique : une teinte par niveau
 (6e vert, 5e bleu, 4e orange, 3e violet), une nuance par classe.
@@ -47,6 +48,7 @@ Un clic sur l'icône de l'extension ouvre ses réglages :
 - apparence modernisée ;
 - couleurs par classe ou par matière ;
 - bandeau de la messagerie sur une seule rangée ;
+- menu latéral réduit qui se déplie au survol ;
 - rechargement automatique et sa durée d'inactivité.
 
 Chaque réglage se désactive séparément si un écran s'affiche mal.
@@ -65,13 +67,14 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `manifest.json` | déclaration de l'extension |
 | `popup.html`, `popup.js`, `capture.js` | fenêtre de réglages et capture anonymisée |
 | `moderne.js` | applique les réglages d'apparence à chaque page |
-| `commun.css`, `infobulles.js`, `rafraichissement.js` | correctifs communs à toutes les pages |
+| `commun.css`, `infobulles.js`, `menu.*`, `rafraichissement.js` | correctifs communs à toutes les pages |
 | `couleurs-classes.js` | couleurs par niveau et par classe |
 | `periodes.js` | bornes de l'année scolaire pour les périodes préréglées |
 | `messagerie.*`, `messagerie-moderne.css` | messagerie |
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
 | `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*`, `ressources.*` | cahier de textes |
-| `reservations.*` | liste des ressources réservables |
+| `reservations.*`, `planning-resa.js`, `saisie-resa.js` | réservation de ressources : liste, planning, formulaire |
+| `pont.js` | règle les sélecteurs de date et d'heure de MBN (seul script exécuté dans le contexte de la page) |
 | `devoirs.*` | évaluations |
 | `appels.*` | appels |
 

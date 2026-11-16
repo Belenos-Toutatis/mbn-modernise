@@ -142,14 +142,30 @@ html.mbn-moderne .DwtListView-Rows > li.Row:hover:not([class*="selected"]) > .Dw
 /* ==== Liste en pleine hauteur tant qu'aucun message n'est ouvert ====
    messagerie.js pose data-mbn-pleine sur la vue et --mbn-liste-haut sur la
    liste quand le volet de lecture (placé en bas) est vide. */
-html.mbn-moderne [data-mbn-pleine] > .DwtListView {
+html.mbn-moderne [data-mbn-pleine="1"] > .DwtListView {
   height: 100% !important;
 }
-html.mbn-moderne [data-mbn-pleine] > .DwtListView .DwtListView-Rows {
+html.mbn-moderne [data-mbn-pleine="1"] > .DwtListView .DwtListView-Rows {
   height: var(--mbn-liste-haut) !important;
 }
-html.mbn-moderne [data-mbn-pleine] > :is(.ZmMailMsgView, .AppSash-vert) {
+/* Volet à droite, messagerie étroite : la liste prend toute la largeur. */
+html.mbn-moderne [data-mbn-pleine="droite"] > .DwtListView,
+html.mbn-moderne [data-mbn-pleine="droite"] > .DwtListView .DwtListView-Rows {
+  width: 100% !important;
+}
+html.mbn-moderne [data-mbn-pleine] > :is(.ZmMailMsgView, .AppSash-vert, .AppSash-horiz) {
   display: none !important;
+}
+
+/* ==== Messages non lus, liste sur deux lignes (volet de lecture à droite) ====
+   Même traitement que dans la liste en colonnes : fond bleu très clair et
+   barre d'accent, au lieu d'un aplat bleu soutenu. */
+html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleHeader.Unread,
+html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleHeader.Unread :is(.ZmMsgListDate, .ZmListFlagsWrapper) {
+  background-color: #e7f1fd !important;
+}
+html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleHeader.Unread {
+  box-shadow: inset 4px 0 0 #1d5fd1;
 }
 
 /* ==== Bandeau du haut sur une seule rangée (option « Bandeau compact ») ====

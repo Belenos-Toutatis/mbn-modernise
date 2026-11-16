@@ -1,0 +1,33 @@
+/* MBN modernisé — menu latéral déplié au survol (menu.js).
+   Le menu passe au-dessus de la page, avec une ombre pour s'en détacher. */
+html.mbn-menu-survol nav.menu.mbn-menu-deplie {
+  z-index: 2147482000;
+  box-shadow: 6px 0 24px rgba(15, 20, 50, .35);
+}
+
+/* Ouverture et fermeture progressives : la largeur du menu glisse d'une
+   valeur à l'autre, son contenu est découvert ou recouvert au passage.
+   À la fermeture, menu.js garde d'abord l'affichage déplié et ne fait que
+   ramener la largeur (classe « mbn-menu-repli »), puis rend la main à MBN. */
+html.mbn-menu-survol nav.menu.js-menu {
+  transition: width .22s cubic-bezier(.3, .7, .3, 1), box-shadow .22s ease;
+}
+html.mbn-menu-survol nav.menu.mbn-menu-deplie {
+  overflow-x: hidden;
+}
+html.mbn-menu-survol nav.menu.mbn-menu-deplie.mbn-menu-repli {
+  width: 64px !important;
+  box-shadow: none;
+}
+/* Pendant le glissement, les libellés ne se replient pas sur plusieurs lignes */
+html.mbn-menu-survol nav.menu.mbn-menu-deplie > * {
+  min-width: 240px;
+}
+html.mbn-menu-survol nav.menu.mbn-menu-deplie > ul.user {
+  min-width: 256px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.mbn-menu-survol nav.menu.js-menu {
+    transition: none;
+  }
+}

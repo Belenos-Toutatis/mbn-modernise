@@ -53,7 +53,7 @@
     if (estMessagerie()) return aLEcran('.ZmComposeView');
     // Formulaire d'édition, éditeur de texte ou fenêtre ouverte : même sans
     // frappe (liste modifiée, pièce jointe ajoutée), recharger ferait tout perdre.
-    if (affiche('.js-editionActivity, .cke, .modal--show')) return true;
+    if (affiche('.js-editionActivity, .cke, .modal--show, #js-formCreateEvent')) return true;
     return saisie || saisieActive(document.activeElement);
   };
 

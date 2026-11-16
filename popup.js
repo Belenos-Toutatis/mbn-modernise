@@ -70,3 +70,8 @@ caseCouleurs.addEventListener('change', () => chrome.storage.local.set({ couleur
 const caseCompact = document.getElementById('compact');
 chrome.storage.local.get({ compact: true }).then(({ compact }) => { caseCompact.checked = compact !== false; });
 caseCompact.addEventListener('change', () => chrome.storage.local.set({ compact: caseCompact.checked }));
+
+// ---- Menu latéral qui se déplie au survol ----
+const caseMenu = document.getElementById('menuSurvol');
+chrome.storage.local.get({ menuSurvol: true }).then(({ menuSurvol }) => { caseMenu.checked = menuSurvol !== false; });
+caseMenu.addEventListener('change', () => chrome.storage.local.set({ menuSurvol: caseMenu.checked }));

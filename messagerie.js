@@ -53,6 +53,18 @@
       return b.width > 0 && b.height > 0 && b.right > 0 && b.bottom > 0 && b.left < innerWidth && b.top < innerHeight;
     });
 
+  // Le volet de lecture peut-il être refermé par l'extension ?
+  //   - volet en bas : toujours ;
+  //   - volet à droite : seulement si la messagerie est trop étroite pour
+  //     afficher confortablement la liste et le message côte à côte.
+  const LARGEUR_ETROITE = 1500; // px de large pour la liste et le volet réunis
+  const placeDuVolet = (volet) => {
+    const vue = volet.parentElement;
+    if (parseFloat(volet.style.top) > 0) return 'bas';
+    if (parseFloat(volet.style.left) > 0 && vue && vue.clientWidth < LARGEUR_ETROITE) return 'droite';
+    return '';
+  };
+
   const rouvrir = () => {
     let change = false;
     for (const vue of document.querySelectorAll('[data-mbn-ferme]')) {
@@ -76,7 +88,7 @@
 
     for (const volet of document.querySelectorAll('.ZmMailMsgView')) {
       const vue = volet.parentElement;
-      if (!vue || vue.dataset.mbnPleine || !(parseFloat(volet.style.top) > 0) || !volet.getClientRects().length) continue;
+      if (!vue || vue.dataset.mbnPleine || !placeDuVolet(volet) || !volet.getClientRects().length) continue;
       vue.dataset.mbnFerme = '1';
     }
     planifier();
@@ -111,7 +123,7 @@
     const liste = ligne.closest('.DwtListView');
     const vue = liste && liste.parentElement;
     const volet = vue && vue.querySelector(':scope > .ZmMailMsgView');
-    if (!volet || vue.dataset.mbnPleine || !(parseFloat(volet.style.top) > 0) || !volet.getClientRects().length) return;
+    if (!volet || vue.dataset.mbnPleine || !placeDuVolet(volet) || !volet.getClientRects().length) return;
     vue.dataset.mbnFerme = '1';
     planifier();
   }, true);
@@ -133,8 +145,10 @@
     new MutationObserver(rouvrir).observe(volet, { childList: true, subtree: true });
   };
 
-  // Volet de lecture en bas et vide (aucun message ouvert) : la liste prend
-  // toute la hauteur. Dès qu'un message est ouvert, Zimbra reprend la main.
+  // Volet de lecture vide (aucun message ouvert) ou refermé : la liste prend
+  // toute la place — la hauteur si le volet est en bas, la largeur s'il est à
+  // droite sur une messagerie étroite. Dès qu'un message est ouvert, Zimbra
+  // reprend la main.
   const etendreListe = (volet) => {
     const vue = volet.parentElement;
     const liste = vue && vue.querySelector(':scope > .DwtListView');
@@ -146,20 +160,24 @@
     }
     const actif = document.documentElement.classList.contains('mbn-moderne');
     const vide = !!volet.querySelector('td.NoResults');
-    const enBas = parseFloat(volet.style.top) > 0;
-    // Volet refermé à la main par la touche Échap (voir plus bas).
+    const place = placeDuVolet(volet);
+    // Volet refermé à la main : touche Échap, ou clic sur le message ouvert.
     const ferme = vue.dataset.mbnFerme === '1';
     surveillerVolet(volet);
 
-    if (actif && enBas && (vide || ferme)) {
+    if (actif && place === 'bas' && (vide || ferme)) {
       const entete = liste.querySelector('.DwtListView-ColHeader');
       const haut = Math.max(100, vue.clientHeight - (entete ? entete.offsetHeight : 0) - 2);
       ecrire(lignes, '--mbn-liste-haut', haut + 'px');
       if (vue.dataset.mbnPleine !== '1') vue.dataset.mbnPleine = '1';
+    } else if (actif && place === 'droite' && (vide || ferme)) {
+      // Volet à droite sur une messagerie étroite : la liste prend toute la largeur.
+      lignes.style.removeProperty('--mbn-liste-haut');
+      if (vue.dataset.mbnPleine !== 'droite') vue.dataset.mbnPleine = 'droite';
     } else if (vue.dataset.mbnPleine) {
       delete vue.dataset.mbnPleine;
       lignes.style.removeProperty('--mbn-liste-haut');
-      // La liste retrouve sa hauteur réduite : le message choisi doit rester visible.
+      // La liste retrouve sa taille réduite : le message choisi doit rester visible.
       const choisi = lignes.querySelector(':scope > [class*="selected"]');
       if (choisi) requestAnimationFrame(() => choisi.scrollIntoView({ block: 'nearest' }));
     }

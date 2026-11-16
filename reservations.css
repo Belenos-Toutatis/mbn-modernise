@@ -171,3 +171,313 @@ html.mbn-moderne main.mbn-resa .js-liste-rubrique {
     margin-left: 14px;
   }
 }
+
+/* ==================================================================
+   Planning hebdomadaire d'une ressource (planning-resa.js)
+   ================================================================== */
+
+/* Toute la case libre ouvre la réservation, plus seulement le « + » de
+   16 px. Les réservations existantes restent au-dessus et cliquables. */
+html.mbn-moderne main.mbn-planning-resa #evenements {
+  z-index: 2 !important;
+  pointer-events: none;
+}
+html.mbn-moderne main.mbn-planning-resa #evenements .bloc_evenement {
+  pointer-events: auto;
+}
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire td > a.ajout {
+  inset: 0;
+  z-index: 1 !important;
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 4px;
+  text-align: right;
+  transition: background-color .1s ease;
+}
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire td > a.ajout .icon {
+  opacity: .3;
+  transition: opacity .1s ease;
+}
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire td > a.ajout:hover,
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire td > a.ajout:focus-visible {
+  background: rgba(29, 95, 209, .1);
+  box-shadow: inset 0 0 0 2px rgba(29, 95, 209, .45);
+}
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire td > a.ajout:hover .icon {
+  opacity: 1;
+}
+
+/* Jours toujours visibles quand on fait défiler la journée */
+html.mbn-moderne main.mbn-planning-resa #vue_hebdomadaire thead th {
+  position: sticky;
+  top: 40px;
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 1px 0 #d7dee2;
+}
+
+/* Réservations : texte qui tient dans le bloc */
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement {
+  border-radius: 5px;
+  line-height: 1.25;
+}
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement .heure_precise {
+  margin-bottom: 2px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement .titre {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 11.5px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement .personne {
+  display: block;
+  overflow: hidden;
+  font-size: 11px;
+  opacity: .92;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Vos réservations : en bleu, pour les distinguer de celles des collègues */
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement.mbn-mienne,
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement.mbn-mienne > div {
+  background: #1d5fd1 !important;
+  color: #fff !important;
+}
+html.mbn-moderne main.mbn-planning-resa .bloc_evenement.mbn-mienne {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px #1d5fd1;
+}
+
+/* Week-end masqué (les deux tableaux superposés de MBN à la fois) */
+html.mbn-moderne main.mbn-sans-weekend #vue_hebdomadaire colgroup > col:nth-child(n+7),
+html.mbn-moderne main.mbn-sans-weekend #vue_hebdomadaire tr > :nth-child(n+7),
+html.mbn-moderne main.mbn-sans-weekend table.evenements tr > td:nth-child(n+7) {
+  display: none;
+}
+
+.mbn-planning-outils {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-weight: 500;
+}
+.mbn-planning-legende::before {
+  content: "";
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 5px;
+  border-radius: 3px;
+  background: #1d5fd1;
+  vertical-align: -1px;
+}
+.mbn-planning-legende {
+  color: #52606d;
+  font-size: 12.5px;
+}
+.mbn-planning-weekend {
+  padding: 4px 12px;
+  border: 1px solid #b8c2cb;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2933;
+  font: 12.5px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+.mbn-planning-weekend:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+html:not(.mbn-moderne) .mbn-planning-outils {
+  display: none;
+}
+
+/* ==================================================================
+   Formulaire de réservation (saisie-resa.js)
+   ================================================================== */
+html.mbn-moderne form.mbn-saisie-resa > .container {
+  max-width: 900px;
+}
+/* Barre du haut (Annuler / Valider) toujours à l'écran */
+html.mbn-moderne form.mbn-saisie-resa > .content-toolbar {
+  position: sticky;
+  top: 40px;
+  z-index: 4;
+  box-shadow: 0 1px 0 #d7dee2;
+}
+html.mbn-moderne form.mbn-saisie-resa .form__control {
+  border-radius: 6px;
+}
+html.mbn-moderne form.mbn-saisie-resa .form__control:focus {
+  border-color: #1d5fd1;
+  outline: 2px solid rgba(29, 95, 209, .25);
+  outline-offset: 0;
+}
+
+/* Les règles de mise en page de MBN (colonnes flottantes, marges) s'appliquent
+   aussi aux blocs ajoutés : elles sont neutralisées ici. */
+.mbn-raccourcis {
+  display: flex !important;
+  align-items: baseline;
+  gap: 8px;
+  float: none !important;
+  clear: both;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 16px 10px !important;
+}
+.mbn-raccourcis--grille {
+  padding: 0 0 4px !important;
+}
+.mbn-heures {
+  clear: both;
+  margin-top: 6px;
+}
+.mbn-raccourcis__titre {
+  flex: 0 0 52px;
+  color: #52606d;
+  font-size: 12px;
+  font-weight: 700;
+}
+.mbn-raccourcis__liste {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mbn-raccourcis--grille .mbn-raccourci {
+  border-radius: 6px;
+}
+
+/* ---- Sélecteur d'heure à molettes ---- */
+.mbn-roue {
+  position: absolute;
+  z-index: 2147483000;
+  padding: 10px 12px 12px;
+  border: 1px solid #cbd2d9;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(31, 41, 51, .25);
+  font: 15px/1 system-ui, sans-serif;
+  user-select: none;
+}
+.mbn-roue__roues {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Bandeau central : la valeur retenue */
+.mbn-roue__roues::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 36px;
+  margin-top: -18px;
+  border-radius: 8px;
+  background: #e3edfc;
+  pointer-events: none;
+}
+.mbn-roue__col {
+  position: relative;
+  width: 84px;
+  height: 180px;            /* 5 valeurs de 36 px */
+  padding: 72px 0;          /* 2 valeurs de marge : la première et la dernière peuvent se centrer */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  outline: none;
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+  touch-action: pan-y;
+  cursor: ns-resize;
+}
+.mbn-roue__col::-webkit-scrollbar {
+  display: none;
+}
+.mbn-roue__col:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(29, 95, 209, .5);
+  border-radius: 8px;
+}
+.mbn-roue__val {
+  height: 36px;
+  color: #52606d;
+  line-height: 36px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  scroll-snap-align: center;
+  cursor: pointer;
+}
+.mbn-roue__val[aria-selected="true"] {
+  color: #123f8f;
+  font-size: 19px;
+  font-weight: 700;
+}
+.mbn-roue__points {
+  position: relative;
+  color: #123f8f;
+  font-size: 19px;
+  font-weight: 700;
+}
+.mbn-roue__ok {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d5fd1;
+  color: #fff;
+  font: 700 13px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
+.mbn-roue__ok:hover {
+  background: #174ea8;
+}
+/* Le sélecteur à petites flèches de MBN, remplacé par la grille */
+html.mbn-moderne.mbn-heures-modernes .flatpickr-calendar.noCalendar {
+  display: none !important;
+}
+.mbn-raccourci {
+  padding: 4px 10px;
+  border: 1px solid #b8c2cb;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2933;
+  font: 12.5px/1.3 system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+.mbn-raccourci--lundi {
+  margin-left: 10px;
+}
+.mbn-raccourci:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+.mbn-raccourci:focus-visible {
+  outline: 2px solid #1d5fd1;
+  outline-offset: 1px;
+}
+.mbn-raccourci[aria-pressed="true"] {
+  border-color: #1d5fd1 !important;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+html:not(.mbn-moderne) .mbn-raccourcis {
+  display: none;
+}
