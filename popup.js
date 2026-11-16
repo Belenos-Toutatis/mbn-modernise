@@ -75,3 +75,35 @@ caseCompact.addEventListener('change', () => chrome.storage.local.set({ compact:
 const caseMenu = document.getElementById('menuSurvol');
 chrome.storage.local.get({ menuSurvol: true }).then(({ menuSurvol }) => { caseMenu.checked = menuSurvol !== false; });
 caseMenu.addEventListener('change', () => chrome.storage.local.set({ menuSurvol: caseMenu.checked }));
+
+// ---- Mises à jour ----
+// La vérification est faite par arriere-plan.js ; ici on affiche son résultat.
+const caseMaj = document.getElementById('verifierMaj');
+const blocMaj = document.getElementById('maj');
+const ligneVersion = document.getElementById('version');
+const afficherMaj = async () => {
+  const installee = chrome.runtime.getManifest().version;
+  const v = await chrome.storage.local.get({ verifierMaj: true, majDisponible: '', majVerifiee: 0, majErreur: '' });
+  caseMaj.checked = v.verifierMaj !== false;
+  const nouvelle = v.verifierMaj !== false ? v.majDisponible : '';
+  blocMaj.hidden = !nouvelle;
+  if (nouvelle) document.getElementById('maj-titre').textContent = `Version ${nouvelle} disponible (vous avez la ${installee}).`;
+  ligneVersion.textContent = `Version installée : ${installee}. `;
+  if (v.verifierMaj === false) return;
+  ligneVersion.append(v.majErreur ? 'Dernière vérification impossible (hors ligne ?). '
+    : v.majVerifiee ? `Vérifié le ${new Date(v.majVerifiee).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}${nouvelle ? '' : ' : à jour'}. `
+      : 'Pas encore vérifié. ');
+  const bouton = document.createElement('button');
+  bouton.textContent = 'Vérifier maintenant';
+  bouton.addEventListener('click', async () => {
+    bouton.disabled = true;
+    try { await chrome.runtime.sendMessage({ mbn: 'verifier-maj' }); } catch { /* arrière-plan indisponible */ }
+    afficherMaj();
+  });
+  ligneVersion.append(bouton);
+};
+caseMaj.addEventListener('change', async () => {
+  await chrome.storage.local.set({ verifierMaj: caseMaj.checked });
+  setTimeout(afficherMaj, 400);
+});
+afficherMaj();

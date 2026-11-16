@@ -16,9 +16,24 @@
     .boutons { display: flex; gap: 8px; margin-bottom: 10px; }
     textarea { width: 100%; height: 200px; box-sizing: border-box; font: 11px/1.3 ui-monospace, monospace; white-space: pre; border: 1px solid #c5ccd3; border-radius: 6px; padding: 6px; }
     #etat { min-height: 1.4em; margin: 8px 0 0; }
+    #maj { margin: 0 0 14px; padding: 10px 12px; border: 1px solid #f0b37e; border-radius: 8px; background: #fff4e5; color: #7a3b00; }
+    #maj strong { display: block; margin-bottom: 4px; }
+    #maj ol { margin: 4px 0 0; padding-left: 20px; }
+    #maj code { padding: 1px 4px; border-radius: 4px; background: #fde3c4; font: 12px ui-monospace, monospace; }
+    #version { margin: 6px 0 0; font-size: 12.5px; }
+    #version button { padding: 2px 8px; font-size: 12px; }
   </style>
 </head>
 <body>
+  <div id="maj" hidden>
+    <strong id="maj-titre"></strong>
+    Pour l'installer :
+    <ol>
+      <li>dans le dossier de l'extension, lancez <code>git pull</code> (ou téléchargez l'archive ZIP du dépôt) ;</li>
+      <li>dans <code>chrome://extensions</code>, cliquez sur la flèche de rechargement de « MBN modernisé » ;</li>
+      <li>rechargez les pages MBN ouvertes.</li>
+    </ol>
+  </div>
   <section>
     <h1>Apparence</h1>
     <label><input type="checkbox" id="moderne"> Apparence modernisée (messagerie, cahier de textes, évaluations, appels)</label>
@@ -42,6 +57,11 @@
     </div>
     <textarea id="resultat" readonly placeholder="Le résultat s'affichera ici."></textarea>
     <p id="etat"></p>
+  </section>
+  <section>
+    <h1>Mises à jour</h1>
+    <label><input type="checkbox" id="verifierMaj"> Signaler les nouvelles versions (pastille sur l'icône)</label>
+    <p id="version"></p>
   </section>
   <script src="popup.js"></script>
 </body>

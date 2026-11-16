@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "permissions": [
     "scripting",
     "activeTab",
-    "storage"
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
     "*://*.monbureaunumerique.fr/*"
@@ -78,5 +79,8 @@
       "run_at": "document_idle",
       "world": "MAIN"
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "arriere-plan.js"
+  }
 }

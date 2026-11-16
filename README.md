@@ -3,9 +3,13 @@
 Extension Chrome qui corrige et modernise l'affichage de Mon Bureau Numérique
 (`monbureaunumerique.fr`), pour un usage enseignant.
 
-Elle agit uniquement dans votre navigateur : elle ne transmet rien à l'extérieur
-et ne modifie aucune donnée de MBN. Elle ne coche rien et ne saisit rien à votre
-place.
+Elle agit uniquement dans votre navigateur : elle ne transmet aucune donnée à
+l'extérieur. Elle n'enregistre rien dans MBN de sa propre initiative : elle
+n'agit sur un formulaire que lorsque vous cliquez sur un de ses raccourcis.
+
+Sa seule requête vers l'extérieur est la lecture, deux fois par jour, du numéro
+de version publié dans ce dépôt, pour vous signaler une mise à jour. Cette
+vérification se désactive dans la fenêtre de l'extension.
 
 ## Ce qu'elle fait
 
@@ -35,7 +39,9 @@ Les couleurs de classe suivent une règle unique : une teinte par niveau
 
 ## Mise à jour
 
-Une extension installée de cette façon ne se met pas à jour toute seule.
+Une extension installée de cette façon ne se met pas à jour toute seule. Elle vous
+prévient en revanche quand une nouvelle version est publiée : une pastille « ↑ »
+apparaît sur son icône, et sa fenêtre rappelle la marche à suivre.
 
 1. Dans le dossier, récupérez la dernière version : `git pull`.
 2. Dans `chrome://extensions`, cliquez sur la flèche de rechargement de la carte « MBN modernisé ».
@@ -49,7 +55,8 @@ Un clic sur l'icône de l'extension ouvre ses réglages :
 - couleurs par classe ou par matière ;
 - bandeau de la messagerie sur une seule rangée ;
 - menu latéral réduit qui se déplie au survol ;
-- rechargement automatique et sa durée d'inactivité.
+- rechargement automatique et sa durée d'inactivité ;
+- signalement des nouvelles versions.
 
 Chaque réglage se désactive séparément si un écran s'affiche mal.
 
@@ -66,6 +73,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 |---|---|
 | `manifest.json` | déclaration de l'extension |
 | `popup.html`, `popup.js`, `capture.js` | fenêtre de réglages et capture anonymisée |
+| `arriere-plan.js` | vérifie deux fois par jour si une version plus récente est publiée |
 | `moderne.js` | applique les réglages d'apparence à chaque page |
 | `commun.css`, `infobulles.js`, `menu.*`, `rafraichissement.js` | correctifs communs à toutes les pages |
 | `couleurs-classes.js` | couleurs par niveau et par classe |
