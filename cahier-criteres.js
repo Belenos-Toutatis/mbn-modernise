@@ -57,7 +57,11 @@
 
     const barre = document.createElement('div');
     barre.className = 'mbn-raccourcis';
-    for (const [libelle, du, au] of periodes) {
+    for (const [libelle, duVoulu, auVoulu] of periodes) {
+      // période ramenée dans l'année scolaire, ou écartée si elle est dehors
+      const bornee = globalThis.mbnPeriodes.borner(duVoulu, auVoulu);
+      if (!bornee) continue;
+      const [du, au] = bornee;
       const bouton = document.createElement('button');
       bouton.type = 'button';
       bouton.textContent = libelle;
@@ -229,7 +233,7 @@
     mesurer();
   };
 
-  installerRaccourcis();
+  globalThis.mbnPeriodes.pret.then(installerRaccourcis);
   installerMemoire();
   installerFiltre();
 })();

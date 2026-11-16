@@ -68,3 +68,126 @@ html.mbn-moderne .scheduler__header--today {
 html.mbn-moderne .scheduler__header--today {
   box-shadow: inset 0 3px 0 #1d5fd1;
 }
+
+/* ==== Fenêtre de détail d'une séance (panneau de droite) ==== */
+
+/* Largeur : 480 px d'origine, quel que soit l'écran. Elle suit maintenant la
+   fenêtre, entre 480 et 736 px. */
+html.mbn-moderne .scheduler > .window--panel > .window__content--panel {
+  width: clamp(30rem, 42vw, 46rem) !important;
+  max-width: clamp(30rem, 42vw, 46rem) !important;
+  box-shadow: -8px 0 28px rgba(31, 41, 51, .2);
+}
+
+/* Bandeau du haut à la couleur de la classe (posée par agenda.js). */
+html.mbn-couleurs .scheduler > .window--panel[data-mbn-classe] .window__header > .divider {
+  height: 6px !important;
+  background-color: var(--mbn-classe-bord) !important;
+}
+html.mbn-couleurs .scheduler > .window--panel[data-mbn-classe] .window__header > .divider + .panel {
+  background-image: none !important;
+  background-color: var(--mbn-classe-pale) !important;
+}
+html.mbn-moderne .scheduler > .window--panel .window__header > .divider + .panel {
+  padding-top: 12px;
+  padding-bottom: 10px;
+}
+html.mbn-moderne .scheduler > .window--panel .window__header h1.p-like {
+  color: #1f2933 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+html.mbn-moderne .scheduler > .window--panel .window__header :is(.text--slate-dark, b, span) {
+  color: #1f2933;
+}
+
+/* Rubriques (à faire, contenu, à l'issue) : une carte chacune. */
+html.mbn-moderne .scheduler > .window--panel .window__body {
+  padding: 10px 12px 16px;
+  background: #f4f6f9;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body > .panel {
+  margin: 0 0 10px !important;
+  padding: 12px 14px !important;
+  border-top: 1px solid #e4e7eb;
+  border-right: 1px solid #e4e7eb;
+  border-bottom: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body > .divider {
+  display: none !important;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body h3 {
+  margin: 0 !important;
+  color: #1f2933;
+  font-size: 15px;
+  line-height: 1.6;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body .row--flex-auto {
+  align-items: center;
+  height: auto !important;
+  min-height: 0;
+  margin-bottom: 6px;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body .icon--lg {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+}
+html.mbn-moderne .scheduler > .window--panel .window__body h4 {
+  margin: 0 0 8px;
+  height: auto !important;
+  font-size: 13.5px;
+  line-height: 1.45 !important;
+}
+/* texte saisi : plus lisible */
+html.mbn-moderne .scheduler > .window--panel .wysiwyg {
+  color: #1f2933;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+html.mbn-moderne .scheduler > .window--panel .wysiwyg :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
+}
+html.mbn-moderne .scheduler > .window--panel .wysiwyg p {
+  margin: 0 0 8px;
+}
+html.mbn-moderne .scheduler > .window--panel .wysiwyg :is(ul, ol) {
+  margin: 0 0 8px;
+  padding-left: 22px !important;
+}
+html.mbn-moderne .scheduler > .window--panel .wysiwyg li {
+  margin-bottom: 3px;
+}
+html.mbn-moderne .scheduler > .window--panel .wysiwyg a {
+  color: #1d5fd1;
+  text-decoration: underline;
+}
+/* rubrique vide : une ligne discrète au lieu d'un grand pictogramme */
+html.mbn-moderne .scheduler > .window--panel .window__body .panel .panel:has(.empty-state) {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  background: transparent !important;
+}
+html.mbn-moderne .scheduler > .window--panel .empty-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left !important;
+}
+html.mbn-moderne .scheduler > .window--panel .empty-state__image {
+  flex: none;
+}
+html.mbn-moderne .scheduler > .window--panel .empty-state__image .icon--xl {
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  opacity: .6;
+}
+html.mbn-moderne .scheduler > .window--panel .empty-state__title {
+  margin: 0;
+  color: #7b8794;
+  text-align: left !important;
+}

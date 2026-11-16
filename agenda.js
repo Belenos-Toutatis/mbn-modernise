@@ -139,6 +139,39 @@
     }
   };
 
+  // ---- Fenêtre de détail d'une séance ----
+  // Le panneau qui s'ouvre au clic sur une séance prend la couleur de la
+  // classe de cette séance (bandeau du haut), d'après la carte cliquée.
+  const colorerFenetres = () => {
+    const actif = document.documentElement.classList.contains('mbn-couleurs');
+    for (const fenetre of document.querySelectorAll('.scheduler > .window--panel')) {
+      const carte = document.querySelector('.scheduler__card--focus .scheduler__card-title');
+      const ouverte = !fenetre.classList.contains('hide');
+      const couleur = actif && ouverte && carte ? pour(carte.textContent.replace(/\s+/g, ' ').trim()) : null;
+      const cle = couleur ? couleur.bord : '';
+      if ((fenetre.dataset.mbnClasse || '') === cle) continue;
+      if (!couleur) {
+        delete fenetre.dataset.mbnClasse;
+        for (const nom of ['pale', 'bord', 'fond']) fenetre.style.removeProperty('--mbn-classe-' + nom);
+        continue;
+      }
+      fenetre.dataset.mbnClasse = cle;
+      fenetre.style.setProperty('--mbn-classe-pale', couleur.pale);
+      fenetre.style.setProperty('--mbn-classe-bord', couleur.bord);
+      fenetre.style.setProperty('--mbn-classe-fond', couleur.fond);
+    }
+  };
+
+  // Échap referme la fenêtre de séance (sauf pendant une saisie).
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !document.documentElement.classList.contains('mbn-moderne')) return;
+    const cible = e.target;
+    if (cible instanceof Element && (cible.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName))) return;
+    const fenetre = document.querySelector('.scheduler > .window--panel:not(.hide)');
+    const fermer = fenetre && fenetre.querySelector('.js-window__close');
+    if (fermer && fermer.getClientRects().length) fermer.click();
+  });
+
   const planifier = () => {
     if (prevu) return;
     prevu = true;
@@ -148,10 +181,16 @@
         ajuster(grille);
         colorer(grille);
       });
+      colorerFenetres();
     });
   };
 
   planifier();
   window.addEventListener('resize', planifier);
   new MutationObserver(planifier).observe(document.documentElement, { childList: true, subtree: true });
+  // L'ouverture et la fermeture de la fenêtre de séance ne changent que des classes.
+  for (const fenetre of document.querySelectorAll('.scheduler > .window--panel')) {
+    new MutationObserver(planifier).observe(fenetre, { attributes: true, attributeFilter: ['class'] });
+  }
+  document.addEventListener('click', () => setTimeout(planifier, 150), true);
 })();

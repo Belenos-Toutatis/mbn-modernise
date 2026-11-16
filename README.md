@@ -64,6 +64,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `moderne.js` | applique les réglages d'apparence à chaque page |
 | `commun.css`, `infobulles.js`, `rafraichissement.js` | correctifs communs à toutes les pages |
 | `couleurs-classes.js` | couleurs par niveau et par classe |
+| `periodes.js` | bornes de l'année scolaire pour les périodes préréglées |
 | `messagerie.*`, `messagerie-moderne.css` | messagerie |
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
 | `agenda.*`, `cahier-*.js`, `cahier-liste.css` | cahier de textes |

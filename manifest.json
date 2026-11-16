@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.21.0",
+  "version": "0.23.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "permissions": [
     "scripting",
@@ -42,6 +42,7 @@
       ],
       "js": [
         "couleurs-classes.js",
+        "periodes.js",
         "content.js",
         "messagerie.js",
         "apercu-pdf.js",
