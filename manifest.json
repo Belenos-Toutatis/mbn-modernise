@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "permissions": [
     "scripting",

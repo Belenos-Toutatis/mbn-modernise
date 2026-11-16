@@ -31,3 +31,32 @@ html.mbn-menu-survol nav.menu.mbn-menu-deplie > ul.user {
     transition: none;
   }
 }
+
+/* Les icônes ne doivent pas bouger quand le menu se déplie. D'origine, le
+   menu déplié resserre les lignes (35 px d'une ligne à la suivante, contre
+   44 px en mode réduit) et les fait commencer 1 px plus haut : « Évaluations »,
+   huitième de la liste, remontait ainsi de 64 px sous la souris. En mode
+   survol, on garde donc le rythme du menu réduit : lignes de 40 px espacées
+   de 4 px, même point de départ. */
+html.mbn-menu-survol nav.menu.mbn-menu-deplie ul.services-shortcut {
+  position: relative;
+  top: 1px;
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px !important;
+  margin-bottom: 1px;
+}
+html.mbn-menu-survol nav.menu.mbn-menu-deplie ul.services-shortcut > li.services-shortcut__item {
+  flex: 0 0 auto;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+html.mbn-menu-survol nav.menu.mbn-menu-deplie ul.services-shortcut > li > :is(a, button) {
+  align-items: center;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
