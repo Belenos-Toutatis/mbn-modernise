@@ -1,0 +1,30 @@
+/* MBN modernisé — correctifs communs à toutes les pages MBN. */
+
+/* Infobulles de survol des anciennes pages (composant « yui-tt », utilisé
+   notamment dans la liste des évaluations) : MBN y écrit en blanc sur un fond
+   gris très clair, donc illisible. Fond sombre, texte blanc, sans transparence. */
+.yui-tt,
+.yui-tt .bd {
+  background-color: #1f2933 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+}
+.yui-tt {
+  border: 0 !important;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(31, 41, 51, .3);
+}
+.yui-tt .bd {
+  padding: 5px 9px !important;
+  border: 0 !important;
+  border-radius: 6px;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.yui-tt .bd * {
+  color: #fff !important;
+}
+.yui-tt .yui-tt-shadow,
+.yui-tt-shadow {
+  display: none !important;
+}

@@ -1,0 +1,217 @@
+/* MBN modernisé — apparence de la messagerie (première passe).
+   Tout est conditionné à la classe « mbn-moderne » posée sur <html> par
+   moderne.js : l'interrupteur de la fenêtre de l'extension la retire.
+   Règle de prudence : couleurs, arrondis et survols uniquement — aucune
+   taille ni marge n'est modifiée, pour ne pas dérégler la mise en page que
+   la messagerie calcule elle-même. */
+
+html.mbn-moderne {
+  --mbn-accent: #1d5fd1;
+  --mbn-survol: #eef4fd;
+  --mbn-trait: #e4e7eb;
+  --mbn-texte: #1f2933;
+  --mbn-texte-doux: #7b8794;
+}
+
+/* ---- Liste des messages ---- */
+html.mbn-moderne .DwtListView-Rows > li.Row {
+  border-bottom: 1px solid var(--mbn-trait);
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+/* survol, sauf sur la ligne sélectionnée qui garde sa couleur */
+html.mbn-moderne .DwtListView-Rows > li.Row:hover:not([class*="selected"]):not(:has(> [class*="selected"])) {
+  background-color: var(--mbn-survol) !important;
+}
+/* l'extrait du message, après l'objet, passe au second plan */
+html.mbn-moderne .DwtListView-Rows .ZmConvListFragment {
+  color: var(--mbn-texte-doux) !important;
+  font-weight: normal !important;
+}
+/* non lus : objet et expéditeur nettement plus marqués */
+html.mbn-moderne .DwtListView-Rows .Unread,
+html.mbn-moderne .DwtListView-Rows .Unread .ZmMsgListColFrom,
+html.mbn-moderne .DwtListView-Rows .Unread .ZmMsgListColSubject {
+  color: var(--mbn-texte) !important;
+  font-weight: 700 !important;
+}
+html.mbn-moderne .DwtListView-Rows .ZmMsgListColFolder,
+html.mbn-moderne .DwtListView-Rows .ZmMsgListColSize,
+html.mbn-moderne .DwtListView-Rows .ZmMsgListColDate {
+  color: var(--mbn-texte-doux);
+}
+
+/* ---- Titres de colonnes ---- */
+html.mbn-moderne .DwtListView-ColHeader {
+  border-bottom: 1px solid var(--mbn-trait);
+}
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column {
+  border-color: transparent !important;
+  transition: background-color .12s ease;
+}
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column:not(.DwtDefaultCursor):hover {
+  background-color: var(--mbn-survol) !important;
+}
+html.mbn-moderne .DwtListView-ColHeader .DwtListHeaderItem-label {
+  color: #52606d !important;
+  font-weight: 600 !important;
+}
+html.mbn-moderne .DwtListView-ColHeader .DwtListView-ColumnActive .DwtListHeaderItem-label {
+  color: var(--mbn-accent) !important;
+}
+
+/* ---- Barre d'outils ---- */
+html.mbn-moderne .ZToolbar .ZToolbarButton .ZToolbarButtonBorder {
+  border-radius: 6px !important;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+html.mbn-moderne .ZToolbar .ZToolbarButton:not(.ZDisabled):not(.ZNewButton) {
+  cursor: pointer;
+}
+html.mbn-moderne .ZToolbar .ZToolbarButton:not(.ZDisabled):not(.ZNewButton):hover .ZToolbarButtonBorder {
+  background-color: var(--mbn-survol) !important;
+  border-color: #c9d8f0 !important;
+}
+html.mbn-moderne .ZToolbar .ZToolbarButton.ZDisabled {
+  opacity: .5;
+}
+html.mbn-moderne .ZToolbar .ZNewButton .ZToolbarButtonBorder {
+  border-radius: 8px !important;
+}
+html.mbn-moderne .ZToolbar .vertSep {
+  opacity: .4;
+}
+
+/* ---- Arborescence des dossiers ---- */
+html.mbn-moderne .ZmOverview .DwtTreeItem {
+  border-radius: 6px;
+  transition: background-color .12s ease;
+}
+html.mbn-moderne .ZmOverview .DwtTreeItem:hover:not([class*="selected"]) {
+  background-color: var(--mbn-survol) !important;
+}
+
+/* ---- Barres de défilement fines ---- */
+html.mbn-moderne .DwtListView-Rows,
+html.mbn-moderne .ZmOverview,
+html.mbn-moderne .ZmMailMsgView {
+  scrollbar-width: thin;
+  scrollbar-color: #c5ccd3 transparent;
+}
+
+/* ==== Colonnes rééquilibrées ====
+   Largeurs d'origine : De 109, Dossier 51, Taille 49, Reçu 130 — les trois
+   premières coupaient leur contenu, la dernière était deux fois trop large.
+   L'objet (largeur automatique) prend la place restante ; les lignes suivent
+   les titres grâce à messagerie.js. */
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column[id$="__fr"] { width: 170px !important; }
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column[id$="__fo"] { width: 86px !important; }
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column[id$="__sz"] { width: 64px !important; }
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column[id$="__dt"] { width: 92px !important; }
+html.mbn-moderne .DwtListView-ColHeader td.DwtListView-Column:is([id$="__fr"], [id$="__fo"], [id$="__sz"], [id$="__dt"]) > div {
+  width: auto !important;
+}
+
+/* ==== Messages non lus adoucis ====
+   D'origine : fond bleu soutenu, ligne plus haute (42 px au lieu de 34) qui
+   chevauche ses voisines. Ici : même hauteur que les autres, fond bleu très
+   clair et barre d'accent à gauche. La ligne sélectionnée garde sa couleur. */
+html.mbn-moderne .DwtListView-Rows > li.Row:has(> .Unread) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.mbn-moderne .DwtListView-Rows > li.Row > .DwtMsgListMultiCol.Unread {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+html.mbn-moderne .DwtListView-Rows > li.Row:not([class*="selected"]) > .DwtMsgListMultiCol.Unread:not([class*="selected"]) {
+  background-color: #e7f1fd !important;
+  box-shadow: inset 4px 0 0 #1d5fd1;
+}
+html.mbn-moderne .DwtListView-Rows > li.Row:hover:not([class*="selected"]) > .DwtMsgListMultiCol.Unread:not([class*="selected"]) {
+  background-color: #d8e8fb !important;
+}
+
+/* ==== Liste en pleine hauteur tant qu'aucun message n'est ouvert ====
+   messagerie.js pose data-mbn-pleine sur la vue et --mbn-liste-haut sur la
+   liste quand le volet de lecture (placé en bas) est vide. */
+html.mbn-moderne [data-mbn-pleine] > .DwtListView {
+  height: 100% !important;
+}
+html.mbn-moderne [data-mbn-pleine] > .DwtListView .DwtListView-Rows {
+  height: var(--mbn-liste-haut) !important;
+}
+html.mbn-moderne [data-mbn-pleine] > :is(.ZmMailMsgView, .AppSash-vert) {
+  display: none !important;
+}
+
+/* ==== Bandeau du haut sur une seule rangée (option « Bandeau compact ») ====
+   D'origine : logo + recherche + compte sur 60 px, puis onglets sur 50 px.
+   Les cellules des deux rangées sont alignées sur une seule ligne de 46 px.
+   Seulement si la messagerie fait au moins 900 px de large. */
+@media (min-width: 900px) {
+  html.mbn-compact #skin_spacing_top_row table.skin_table {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  html.mbn-compact #skin_spacing_top_row table.skin_table > tbody {
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    height: 46px;
+  }
+  html.mbn-compact #skin_spacing_top_row table.skin_table > tbody > tr {
+    display: contents !important;
+  }
+  html.mbn-compact #skin_spacing_top_row table.skin_table > tbody > tr > td {
+    flex: none;
+    height: auto !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  html.mbn-compact #skin_spacing_logo { order: 1; }
+  html.mbn-compact #skin_spacing_app_row { order: 2; padding: 0 6px !important; background: transparent !important; }
+  html.mbn-compact #skin_spacing_search { order: 3; flex: 1 1 auto !important; min-width: 0; }
+  html.mbn-compact #skin_spacing_top_row table.skin_table > tbody > tr > td:not([id]) { order: 4; }
+  html.mbn-compact #skin_userAndQuota { order: 5; }
+  html.mbn-compact #skin_dropMenu { order: 6; }
+
+  html.mbn-compact :is(#skin_container_logo, #z_banner) {
+    height: 46px !important;
+  }
+  html.mbn-compact #skin_container_search {
+    max-width: 400px;
+    margin-left: 0 !important;
+  }
+  /* onglets Mail / Contacts / Préférences : largeur selon leur contenu */
+  html.mbn-compact #skin_spacing_app_row > table {
+    width: auto !important;
+    margin: 0 !important;
+  }
+  html.mbn-compact #skin_spacing_app_chooser {
+    width: auto !important;
+  }
+  html.mbn-compact #skin_container_app_chooser {
+    width: auto !important;
+    max-width: none !important;
+  }
+  html.mbn-compact #ztb_appChooser .ZToolbarTable {
+    width: auto !important;
+  }
+  html.mbn-compact #admin_link_container {
+    width: auto !important;
+    padding: 0 !important;
+  }
+  html.mbn-compact #ztb_appChooser .ZAppTab {
+    box-sizing: border-box;
+    height: 46px !important;
+  }
+}

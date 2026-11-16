@@ -1,0 +1,650 @@
+/* MBN modernisé — cahier de textes, vue en liste (ancien habillage de MBN).
+   Conditionné à la classe « mbn-moderne » sur <html>. */
+
+/* Éléments ajoutés par cahier-liste.js : invisibles si l'apparence
+   modernisée est désactivée. */
+html:not(.mbn-moderne) .mbn-bascule-criteres,
+html:not(.mbn-moderne) .mbn-index-cdt {
+  display: none !important;
+}
+
+/* ---- Liste des séances ---- */
+html.mbn-moderne .criteres_resultats_liste {
+  padding-right: 64px; /* place de l'index par mois */
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.5;
+}
+html.mbn-moderne .criteres_resultats_liste #titre_ecran {
+  margin: 12px 0 4px;
+}
+html.mbn-moderne .criteres_resultats_liste #titre_ecran h3 {
+  font-size: 18px;
+}
+html.mbn-moderne .criteres_resultats_liste #rappel_criteres {
+  font-size: 13px;
+  color: #7b8794;
+}
+
+/* En-tête de séance : bandeau qui reste collé sous la barre MBN (40 px)
+   pendant le défilement. */
+html.mbn-moderne .criteres_resultats_liste .jour {
+  position: sticky !important;
+  top: 40px;
+  z-index: 5;
+  margin: 22px 0 0 !important;
+  padding: 6px 0;
+  background: #fff;
+  scroll-margin-top: 46px;
+}
+html.mbn-moderne .criteres_resultats_liste .jour h3 {
+  display: block !important;
+  margin: 0;
+  padding: 8px 14px !important;
+  border-left: 4px solid #1d5fd1;
+  border-radius: 8px;
+  background: #eef2f8 !important;
+  font-size: 15px;
+  line-height: 1.4;
+}
+html.mbn-moderne .criteres_resultats_liste .jour h3 a.detail_seance {
+  color: #1f2933 !important;
+  font-size: inherit;
+  text-decoration: none;
+}
+html.mbn-moderne .criteres_resultats_liste .jour h3 a.detail_seance:hover {
+  text-decoration: underline;
+}
+
+/* Rubriques d'une séance : une carte chacune, une couleur par rubrique. */
+html.mbn-moderne .criteres_resultats_liste .seance_section {
+  margin: 8px 0 0 !important;
+  padding: 10px 14px 10px 0;
+  border: 1px solid #e4e7eb;
+  border-left: 4px solid #9aa5b1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section:has(> .seance_rendre) { border-left-color: #e8590c; }
+html.mbn-moderne .criteres_resultats_liste .seance_section:has(> .seance_contenu) { border-left-color: #1d5fd1; }
+html.mbn-moderne .criteres_resultats_liste .seance_section:has(> .seance_issue) { border-left-color: #2f9e44; }
+html.mbn-moderne .criteres_resultats_liste .seance_section .section_titre {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section h5 {
+  margin: 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #52606d;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section :is(p, li, td) {
+  font-size: 14px;
+}
+
+/* ---- Panneau de critères ---- */
+html.mbn-moderne .mbn-bascule-criteres {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 6px;
+  padding: 7px 12px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f2933;
+  font: 600 14px/1.3 inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-bascule-criteres:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne #selecteur_critere_periode.mbn-replie > :is(#filtres_criteres_contenu, .valider-formulaire) {
+  display: none !important;
+}
+html.mbn-moderne #selecteur_critere_periode #filtres_criteres_contenu {
+  padding: 16px !important;
+  border-radius: 8px;
+  background: #f7f9fb !important;
+  font-size: 14px;
+}
+html.mbn-moderne #selecteur_critere_periode fieldset {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+html.mbn-moderne #selecteur_critere_periode :is(legend, label, a) {
+  font-size: 14px;
+}
+html.mbn-moderne #selecteur_critere_periode .ligne_champs {
+  margin: 8px 0;
+}
+html.mbn-moderne #selecteur_critere_periode :is(select, input[type="text"]) {
+  height: auto !important;
+  padding: 5px 8px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.4;
+}
+html.mbn-moderne #selecteur_critere_periode input[type="text"] {
+  width: 110px;
+}
+html.mbn-moderne #selecteur_critere_periode .valider-formulaire {
+  margin: 10px 0;
+}
+html.mbn-moderne #selecteur_critere_periode .valider-formulaire input.submit {
+  height: auto !important;
+  padding: 7px 16px;
+  border: 1px solid #1d5fd1;
+  border-radius: 6px;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ---- Index par mois ---- */
+html.mbn-moderne .mbn-index-cdt {
+  position: fixed;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(31, 41, 51, .14);
+}
+html.mbn-moderne .mbn-index-cdt button {
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #3e4c59;
+  font: 12px/1.3 system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-index-cdt button:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne .mbn-index-cdt button.mbn-aujourdhui {
+  background: #1d5fd1;
+  color: #fff;
+  font-weight: 600;
+}
+@media print {
+  .mbn-index-cdt, .mbn-bascule-criteres { display: none !important; }
+}
+
+/* ==== Cahier de textes, vue « semaine en liste » (jour > séances) ==== */
+
+/* ---- Barre de navigation : semaine, flèches, jours ---- */
+html.mbn-moderne #navigation_cahier_texte {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  height: auto !important;
+  padding: 12px 16px !important;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f7f9fb !important;
+  font-size: 14px;
+}
+html.mbn-moderne #navigation_cahier_texte #selecteur_cdt_date {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+html.mbn-moderne #navigation_cahier_texte select {
+  height: auto !important;
+  padding: 5px 8px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.4;
+}
+/* flèches « semaine précédente / courante / suivante » : vraie zone de clic */
+html.mbn-moderne #navigation_cahier_texte :is(.selecteur_cdt_prev, .selecteur_cdt_semaine_courante, .selecteur_cdt_next) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff;
+}
+html.mbn-moderne #navigation_cahier_texte :is(.selecteur_cdt_prev, .selecteur_cdt_semaine_courante, .selecteur_cdt_next):hover {
+  background: #eef4fd;
+}
+/* choix du jour : boutons accolés, le jour actif en bleu */
+html.mbn-moderne #navigation_cahier_texte ul.selecteur_journee {
+  display: inline-flex !important;
+  height: auto !important;
+  margin: 0;
+  padding: 0 !important;
+}
+html.mbn-moderne #navigation_cahier_texte ul.selecteur_journee li {
+  float: none !important;
+  list-style: none;
+}
+html.mbn-moderne #navigation_cahier_texte a.button_select_jour {
+  display: block !important;
+  margin-left: -1px;
+  padding: 6px 12px !important;
+  border: 1px solid #c5ccd3;
+  border-radius: 0;
+  background: #fff !important;
+  color: #1f2933 !important;
+  font-size: 14px;
+  line-height: 1.3;
+  text-decoration: none;
+}
+html.mbn-moderne #navigation_cahier_texte li:first-child a.button_select_jour { border-radius: 6px 0 0 6px; }
+html.mbn-moderne #navigation_cahier_texte li:last-child a.button_select_jour { border-radius: 0 6px 6px 0; }
+html.mbn-moderne #navigation_cahier_texte a.button_select_jour:hover {
+  background: #eef4fd !important;
+}
+html.mbn-moderne #navigation_cahier_texte a.button_select_jour.button_toggle {
+  position: relative;
+  border-color: #1d5fd1;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+html.mbn-moderne #navigation_cahier_texte a.criteres_simples_avances {
+  position: static !important;
+  margin-left: auto;
+  font-size: 14px;
+}
+
+/* ---- En-tête de jour : bandeau collé sous la barre MBN ---- */
+html.mbn-moderne .cahier_texte > .jour {
+  position: sticky !important;
+  top: 40px;
+  z-index: 5;
+  margin: 22px 0 0 !important;
+  padding: 6px 0;
+  background: #fff;
+  scroll-margin-top: 46px;
+}
+html.mbn-moderne .cahier_texte > .jour > h3 {
+  display: block !important;
+  margin: 0;
+  padding: 8px 14px !important;
+  border-radius: 8px;
+  background: #222858 !important;
+  color: #fff !important;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* ---- Séance : un en-tête et son contenu forment une carte ---- */
+html.mbn-moderne .seancejour > .seance_deco {
+  margin-top: 10px;
+  border: 1px solid #e4e7eb;
+  border-left: 5px solid #9aa5b1;
+  border-radius: 8px 8px 0 0;
+  background: #f7f9fb;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 {
+  background: transparent !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 40px;
+  height: auto !important;
+  margin: 0;
+  padding: 6px 220px 6px 14px !important;
+  font-size: 14px;
+  line-height: 1.4;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 .seance_heure {
+  float: none !important;
+  width: auto !important;
+  min-width: 96px;
+  color: #52606d;
+  font-size: 14px;
+  font-weight: 600;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 > a {
+  color: #1f2933 !important;
+  font-size: 15px;
+  text-decoration: none;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 > a:hover {
+  text-decoration: underline;
+}
+/* boutons « Compléter la séance » et menu d'actions */
+html.mbn-moderne .seancejour > .seance_deco .completer_seance {
+  top: 50% !important;
+  right: 8px !important;
+  left: auto !important;
+  transform: translateY(-50%);
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  width: auto !important;
+  padding: 0 !important;
+}
+html.mbn-moderne .seancejour > .seance_deco .completer_seance a.button {
+  position: static !important;
+  padding: 5px 10px !important;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff !important;
+  color: #1f2933 !important;
+  font-size: 13px;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+}
+html.mbn-moderne .seancejour > .seance_deco .completer_seance img.button {
+  position: static !important;
+  box-sizing: content-box;
+  padding: 5px 7px !important;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff !important;
+  cursor: pointer;
+}
+html.mbn-moderne .seancejour > .seance_deco .completer_seance :is(a.button, img.button):hover {
+  background: #eef4fd !important;
+}
+html.mbn-moderne .seancejour > .seancejour_detail {
+  margin: 0;
+  padding: 8px 24px 10px 110px !important;
+  border: 1px solid #e4e7eb;
+  border-top: 0;
+  border-left: 5px solid #9aa5b1;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+  color: #1f2933;
+  font-size: 14px;
+  line-height: 1.5;
+}
+html.mbn-moderne .seancejour > .seancejour_detail:empty {
+  padding-top: 0 !important;
+  padding-bottom: 6px !important;
+}
+html.mbn-moderne .seancejour > .seancejour_detail > div {
+  margin: 4px 0 8px;
+}
+html.mbn-moderne .seancejour > .seancejour_detail h5 {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+html.mbn-moderne .seancejour > .seancejour_detail .seance_rendre h5 { color: #c2410c; }
+html.mbn-moderne .seancejour > .seancejour_detail .seance_contenu h5 { color: #1d5fd1; }
+html.mbn-moderne .seancejour > .seancejour_detail .seance_issue h5 { color: #2b8a3e; }
+html.mbn-moderne .seancejour > .seancejour_detail :is(li, p, td) {
+  font-size: 14px;
+}
+
+/* ---- Couleur de la classe sur chaque séance (option « Couleurs ») ----
+   cahier-liste.js pose data-mbn-classe et les variables --mbn-classe-*. */
+html.mbn-couleurs .seancejour > .seance_deco[data-mbn-classe] {
+  border-left-color: var(--mbn-classe-bord);
+  background: var(--mbn-classe-pale);
+}
+html.mbn-couleurs .seancejour > .seancejour_detail[data-mbn-classe] {
+  border-left-color: var(--mbn-classe-bord);
+}
+html.mbn-couleurs .mbn-pastille-classe {
+  display: inline-block;
+  padding: 1px 10px;
+  border-radius: 12px;
+  background: var(--mbn-classe-fond);
+  color: var(--mbn-classe-texte, #10151c);
+  font-size: 13px;
+  font-weight: 700;
+}
+html:not(.mbn-couleurs) .mbn-pastille-classe {
+  display: none;
+}
+html.mbn-couleurs .criteres_resultats_liste .jour[data-mbn-classe] h3 {
+  border-left-color: var(--mbn-classe-bord);
+  background: var(--mbn-classe-pale) !important;
+}
+
+/* ==== Densité : affichage resserré (les règles ci-dessus étaient trop grosses) ==== */
+
+/* barre de navigation */
+html.mbn-moderne #navigation_cahier_texte {
+  gap: 6px 10px;
+  padding: 6px 10px !important;
+  font-size: 12px;
+}
+html.mbn-moderne #navigation_cahier_texte select {
+  padding: 3px 6px;
+  font-size: 12px;
+}
+html.mbn-moderne #navigation_cahier_texte :is(.selecteur_cdt_prev, .selecteur_cdt_semaine_courante, .selecteur_cdt_next) {
+  min-width: 26px;
+  height: 26px;
+}
+html.mbn-moderne #navigation_cahier_texte a.button_select_jour {
+  padding: 3px 9px !important;
+  font-size: 12px;
+}
+html.mbn-moderne #navigation_cahier_texte a.criteres_simples_avances {
+  font-size: 12px;
+}
+
+/* bandeaux de jour */
+html.mbn-moderne .cahier_texte > .jour {
+  margin: 10px 0 0 !important;
+  padding: 3px 0;
+}
+html.mbn-moderne .cahier_texte > .jour > h3 {
+  padding: 3px 10px !important;
+  font-size: 12.5px;
+}
+
+/* séances de la vue semaine */
+html.mbn-moderne .seancejour > .seance_deco {
+  margin-top: 4px;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 {
+  min-height: 27px;
+  padding: 2px 200px 2px 10px !important;
+  font-size: 12px;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 .seance_heure {
+  min-width: 80px;
+  font-size: 12px;
+}
+html.mbn-moderne .seancejour > .seance_deco h4 > a {
+  font-size: 12.5px;
+}
+html.mbn-moderne .seancejour > .seance_deco .completer_seance a.button {
+  padding: 2px 7px !important;
+  font-size: 11.5px;
+}
+html.mbn-moderne .seancejour > .seance_deco .completer_seance img.button {
+  padding: 3px 6px !important;
+}
+html.mbn-moderne .seancejour > .seancejour_detail {
+  padding: 3px 16px 4px 96px !important;
+  font-size: 12px;
+  line-height: 1.35;
+}
+html.mbn-moderne .seancejour > .seancejour_detail > div {
+  margin: 2px 0 5px;
+}
+html.mbn-moderne .seancejour > .seancejour_detail h5 {
+  font-size: 11px;
+}
+html.mbn-moderne .seancejour > .seancejour_detail :is(li, p, td) {
+  font-size: 12px;
+}
+html.mbn-couleurs .mbn-pastille-classe {
+  padding: 0 8px;
+  font-size: 11.5px;
+}
+
+/* vue en liste sur une période */
+html.mbn-moderne .criteres_resultats_liste {
+  font-size: 12px;
+  line-height: 1.35;
+}
+html.mbn-moderne .criteres_resultats_liste #titre_ecran h3 {
+  font-size: 15px;
+}
+html.mbn-moderne .criteres_resultats_liste .jour h3 {
+  padding: 3px 10px !important;
+  font-size: 12.5px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section {
+  margin: 4px 0 0 !important;
+  padding: 4px 10px 4px 0;
+  font-size: 12px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section .section_titre {
+  font-size: 12px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section h5 {
+  margin: 4px 0;
+  font-size: 11.5px;
+}
+html.mbn-moderne .criteres_resultats_liste .seance_section :is(p, li, td) {
+  font-size: 12px;
+}
+
+/* ==== Critères de recherche : raccourcis de période et filtre instantané ==== */
+html:not(.mbn-moderne) :is(.mbn-raccourcis, .mbn-filtre-cdt) {
+  display: none !important;
+}
+html.mbn-moderne .mbn-masque {
+  display: none !important;
+}
+
+/* raccourcis de période, à côté du bouton « Critères de recherche » */
+html.mbn-moderne .mbn-raccourcis {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 6px 10px;
+  vertical-align: middle;
+}
+html.mbn-moderne .mbn-raccourcis button {
+  padding: 4px 10px;
+  border: 1px solid #c5ccd3;
+  border-radius: 14px;
+  background: #fff;
+  color: #1f2933;
+  font: 12px/1.3 inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-raccourcis button:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne .mbn-raccourcis button.mbn-actif {
+  border-color: #1d5fd1;
+  background: #1d5fd1;
+  color: #fff;
+  font-weight: 600;
+}
+html.mbn-moderne .mbn-bascule-criteres {
+  margin: 8px 0 6px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+}
+
+/* filtre instantané : barre collée sous la barre MBN */
+html.mbn-moderne .mbn-filtre-cdt {
+  position: sticky;
+  top: 40px;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 6px;
+  margin: 6px 0 0;
+  padding: 6px 0;
+  background: #fff;
+  border-bottom: 1px solid #e4e7eb;
+}
+html.mbn-moderne .mbn-filtre-cdt input[type="search"] {
+  width: 220px;
+  padding: 4px 8px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f2933;
+  font: 12.5px/1.3 inherit;
+  font-family: inherit;
+}
+html.mbn-moderne .mbn-filtre-classe {
+  padding: 2px 9px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--mbn-classe-fond, #e4e7eb);
+  color: var(--mbn-classe-texte, #10151c);
+  font: 700 12px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-filtre-classe[aria-pressed="true"] {
+  border-color: var(--mbn-classe-bord, #3e4c59);
+  box-shadow: 0 0 0 1px var(--mbn-classe-bord, #3e4c59);
+}
+/* dès qu'une classe est choisie, les autres pastilles s'estompent */
+html.mbn-moderne .mbn-filtre-actif .mbn-filtre-classe[aria-pressed="false"] {
+  opacity: .4;
+}
+html.mbn-moderne .mbn-filtre-compteur {
+  margin-left: auto;
+  color: #52606d;
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* les en-têtes de séance se collent sous la barre de filtre */
+html.mbn-moderne .cahier_texte.criteres_resultats_liste > .jour {
+  top: calc(40px + var(--mbn-haut-filtre, 0px));
+  scroll-margin-top: calc(46px + var(--mbn-haut-filtre, 0px));
+}
+@media print {
+  .mbn-raccourcis, .mbn-filtre-cdt { display: none !important; }
+  .mbn-masque { display: revert !important; }
+}
+
+/* ==== Lisibilité des en-têtes de séance, vue en liste sur une période ====
+   Le bandeau bleu nuit des jours (vue semaine) s'appliquait ici aussi, sous
+   un lien forcé en couleur sombre : texte illisible. Dans cette vue, l'en-tête
+   garde un fond clair et un texte sombre, sur toute la largeur. */
+html.mbn-moderne .cahier_texte.criteres_resultats_liste > .jour > h3 {
+  width: auto !important;
+  max-width: none !important;
+  border-left: 4px solid #1d5fd1;
+  background: #eef2f8 !important;
+  color: #1f2933 !important;
+}
+html.mbn-moderne .cahier_texte.criteres_resultats_liste > .jour > h3 :is(a, span) {
+  color: #1f2933 !important;
+}
+html.mbn-couleurs .cahier_texte.criteres_resultats_liste > .jour[data-mbn-classe] > h3 {
+  border-left-color: var(--mbn-classe-bord);
+  background: var(--mbn-classe-pale) !important;
+}
+/* Partout ailleurs, un lien dans un bandeau de jour prend la couleur du bandeau. */
+html.mbn-moderne .cahier_texte:not(.criteres_resultats_liste) > .jour > h3 a {
+  color: inherit !important;
+}

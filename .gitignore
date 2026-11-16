@@ -1,0 +1,16 @@
+# Captures de structure produites par l'extension : elles ne contiennent pas
+# de texte des pages, mais n'ont rien à faire dans le dépôt.
+capture-mbn-*.txt
+captures/
+
+# Extension empaquetée et clé de signature
+*.crx
+*.pem
+*.zip
+
+# Outils et fichiers locaux
+.claude/
+.vscode/
+.idea/
+*~
+.DS_Store

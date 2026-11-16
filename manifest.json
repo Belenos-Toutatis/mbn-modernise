@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "MBN modernisé",
+  "version": "0.21.0",
+  "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.monbureaunumerique.fr/*"
+  ],
+  "action": {
+    "default_title": "MBN modernisé",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.monbureaunumerique.fr/*"
+      ],
+      "css": [
+        "commun.css",
+        "messagerie.css",
+        "messagerie-moderne.css",
+        "apercu-pdf.css",
+        "agenda-moderne.css",
+        "cahier-liste.css",
+        "devoirs.css",
+        "appels.css"
+      ],
+      "all_frames": true,
+      "run_at": "document_start",
+      "js": [
+        "moderne.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://*.monbureaunumerique.fr/*"
+      ],
+      "js": [
+        "couleurs-classes.js",
+        "content.js",
+        "messagerie.js",
+        "apercu-pdf.js",
+        "agenda.js",
+        "cahier-liste.js",
+        "cahier-criteres.js",
+        "cahier-choix.js",
+        "devoirs.js",
+        "appels.js",
+        "rafraichissement.js",
+        "infobulles.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ]
+}

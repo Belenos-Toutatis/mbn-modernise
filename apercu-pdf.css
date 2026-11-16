@@ -1,0 +1,51 @@
+/* MBN modernisé — aperçus PDF (visionneuse intégrée de MBN, « .pdf-viewer »). */
+
+/* MBN plafonne la zone de l'aperçu à 640 px de haut, quelle que soit la
+   fenêtre. Hors fenêtre modale, on lui donne presque toute la hauteur. */
+.pdf-viewer__content {
+  max-height: calc(100vh - 140px) !important;
+}
+
+/* Dans une fenêtre modale : la fenêtre occupe toute la hauteur disponible
+   et l'aperçu remplit ce qui reste sous le titre et la barre de zoom. */
+.window__content:has(.pdf-viewer) {
+  /* Largeur : au moins 960 px, et davantage sur un écran haut (portrait), pour
+     qu'une page A4 agrandie à toute la hauteur tienne en largeur (rapport
+     largeur/hauteur d'une page A4 : 0,707). Jamais plus de 96 % de la fenêtre. */
+  width: min(96%, max(960px, calc((100vh - 226px) * 0.707 + 50px))) !important;
+  max-width: 96% !important;
+  max-height: calc(100vh - 96px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+/* Écran portrait : c'est la largeur qui limite la taille de la page (une page
+   A4 garde son rapport largeur/hauteur). On donne donc à l'aperçu toute la
+   largeur de la fenêtre. */
+@media (orientation: portrait) {
+  .window__content:has(.pdf-viewer) {
+    width: calc(100% - 16px) !important;
+    max-width: calc(100% - 16px) !important;
+  }
+  .window__content:has(.pdf-viewer) .pdf-viewer__content {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+}
+.window__content:has(.pdf-viewer) > .window__header {
+  flex: none;
+}
+.window__content:has(.pdf-viewer) > .window__body,
+.window__content:has(.pdf-viewer) .pdf-viewer {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.window__content:has(.pdf-viewer) .pdf-viewer__toybox {
+  flex: none;
+}
+.window__content:has(.pdf-viewer) .pdf-viewer__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+}

@@ -1,0 +1,338 @@
+/* MBN modernisé — appel du jour et historique des appels. */
+
+html:not(.mbn-moderne) .mbn-bilan-appel {
+  display: none !important;
+}
+
+/* ==== Tableaux des deux pages ==== */
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) table {
+  width: 100% !important;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  border-spacing: 0;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) :is(th, td) {
+  border: 0 !important;
+  border-bottom: 1px solid #e4e7eb !important;
+  font-size: 12.5px;
+  vertical-align: middle;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) thead tr {
+  background: #f1f4f8 !important;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) thead th {
+  background: #f1f4f8 !important;
+  color: #3e4c59;
+  font-weight: 600;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) thead th a {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) thead th:is(.yui-dt-asc, .yui-dt-desc) {
+  color: #1d5fd1;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) tbody td .yui-dt-liner {
+  font-size: 12.5px;
+}
+html.mbn-moderne :is(#grille_appel, #grille_histo_appel) tbody tr:hover > td {
+  background-color: #eef4fd;
+}
+
+/* ==== Appel du jour ==== */
+
+/* Message d'état en haut de page */
+html.mbn-moderne #kui_messages .msg-alerte {
+  padding: 6px 14px !important;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* Fenêtre étroite ou écran portrait : la liste des séances passe au-dessus,
+   en vignettes, et la feuille d'appel prend toute la largeur. D'origine, la
+   feuille (816 px) dépassait de sa zone (687 px) et ses dernières colonnes
+   sortaient de l'écran. */
+@media (max-width: 1500px) {
+  html.mbn-moderne .menu-seances {
+    float: none !important;
+    width: auto !important;
+    padding-right: 0 !important;
+  }
+  html.mbn-moderne .menu-seances ~ .w-70 {
+    float: none !important;
+    clear: both;
+    width: auto !important;
+  }
+  html.mbn-moderne .menu-seances > ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 10px;
+    padding-left: 0 !important;
+  }
+  html.mbn-moderne .menu-seances > ul > li {
+    display: block !important;
+    list-style: none;
+  }
+  html.mbn-moderne .menu-seances a.absences-menu-cal {
+    width: 236px;
+  }
+  html.mbn-moderne .menu-seances .appel_du_jour_menu_titre {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+}
+
+/* Vignette d'une séance */
+html.mbn-moderne .menu-seances .appel_du_jour_menu_titre {
+  font-size: 13px;
+}
+html.mbn-moderne .menu-seances a.absences-menu-cal {
+  box-sizing: border-box;
+  border: 1px solid #e4e7eb;
+  border-left: 5px solid #9aa5b1;
+  border-radius: 8px;
+  background: #fff !important;
+  color: #1f2933 !important;
+  text-decoration: none;
+  transition: box-shadow .12s ease;
+}
+html.mbn-moderne .menu-seances > ul > li {
+  margin-bottom: 4px;
+}
+html.mbn-moderne .menu-seances a.absences-menu-cal:hover {
+  box-shadow: 0 2px 8px rgba(31, 41, 51, .22);
+}
+html.mbn-moderne .menu-seances a.absences-menu-cal :is(.libSeance, .libClasse) {
+  width: auto !important;
+  right: 28px;
+}
+html.mbn-moderne .menu-seances a.absences-menu-cal .imgValide {
+  left: auto !important;
+  right: 6px;
+}
+html.mbn-moderne .menu-seances a.absences-menu-cal .libClasse {
+  font-weight: 700;
+}
+html.mbn-couleurs .menu-seances a.absences-menu-cal[data-mbn-classe] {
+  border-left-color: var(--mbn-classe-bord);
+  background: var(--mbn-classe-pale) !important;
+}
+/* séance affichée (le nom exact de la classe d'état n'est pas connu) */
+html.mbn-moderne .menu-seances :is(li, a.absences-menu-cal):is([class*="select"], [class*="actif"], [class*="active"], [class*="courant"], [class*="current"]) {
+  outline: 2px solid #1d5fd1;
+  outline-offset: 1px;
+  border-radius: 8px;
+}
+
+/* Bilan de l'appel, ajouté par appels.js au-dessus de la feuille */
+html.mbn-moderne .mbn-bilan-appel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+html.mbn-moderne .mbn-bilan-appel span {
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: #eef2f8;
+  color: #1f2933;
+  font: 600 12.5px/1.4 system-ui, sans-serif;
+}
+html.mbn-moderne .mbn-bilan-appel span b {
+  font-weight: 800;
+}
+html.mbn-moderne .mbn-bilan-appel .mbn-presents { background: #e3f6e8; color: #1e6b31; }
+html.mbn-moderne .mbn-bilan-appel .mbn-absents { background: #fde3e3; color: #a51d1d; }
+html.mbn-moderne .mbn-bilan-appel .mbn-retards,
+html.mbn-moderne .mbn-bilan-appel .mbn-departs { background: #fff0db; color: #a3470c; }
+html.mbn-moderne .mbn-bilan-appel .mbn-nul { opacity: .55; }
+
+/* Feuille d'appel : colonnes à la largeur de leur contenu, titres sur deux
+   lignes si besoin, pour tenir dans la page. */
+html.mbn-moderne #grille_appel :is(th, td) {
+  width: auto !important;
+}
+html.mbn-moderne #grille_appel .yui-dt-col-nom {
+  width: 24% !important;
+}
+html.mbn-moderne #grille_appel thead .yui-dt-liner {
+  padding: 6px 6px !important;
+  white-space: normal !important;
+  line-height: 1.25;
+}
+html.mbn-moderne #grille_appel tbody td.yui-dt-col-nom .yui-dt-liner {
+  color: #1f2933;
+  font-size: 13px;
+  font-weight: 600;
+}
+/* boutons de saisie */
+html.mbn-moderne #grille_appel tbody td button {
+  border: 1px solid #d5dbe1;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+html.mbn-moderne #grille_appel tbody td button:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+/* état coché, lisible d'un coup d'œil : vert présent, rouge absent,
+   orange retard ou départ, gris-bleu dispensé */
+html.mbn-moderne #grille_appel tbody td.yui-dt-col-present:has(.icon--check) :is(button, .yui-dt-liner > span.icon--check) {
+  border-color: #8fd19e;
+  background-color: #e3f6e8;
+}
+html.mbn-moderne #grille_appel tbody td.yui-dt-col-absent:has(.icon--check) {
+  background-color: #fde3e3 !important;
+}
+html.mbn-moderne #grille_appel tbody td.yui-dt-col-absent:has(.icon--check) button {
+  border-color: #e59a9a;
+  background-color: #fbcfcf;
+}
+html.mbn-moderne #grille_appel tbody td:is(.yui-dt-col-retard, .yui-dt-col-depart):has(.icon--check) {
+  background-color: #fff0db !important;
+}
+html.mbn-moderne #grille_appel tbody td:is(.yui-dt-col-retard, .yui-dt-col-depart):has(.icon--check) button {
+  border-color: #f0b878;
+  background-color: #ffe2bd;
+}
+html.mbn-moderne #grille_appel tbody td.yui-dt-col-dispense:has(.icon--check) {
+  background-color: #e8edf5 !important;
+}
+/* élève dont la saisie est désactivée (absence déjà connue, dispense…) */
+html.mbn-moderne #grille_appel tbody tr.ligneDesactivee > td {
+  background-color: #f6f7f9;
+}
+html.mbn-moderne #grille_appel tbody tr.ligneDesactivee > td.yui-dt-col-nom .yui-dt-liner {
+  color: #52606d;
+}
+html.mbn-moderne #FORM_FEUILLE_APPEL .fieldset {
+  margin-top: 12px;
+  padding: 8px 12px !important;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f7f9fb !important;
+  font-size: 12.5px;
+}
+
+/* ==== Historique des appels ==== */
+html.mbn-moderne #filtre_absences {
+  padding: 8px 14px 10px !important;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f7f9fb !important;
+  font-size: 12.5px;
+}
+html.mbn-moderne #filtre_absences > div {
+  margin: 5px 0;
+  height: auto !important;
+}
+html.mbn-moderne #filtre_absences :is(legend, label) {
+  font-size: 12.5px;
+}
+html.mbn-moderne #filtre_absences :is(select, input[type="text"]) {
+  box-sizing: border-box;
+  height: 24px !important;
+  padding: 2px 6px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 12.5px;
+}
+html.mbn-moderne #filtre_absences input[type="submit"] {
+  height: auto !important;
+  padding: 5px 14px !important;
+  border: 1px solid #1d5fd1;
+  border-radius: 6px;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+html.mbn-moderne #filtre_absences .mbn-raccourcis {
+  display: flex;
+  margin: 2px 0 6px;
+}
+
+/* chiffres clés */
+html.mbn-moderne .zone-stat {
+  margin: 10px 0;
+  padding: 8px 14px;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+html.mbn-moderne .zone-stat .titre-stat {
+  margin-bottom: 4px;
+  color: #52606d;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+html.mbn-moderne .zone-stat p {
+  margin: 0;
+}
+html.mbn-moderne .zone-stat .stat-val {
+  margin-left: 18px;
+  color: #1d5fd1;
+  font-size: 18px;
+  font-weight: 700;
+}
+html.mbn-moderne .zone-stat .stat-val:first-child {
+  margin-left: 0;
+}
+html.mbn-moderne .zone-stat .stat-lib {
+  color: #52606d;
+  font-size: 12.5px;
+}
+
+/* tableau de l'historique : classe en couleur, appel saisi ou non en pastille */
+html.mbn-couleurs #grille_histo_appel tbody tr[data-mbn-classe] > td {
+  background-color: var(--mbn-classe-pale) !important;
+}
+html.mbn-couleurs #grille_histo_appel tbody tr[data-mbn-classe] > td:first-child {
+  box-shadow: inset 5px 0 0 var(--mbn-classe-bord);
+}
+html.mbn-couleurs #grille_histo_appel tbody tr[data-mbn-classe] > td.yui-dt-col-libClasse .yui-dt-liner {
+  display: inline-block !important;
+  margin-left: 12px;
+  padding: 1px 9px !important;
+  border-radius: 12px;
+  background-color: var(--mbn-classe-fond);
+  color: var(--mbn-classe-texte, #1f2933) !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+html.mbn-couleurs #grille_histo_appel tbody tr[data-mbn-classe]:hover > td {
+  filter: brightness(.96);
+}
+html.mbn-moderne #grille_histo_appel tbody tr[data-mbn-saisi] > td.yui-dt-col-appelSaisi .yui-dt-liner {
+  display: inline-block !important;
+  margin-left: 8px;
+  padding: 1px 10px !important;
+  border-radius: 12px;
+  font-weight: 700;
+}
+html.mbn-moderne #grille_histo_appel tbody tr[data-mbn-saisi="oui"] > td.yui-dt-col-appelSaisi .yui-dt-liner {
+  background: #e3f6e8;
+  color: #1e6b31;
+}
+html.mbn-moderne #grille_histo_appel tbody tr[data-mbn-saisi="non"] > td.yui-dt-col-appelSaisi .yui-dt-liner {
+  background: #fbcfcf;
+  color: #a51d1d;
+}
+html.mbn-moderne #grille_histo_appel td.yui-dt-col-actionsAppel a {
+  display: inline-block;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 0;
+}
+html.mbn-moderne #grille_histo_appel td.yui-dt-col-actionsAppel a:hover {
+  background: rgba(31, 41, 51, .12);
+}

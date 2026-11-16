@@ -1,0 +1,99 @@
+/* MBN modernisé — messagerie (Zimbra intégré à MBN). */
+
+/* 1. Page MBN : le cadre de la messagerie impose 1024 px de large au minimum.
+      Sur une fenêtre plus étroite, sa partie droite (colonne « Reçu »…) part
+      hors de l'écran. On le laisse épouser la largeur disponible. */
+iframe.iframe-zimbra {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: block !important;
+}
+.u-overflow-auto:has(> iframe.iframe-zimbra) {
+  overflow: hidden !important;
+}
+
+/* 2. Liste des messages : chaque ligne reprend exactement les largeurs des
+      titres de colonnes, mesurées par messagerie.js (--mbn-colonnes). */
+.DwtListView-Rows[data-mbn-aligne] > li {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol {
+  display: grid !important;
+  grid-template-columns: var(--mbn-colonnes);
+  padding-left: var(--mbn-decalage, 0px) !important;
+  column-gap: 0;
+}
+/* Chaque cellule est placée explicitement sur l'unique rangée : un éventuel
+   décor (::before / ::after) ne peut ni décaler les colonnes ni créer une
+   seconde rangée qui déborderait sur le message suivant. */
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div { grid-row: 1; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(1) { grid-column: 1; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(2) { grid-column: 2; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(3) { grid-column: 3; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(4) { grid-column: 4; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(5) { grid-column: 5; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(6) { grid-column: 6; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(7) { grid-column: 7; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(8) { grid-column: 8; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(9) { grid-column: 9; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(10) { grid-column: 10; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(11) { grid-column: 11; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(12) { grid-column: 12; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(13) { grid-column: 13; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(14) { grid-column: 14; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(15) { grid-column: 15; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div:nth-child(16) { grid-column: 16; }
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol::before,
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol::after {
+  grid-row: 1;
+  grid-column: 1 / -1;
+}
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > div {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  /* colonnes d'icônes : icône centrée, sans marge latérale qui la rognerait.
+     Les marges verticales d'origine sont conservées : la hauteur des lignes
+     ne doit pas changer, sinon le surlignement des non lus déborde. */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  text-align: center !important;
+}
+/* colonnes de texte : le texte démarre à l'aplomb du titre de colonne */
+.DwtListView-Rows[data-mbn-aligne] .DwtMsgListMultiCol > :is(
+  .ZmMsgListColFrom, .ZmMsgListColSubject, .ZmMsgListColFolder,
+  .ZmMsgListColSize, .ZmMsgListColDate) {
+  padding-left: 18px !important;
+  padding-right: 4px !important;
+  text-align: left !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 3. Barre d'outils : quand elle dépasse la largeur disponible, messagerie.js
+      la resserre par étapes (data-mbn-barre = 1 puis 2). */
+.ZToolbar[data-mbn-barre] .ZToolbarButton {
+  margin-left: 0 !important;
+}
+.ZToolbar[data-mbn-barre] .ZToolbarButton.ZHasText:not(.ZHasLeftIcon) .ZLeftIcon {
+  padding-left: 0 !important;
+}
+.ZToolbar[data-mbn-barre] .ZToolbarButton .ZWidgetTitle:not(:empty) {
+  padding-left: 3px !important;
+  padding-right: 3px !important;
+}
+.ZToolbar[data-mbn-barre] .ZToolbarButton .ZDropDown {
+  padding-right: 2px !important;
+}
+.ZToolbar[data-mbn-barre] .vertSep {
+  margin-left: 0 !important;
+  padding-right: 0 !important;
+}
+/* étape 2 : le compteur de messages (purement informatif) est masqué */
+.ZToolbar[data-mbn-barre="2"] .itemCountText {
+  display: none !important;
+}
