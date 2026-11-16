@@ -1,0 +1,330 @@
+/* MBN modernisé — page « Copier vers » du cahier de textes (copie du contenu
+   d'une séance vers d'autres séances). Page de l'ancienne génération de MBN :
+   texte de 11 px, champs de 17 px de haut, tout collé à gauche sur un écran
+   large. */
+
+html.mbn-moderne .cahier_texte:has(#copier_vers) {
+  max-width: 980px;
+  margin: 0 auto;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+html.mbn-moderne .cahier_texte:has(#copier_vers) #seance_date {
+  font-size: 15px;
+}
+html.mbn-moderne .cahier_texte:has(#copier_vers) #seance_date time {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Les deux blocs (quoi copier, vers où) en cartes */
+html.mbn-moderne form.gestion:has(#copier_vers) fieldset {
+  margin: 0 0 14px;
+  padding: 14px 16px 16px;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+html.mbn-moderne form.gestion:has(#copier_vers) legend {
+  padding: 0 6px;
+  color: #1f2933;
+  font-size: 15px;
+}
+
+/* ---- Contenus à copier : lignes cliquables ---- */
+html.mbn-moderne #activite_seance_copie_vers ul.contenuseance {
+  margin: 0;
+}
+html.mbn-moderne #activite_seance_copie_vers li.seance_contenu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: auto;
+  padding: 7px 10px;
+  border-radius: 6px;
+}
+html.mbn-moderne #activite_seance_copie_vers li.seance_contenu:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne #activite_seance_copie_vers li.seance_contenu:has(input:checked) {
+  background: #e7f1fd;
+  box-shadow: inset 3px 0 0 #1d5fd1;
+}
+html.mbn-moderne #activite_seance_copie_vers li.seance_contenu > input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: #1d5fd1;
+  cursor: pointer;
+}
+html.mbn-moderne #activite_seance_copie_vers li.seance_contenu > label {
+  flex: 1 1 auto;
+  float: none;
+  width: auto;
+  min-height: 18px;
+  background-position: left center;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+/* ---- Séances de destination ---- */
+/* Une ligne par destination : la classe, puis à sa droite la date et l'heure
+   de la séance. MBN met toutes les lignes à la suite dans un même bloc ; une
+   grille à trois colonnes (libellé | classe | séance) les range. */
+html.mbn-moderne #copier_vers > div:has(> select.selecteur-groupe-cdt) {
+  display: grid;
+  grid-template-columns: max-content 250px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 10px;
+  height: auto;
+}
+html.mbn-moderne #copier_vers > div:has(> select.selecteur-groupe-cdt) > br {
+  display: none;
+}
+html.mbn-moderne #copier_vers > div > label {
+  grid-column: 1;
+  float: none;
+  width: auto;
+  min-width: 60px;
+  margin: 0;
+  font-size: 13.5px;
+}
+html.mbn-moderne #copier_vers > div > select.selecteur-groupe-cdt {
+  grid-column: 2;
+  width: 100%;
+  margin: 0;
+}
+html.mbn-moderne #copier_vers > div > [id^="selecteur_seance"] {
+  grid-column: 3;
+}
+html.mbn-moderne #copier_vers select.selecteur-groupe-cdt {
+  height: 34px;
+  max-width: none;
+  padding: 0 8px;
+  border: 1px solid #b8c2cb;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13.5px;
+}
+html.mbn-moderne #copier_vers [id^="selecteur_seance"] {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+html.mbn-moderne #copier_vers [id^="selecteur_seance"] > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+}
+html.mbn-moderne #copier_vers input.libelle_seance_remise {
+  width: 300px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #b8c2cb;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+html.mbn-moderne #copier_vers input.libelle_seance_remise:hover,
+html.mbn-moderne #copier_vers select.selecteur-groupe-cdt:hover {
+  border-color: #1d5fd1;
+}
+html.mbn-moderne #copier_vers input.libelle_seance_remise:placeholder-shown {
+  background: #f8fafc;
+}
+/* Les deux petites images (calendrier de 16 px, croix de 7 px) : cibles agrandies */
+html.mbn-moderne #copier_vers [id^="selecteur_seance"] img {
+  box-sizing: content-box;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+html.mbn-moderne #copier_vers [id^="selecteur_seance"] img:hover {
+  background: #eef4fd;
+}
+
+.mbn-copie-outils {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.mbn-copie-bouton {
+  padding: 4px 12px;
+  border: 1px solid #b8c2cb;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2933;
+  font: 12.5px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+}
+.mbn-copie-bouton:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+.mbn-copie-compte {
+  color: #52606d;
+  font-size: 12.5px;
+}
+.mbn-copie-compte--plein {
+  color: #b54708;
+  font-weight: 700;
+}
+html:not(.mbn-moderne) .mbn-copie-outils {
+  display: none;
+}
+
+/* Bouton de validation */
+html.mbn-moderne form.gestion:has(#copier_vers) .valider-formulaire input[type="submit"] {
+  height: auto;
+  padding: 8px 20px;
+  border: 1px solid #006dcc;
+  border-radius: 6px;
+  background: #006dcc;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+html.mbn-moderne form.gestion:has(#copier_vers) .valider-formulaire input[type="submit"]:hover {
+  background: #0058a6;
+}
+
+/* ---- Fenêtre de choix de la séance ----
+   D'origine : 240 px de large, lignes de 17 px en 11 px. */
+html.mbn-moderne #next_seance_c {
+  border-radius: 10px;
+  box-shadow: 0 12px 36px rgba(31, 41, 51, .3);
+}
+html.mbn-moderne #next_seance_c > .underlay {
+  display: none !important;
+}
+html.mbn-moderne #next_seance {
+  min-width: 340px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+html.mbn-moderne #next_seance .hd {
+  height: auto;
+  padding: 10px 14px;
+  font-size: 13.5px;
+}
+html.mbn-moderne #next_seance .bd {
+  padding: 8px 10px 10px;
+  background: #fff;
+}
+html.mbn-moderne #next_seance .bd ul {
+  margin: 0;
+  padding: 0;
+}
+html.mbn-moderne #next_seance .bd li {
+  height: auto;
+  margin: 0 0 2px;
+  padding: 0;
+  list-style: none;
+}
+html.mbn-moderne #next_seance .bd li > span.selecteur-seance {
+  display: block;
+  padding: 8px 10px 8px 30px;
+  border-radius: 6px;
+  background-position: 8px center;
+  font-size: 13.5px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+html.mbn-moderne #next_seance .bd li > span.selecteur-seance:hover {
+  background-color: #1d5fd1;
+  color: #fff;
+}
+/* Flèches « séances précédentes / suivantes » */
+html.mbn-moderne #next_seance .bd p {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0 0;
+}
+html.mbn-moderne #next_seance .bd p > span.clickable_element {
+  min-width: 44px;
+  padding: 5px 12px;
+  border: 1px solid #b8c2cb;
+  border-radius: 999px;
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+html.mbn-moderne #next_seance .bd p > span.clickable_element:hover {
+  border-color: #1d5fd1;
+  background: #eef4fd;
+}
+
+/* ---- Choix de la classe par boutons (à la place du long menu déroulant) ---- */
+.mbn-copie-classes {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #e4e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+.mbn-copie-classes__aide {
+  margin: 0 0 8px;
+  color: #52606d;
+  font-size: 12.5px;
+}
+.mbn-copie-classes__groupe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.mbn-copie-classes__groupe + .mbn-copie-classes__groupe {
+  margin-top: 8px;
+}
+.mbn-copie-classes__matiere {
+  flex: 0 0 150px;
+  overflow: hidden;
+  color: #1f2933;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mbn-copie-classe {
+  min-width: 46px;
+  padding: 5px 10px;
+  border: 1px solid var(--mbn-bord, #b8c2cb);
+  border-radius: 999px;
+  background: var(--mbn-pale, #fff);
+  color: #1f2933;
+  font: 700 13px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+  transition: filter .12s ease, box-shadow .12s ease;
+}
+.mbn-copie-classe--saut {
+  margin-left: 10px;
+}
+.mbn-copie-classe:hover {
+  box-shadow: 0 0 0 2px var(--mbn-bord, #1d5fd1);
+}
+.mbn-copie-classe:focus-visible {
+  outline: 2px solid #1d5fd1;
+  outline-offset: 2px;
+}
+.mbn-copie-classe[aria-pressed="true"] {
+  background: var(--mbn-fond, #1d5fd1) !important;
+  color: var(--mbn-texte, #fff) !important;
+}
+.mbn-copie-classe[aria-pressed="true"]::before {
+  content: "✓ ";
+}
+.mbn-copie-classe:disabled {
+  opacity: .45;
+  cursor: default;
+  box-shadow: none;
+}
+html:not(.mbn-moderne) .mbn-copie-classes {
+  display: none;
+}

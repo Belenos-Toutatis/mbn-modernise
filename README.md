@@ -19,6 +19,7 @@ vérification se désactive dans la fenêtre de l'extension.
 | Aperçus PDF | fenêtre d'aperçu sur toute la hauteur, élargie en mode portrait |
 | Cahier de textes, vue agenda | grille étirée à la hauteur de la fenêtre, séances colorées par niveau et par classe (ou par matière dans le cahier d'une seule classe), cahier choisi mémorisé |
 | Cahier de textes, page d'une séance | page recentrée, rubriques en cartes ; en modification : boutons « Annuler » et « Valider » toujours à l'écran, validation par Ctrl+S ou Ctrl+Entrée, éditeur plus haut |
+| Cahier de textes, copie vers d'autres séances | page lisible et recentrée, « tout cocher », clic dans le champ pour choisir la séance, fenêtre de choix agrandie, compteur sur cinq séances |
 | Cahier de textes, réservation de ressources | ressources regroupées par type, ajoutées ou retirées d'un clic, filtre |
 | Réservation de ressources, liste | lignes compactes, noms affichés en entier, boutons « consulter » et « réserver », familles dépliées mémorisées, tout déplier d'un clic |
 | Réservation de ressources, planning et formulaire | clic dans toute la case libre, vos réservations en bleu, week-end vide masqué ; date de fin qui suit la date de début, heures choisies sur des molettes à faire défiler, durées toutes faites, Ctrl+S pour valider |
@@ -72,6 +73,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | Fichiers | Rôle |
 |---|---|
 | `manifest.json` | déclaration de l'extension |
+| `icones/` | icône de l'extension (source SVG et PNG aux quatre tailles) |
 | `popup.html`, `popup.js`, `capture.js` | fenêtre de réglages et capture anonymisée |
 | `arriere-plan.js` | vérifie deux fois par jour si une version plus récente est publiée |
 | `moderne.js` | applique les réglages d'apparence à chaque page |
@@ -80,7 +82,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `periodes.js` | bornes de l'année scolaire pour les périodes préréglées |
 | `messagerie.*`, `messagerie-moderne.css` | messagerie |
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
-| `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*`, `ressources.*` | cahier de textes |
+| `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*`, `copier-vers.*`, `ressources.*` | cahier de textes |
 | `reservations.*`, `planning-resa.js`, `saisie-resa.js` | réservation de ressources : liste, planning, formulaire |
 | `pont.js` | règle les sélecteurs de date et d'heure de MBN (seul script exécuté dans le contexte de la page) |
 | `devoirs.*` | évaluations |
