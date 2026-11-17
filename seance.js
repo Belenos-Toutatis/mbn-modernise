@@ -40,6 +40,36 @@
     bouton.click();
   }, true);
 
+  // ---- Petites bulles de la page (ressources réservées, état de la séance) ----
+  // Elles ne se fermaient que par leur croix : Échap et un clic à côté y
+  // suffisent désormais, en cliquant la croix d'origine.
+  const bulleOuverte = () => {
+    for (const croix of document.querySelectorAll('.window--sm.js-window:not(.hide) .js-window__close')) {
+      if (croix.getClientRects().length) return croix;
+    }
+    return null;
+  };
+  const moderne = () => document.documentElement.classList.contains('mbn-moderne');
+  document.addEventListener('keydown', (e) => {
+    if (!e.isTrusted || e.key !== 'Escape' || !moderne()) return;
+    if (document.querySelector('.modal--show')) return;
+    const croix = bulleOuverte();
+    if (!croix) return;
+    e.preventDefault();
+    croix.click();
+  }, true);
+  document.addEventListener('click', (e) => {
+    if (!e.isTrusted || !moderne()) return;
+    const croix = bulleOuverte();
+    if (!croix) return;
+    const contenu = croix.closest('.js-window__content') || croix.parentElement;
+    if (e.target instanceof Node && contenu.contains(e.target)) return;
+    // Après MBN : si son propre bouton vient de refermer la bulle, ne rien faire.
+    setTimeout(() => {
+      if (croix.isConnected && croix.getClientRects().length && bulleOuverte() === croix) croix.click();
+    }, 0);
+  }, true);
+
   const { classeDansTexte, pour } = globalThis.mbnCouleurs;
   const texte = (el) => (el ? el.textContent.replace(/\s+/g, ' ').trim() : '');
 

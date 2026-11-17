@@ -331,3 +331,82 @@ html.mbn-moderne .modal__dialog:has(.js-diffusion__content) {
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+/* ---- Bulle « Ressources réservées » ----
+   Ouverte depuis la ligne d'informations de la séance, elle est placée dans
+   <body>, hors de <main>. Elle était minuscule : texte serré, corbeille de
+   16 px collée au bord. Elle devient une carte, une ligne par réservation. */
+html.mbn-moderne #windowBookedResources .window__content--popover {
+  box-sizing: border-box;
+  min-width: min(400px, calc(100vw - 32px)) !important;
+  border: 1px solid #d5dbe3;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(31, 41, 51, .18);
+}
+html.mbn-moderne #windowBookedResources .window__header {
+  margin: 0;
+  padding: 12px 44px 10px 14px;
+  border-bottom: 1px solid #e4e7eb;
+}
+html.mbn-moderne #windowBookedResources .window__title {
+  padding: 0;
+  color: #1f2933;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+html.mbn-moderne #windowBookedResources .window__close {
+  top: 7px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #52606d;
+  font-size: 18px;
+  line-height: 28px;
+}
+html.mbn-moderne #windowBookedResources .window__close:hover {
+  background: #eef2f8;
+  color: #1f2933;
+}
+html.mbn-moderne #windowBookedResources .window__body {
+  max-height: min(60vh, 420px);
+  padding: 6px;
+  overflow-y: auto;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul {
+  margin: 0;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul > li {
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  color: #1f2933;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul > li + li {
+  box-shadow: 0 -1px 0 #eef0f3;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul > li:hover {
+  background: #f4f6f9;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul > li > .col {
+  padding: 0;
+}
+/* Corbeille : une vraie cible de 30 px, rouge au survol. */
+html.mbn-moderne #windowBookedResources .window__body > ul > li a.btn--naked {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
+html.mbn-moderne #windowBookedResources .window__body > ul > li a.btn--naked:hover,
+html.mbn-moderne #windowBookedResources .window__body > ul > li a.btn--naked:focus-visible {
+  background: #fde8e8;
+  box-shadow: inset 0 0 0 1px #f1a9a9;
+}
