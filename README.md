@@ -15,7 +15,7 @@ vérification se désactive dans la fenêtre de l'extension.
 
 | Écran | Améliorations |
 |---|---|
-| Messagerie | colonnes alignées sur leurs titres et rééquilibrées, barre d'outils qui tient dans la fenêtre, bandeau du haut sur une seule rangée, liste en pleine hauteur tant qu'aucun message n'est ouvert, fermeture du volet de lecture par Échap ou par un clic sur le message ouvert (volet en bas, ou à droite quand la fenêtre est étroite) |
+| Messagerie | colonnes alignées sur leurs titres et rééquilibrées, barre d'outils qui tient dans la fenêtre, bandeau du haut sur une seule rangée, liste en pleine hauteur tant qu'aucun message n'est ouvert, fermeture du volet de lecture par Échap ou par un clic sur le message ouvert (volet en bas, ou à droite quand la fenêtre est étroite ; vue par message comme vue par conversation) ; volet à droite et liste large : un message par ligne, avec les titres de colonnes |
 | Aperçus PDF | fenêtre d'aperçu sur toute la hauteur, élargie en mode portrait |
 | Cahier de textes, vue agenda | grille étirée à la hauteur de la fenêtre, séances colorées par niveau et par classe (ou par matière dans le cahier d'une seule classe), cahier choisi mémorisé |
 | Cahier de textes, page d'une séance | page recentrée, rubriques en cartes ; en modification : boutons « Annuler » et « Valider » toujours à l'écran, validation par Ctrl+S ou Ctrl+Entrée, éditeur plus haut |
@@ -24,7 +24,7 @@ vérification se désactive dans la fenêtre de l'extension.
 | Réservation de ressources, liste | lignes compactes, noms affichés en entier, boutons « consulter » et « réserver », familles dépliées mémorisées, tout déplier d'un clic |
 | Réservation de ressources, planning et formulaire | clic dans toute la case libre, vos réservations en bleu, week-end vide masqué ; date de fin qui suit la date de début, heures choisies sur des molettes à faire défiler, durées toutes faites, Ctrl+S pour valider |
 | Cahier de textes, vues en liste | séances en cartes, raccourcis de période, filtre instantané par classe et par texte, critères mémorisés, index par mois |
-| Évaluations | filtres et tri mémorisés, lignes colorées par classe, titres affichés en entier |
+| Évaluations | filtres et tri mémorisés, lignes colorées par classe, titres affichés en entier ; heure de diffusion des résultats choisie sur des molettes à faire défiler, calendriers de choix de la date et de la séance plus lisibles |
 | Appels | feuille d'appel remise dans la page, états colorés, bilan chiffré ; historique avec appels non saisis repérés et raccourcis de période |
 | Partout | menu latéral réduit qui se déplie au survol sans décaler la page, infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie ni quand un formulaire de modification est ouvert) |
 
@@ -84,8 +84,9 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `apercu-pdf.*`, `content.js` | aperçus PDF |
 | `agenda.*`, `cahier-*.js`, `cahier-liste.css`, `seance.*`, `copier-vers.*`, `ressources.*` | cahier de textes |
 | `reservations.*`, `planning-resa.js`, `saisie-resa.js` | réservation de ressources : liste, planning, formulaire |
+| `roue-heure.*`, `heures-anciennes.js` | sélecteur d'heure à molettes, et son branchement sur les champs d'heure des anciennes pages |
 | `pont.js` | règle les sélecteurs de date et d'heure de MBN (seul script exécuté dans le contexte de la page) |
-| `devoirs.*` | évaluations |
+| `devoirs.*`, `calendriers.css` | évaluations ; calendriers de choix d'une date et d'une séance |
 | `appels.*` | appels |
 
 ## Limites

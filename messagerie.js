@@ -15,7 +15,7 @@
       prevu = false;
       document.querySelectorAll('.DwtListView-ColHeader').forEach(aligner);
       document.querySelectorAll('.ZToolbar').forEach(ajusterBarre);
-      document.querySelectorAll('.ZmMailMsgView').forEach(etendreListe);
+      volets().forEach(etendreListe);
     });
   };
 
@@ -42,6 +42,29 @@
   };
 
   const observateurTaille = new ResizeObserver(planifier);
+
+  // Volets de lecture : celui de la vue par message (.ZmMailMsgView) et celui
+  // de la vue par conversation (.ZmConvView2). On ne retient que ceux placés à
+  // côté d'une liste, pas les messages affichés à l'intérieur d'une conversation.
+  const VOLET = ':scope > .ZmMailMsgView, :scope > .ZmConvView2';
+  const voletDe = (vue) => (vue ? vue.querySelector(VOLET) : null);
+  const volets = () =>
+    [...document.querySelectorAll('.ZmMailMsgView, .ZmConvView2')].filter(
+      (volet) => volet.parentElement && volet.parentElement.querySelector(':scope > .DwtListView') &&
+        voletDe(volet.parentElement) === volet);
+
+  // Le volet n'affiche-t-il que son message d'attente (« aucun message ouvert ») ?
+  // En vue par conversation, ce message reste dans la page, masqué par un
+  // « display: none » posé sur un de ses parents : on lit ces styles plutôt que
+  // la taille à l'écran, qui est nulle aussi quand c'est nous qui cachons le volet.
+  const estVide = (volet) => {
+    const attente = volet.querySelector('td.NoResults');
+    if (!attente) return false;
+    for (let el = attente; el && el !== volet; el = el.parentElement) {
+      if (el.style.display === 'none' || el.style.visibility === 'hidden') return false;
+    }
+    return true;
+  };
 
   // ---- Touche Échap : refermer le volet de lecture ----
   // Échap rend toute la hauteur à la liste, comme avant l'ouverture du message.
@@ -86,7 +109,7 @@
     }
     if (aLEcran('.ZmComposeView, .DwtDialog, .DwtMenu, .ActionMenu')) return;
 
-    for (const volet of document.querySelectorAll('.ZmMailMsgView')) {
+    for (const volet of volets()) {
       const vue = volet.parentElement;
       if (!vue || vue.dataset.mbnPleine || !placeDuVolet(volet) || !volet.getClientRects().length) continue;
       vue.dataset.mbnFerme = '1';
@@ -109,8 +132,9 @@
     const ligne = e.target instanceof Element ? e.target.closest('.DwtListView-Rows > li') : null;
     if (!ligne || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
     if (document.querySelector('[data-mbn-ferme]')) { rouvrir(); return; }
-    // Les colonnes d'icônes (drapeau, étiquette, lu / non lu) ont leur propre action.
-    if (e.target.closest('.ZmMsgListColFlag, .ZmMsgListColTag, .ZmMsgListColRead, .ZmMsgListColPriority')) return;
+    // Les colonnes d'icônes (déplier la conversation, drapeau, étiquette, lu / non lu)
+    // ont leur propre action.
+    if (e.target.closest('.ZmMsgListColExpand, .ZmMsgListColFlag, .ZmMsgListColTag, .ZmMsgListColRead, .ZmMsgListColPriority')) return;
     const choisies = [...ligne.parentElement.children].filter(estChoisie);
     if (choisies.length === 1 && choisies[0] === ligne) clicEnCours = ligne;
   }, true);
@@ -122,7 +146,7 @@
     if (!ligne || ligne !== attendue || !document.documentElement.classList.contains('mbn-moderne')) return;
     const liste = ligne.closest('.DwtListView');
     const vue = liste && liste.parentElement;
-    const volet = vue && vue.querySelector(':scope > .ZmMailMsgView');
+    const volet = voletDe(vue);
     if (!volet || vue.dataset.mbnPleine || !placeDuVolet(volet) || !volet.getClientRects().length) return;
     vue.dataset.mbnFerme = '1';
     planifier();
@@ -159,7 +183,7 @@
       observateurTaille.observe(vue);
     }
     const actif = document.documentElement.classList.contains('mbn-moderne');
-    const vide = !!volet.querySelector('td.NoResults');
+    const vide = estVide(volet);
     const place = placeDuVolet(volet);
     // Volet refermé à la main : touche Échap, ou clic sur le message ouvert.
     const ferme = vue.dataset.mbnFerme === '1';
@@ -188,6 +212,54 @@
     if (el.style.getPropertyValue(propriete) !== valeur) el.style.setProperty(propriete, valeur);
   };
 
+  // ---- Volet de lecture à droite : liste en colonnes, avec des titres ----
+  // Zimbra affiche alors chaque message sur deux lignes, sans titre de colonne.
+  // Quand la liste est assez large, messagerie-moderne.css remet chaque message
+  // sur une ligne (expéditeur, objet, date) ; on ajoute ici la rangée de titres
+  // sous la ligne « Trié par… » d'origine, calée sur les lignes de la liste.
+  const LARGEUR_COLONNES = 1000; // px de large pour la liste seule
+  const TITRES = [['mbn-titre-de', 'De'], ['mbn-titre-objet', 'Objet'], ['mbn-titre-date', 'Reçu']];
+
+  const titrer = (entete, liste, lignes) => {
+    const modele = lignes.querySelector('.ZmRowDoubleHeader');
+    const actif = document.documentElement.classList.contains('mbn-moderne');
+    let titres = entete.querySelector(':scope > .mbn-titres');
+
+    if (!actif || !modele || lignes.clientWidth < LARGEUR_COLONNES) {
+      if (titres) titres.remove();
+      if (liste.dataset.mbnColonnes) {
+        delete liste.dataset.mbnColonnes;
+        lignes.style.removeProperty('--mbn-lignes-haut');
+      }
+      return;
+    }
+    for (const el of [lignes, entete, liste]) {
+      if (!suivis.has(el)) {
+        suivis.add(el);
+        observateurTaille.observe(el);
+      }
+    }
+    if (liste.dataset.mbnColonnes !== '1') liste.dataset.mbnColonnes = '1';
+    if (!titres) {
+      titres = document.createElement('div');
+      titres.className = 'mbn-titres';
+      titres.setAttribute('aria-hidden', 'true');
+      for (const [classe, texte] of TITRES) {
+        const titre = document.createElement('span');
+        titre.className = classe;
+        titre.textContent = texte;
+        titres.appendChild(titre);
+      }
+      entete.appendChild(titres);
+    }
+    const ligne = modele.getBoundingClientRect();
+    const boite = entete.getBoundingClientRect();
+    ecrire(titres, 'left', (ligne.left - boite.left).toFixed(1) + 'px');
+    ecrire(titres, 'width', ligne.width.toFixed(1) + 'px');
+    // L'en-tête a grandi : Zimbra ne le sait pas, on ajuste la hauteur des lignes.
+    ecrire(lignes, '--mbn-lignes-haut', Math.max(100, liste.clientHeight - entete.offsetHeight - 2) + 'px');
+  };
+
   const aligner = (entete) => {
     const vue = entete.closest('.DwtListView');
     const lignes = vue && vue.querySelector('.DwtListView-Rows');
@@ -195,6 +267,9 @@
 
     const colonnes = [...entete.querySelectorAll('td.DwtListView-Column')].filter((td) => td.offsetWidth > 0);
     const modele = lignes.querySelector('.DwtMsgListMultiCol');
+
+    // Liste sur deux lignes (volet de lecture à droite) : voir titrer().
+    titrer(entete, vue, lignes);
 
     // On n'intervient que si les lignes ont bien une cellule par colonne.
     if (!modele || !colonnes.length || modele.children.length !== colonnes.length) {

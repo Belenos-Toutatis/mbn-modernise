@@ -61,6 +61,10 @@ d'établissement ou de classe réelle, ni une capture.
   `MAIN`) ; on lui parle par des `CustomEvent` (`mbn-regler-champ`,
   `mbn-sonder-champ`). Ne pas y ajouter autre chose que l'accès aux objets de la
   page.
+- Choix d'une heure : toujours par les molettes de `roue-heure.js`
+  (`globalThis.mbnRoue`), que l'utilisateur préfère à une liste ou à une grille
+  d'heures (demande du 2026-11-17). Les anciennes pages ne sont pas en
+  « border-box » : tout composant ajouté doit l'imposer lui-même.
 - Raccourcis clavier : n'accepter que les frappes réelles (`isTrusted`), et rien
   quand une fenêtre modale est ouverte.
 - `rafraichissement.js` ne doit jamais recharger une page pendant une saisie :

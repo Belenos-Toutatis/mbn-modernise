@@ -28,3 +28,50 @@
 .yui-tt-shadow {
   display: none !important;
 }
+
+/* Liste d'heures des anciennes pages (date de diffusion des résultats d'une
+   évaluation, par exemple) : MBN l'affiche dans une colonne de 50 px où chaque
+   heure se coupe sur deux lignes. On en fait une grille de quatre colonnes
+   (une rangée par heure quand le pas est d'un quart d'heure), sans défilement. */
+.hourfield > div[id^="hourSelector"] {
+  box-sizing: border-box;
+  width: max-content !important;
+  max-width: 90vw;
+  max-height: min(70vh, 420px) !important;
+  margin-top: 2px !important;
+  padding: 6px !important;
+  overflow: auto !important;
+  border: 1px solid #cfd6dd !important;
+  border-radius: 8px;
+  background: #fff !important;
+  box-shadow: 0 6px 20px rgba(31, 41, 51, .18);
+  z-index: 1000 !important;
+}
+.hourfield > div[id^="hourSelector"] > ul {
+  display: grid !important;
+  grid-template-columns: repeat(4, auto);
+  gap: 2px;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+.hourfield > div[id^="hourSelector"] > ul > li {
+  box-sizing: border-box;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 5px 10px !important;
+  border-radius: 6px;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  font-variant-numeric: tabular-nums;
+  color: #1f2933;
+  cursor: pointer;
+}
+.hourfield > div[id^="hourSelector"] > ul > li:hover {
+  background: #e7f1fd !important;
+  color: #1d5fd1;
+}

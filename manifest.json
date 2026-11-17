@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.34.1",
+  "version": "0.34.2",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "icons": {
     "16": "icones/icone-16.png",
@@ -46,6 +46,8 @@
         "copier-vers.css",
         "ressources.css",
         "reservations.css",
+        "roue-heure.css",
+        "calendriers.css",
         "menu.css"
       ],
       "all_frames": true,
@@ -70,6 +72,8 @@
         "ressources.js",
         "reservations.js",
         "planning-resa.js",
+        "roue-heure.js",
+        "heures-anciennes.js",
         "saisie-resa.js",
         "cahier-liste.js",
         "cahier-criteres.js",

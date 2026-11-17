@@ -153,7 +153,7 @@ html.mbn-moderne [data-mbn-pleine="droite"] > .DwtListView,
 html.mbn-moderne [data-mbn-pleine="droite"] > .DwtListView .DwtListView-Rows {
   width: 100% !important;
 }
-html.mbn-moderne [data-mbn-pleine] > :is(.ZmMailMsgView, .AppSash-vert, .AppSash-horiz) {
+html.mbn-moderne [data-mbn-pleine] > :is(.ZmMailMsgView, .ZmConvView2, .AppSash-vert, .AppSash-horiz) {
   display: none !important;
 }
 
@@ -166,6 +166,119 @@ html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleH
 }
 html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleHeader.Unread {
   box-shadow: inset 4px 0 0 #1d5fd1;
+}
+
+/* ==== Volet de lecture à droite, liste large : une ligne par message ====
+   Zimbra affiche alors chaque message sur deux lignes, sans titre de colonne.
+   messagerie.js pose data-mbn-colonnes sur la liste quand elle est assez large,
+   et ajoute la rangée de titres .mbn-titres dans l'en-tête. */
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader,
+html.mbn-moderne [data-mbn-colonnes] .mbn-titres {
+  display: grid !important;
+  grid-template-columns: 22px 18px 230px minmax(0, 1fr) 78px 64px;
+  column-gap: 8px;
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+html.mbn-moderne [data-mbn-colonnes] .DwtListView-Rows > li {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader {
+  height: auto !important;
+  margin: 0 !important;
+  min-height: 34px;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > :is(.TopRow, .BottomRow) {
+  display: contents !important;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > :is(.TopRow, .BottomRow) > * {
+  grid-row: 1;
+  position: static !important;
+  margin: 0 !important;
+  min-width: 0;
+}
+/* Les cellules n'ont pas les mêmes noms dans la vue par conversation et dans
+   la vue par message : dans celle-ci l'expéditeur est dans un bloc sans nom,
+   et une icône d'état (répondu, transféré) remplace le triangle qui déplie. */
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > [id$="__rd"] { grid-column: 1; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > .ZmMsgListExpand,
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .BottomRow > [id$="__st"] { grid-column: 2; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > :is([id$="__fr"], :has(> [id$="__fr"])) { grid-column: 3; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .BottomRow > .SubjectDoubleRow { grid-column: 4; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .BottomRow > .ZmListFlagsWrapper { grid-column: 5; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > .ZmMsgListDate { grid-column: 6; }
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > :is(.TopRow, .BottomRow) > :is([id$="__fr"], :has(> [id$="__fr"]), .SubjectDoubleRow) {
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  line-height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > div > span[id$="__fr"] {
+  display: inline !important;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader :is(.ZmListFlagsWrapper, .ZmMsgListDate) {
+  width: auto !important;
+  background: transparent !important;
+  text-align: right;
+}
+/* Messages d'une conversation dépliée : décalés vers la droite, avec un filet
+   qui les rattache à leur conversation. Le décalage est repris sur la colonne
+   de l'expéditeur, pour que l'objet et la date restent alignés sur les titres.
+   Ces lignes portent une case vide à la place du triangle : on la retire. */
+html.mbn-moderne [data-mbn-colonnes] li.ZmConvExpanded > .ZmRowDoubleHeader {
+  grid-template-columns: 22px 18px 204px minmax(0, 1fr) 78px 64px;
+  padding-left: 34px !important;
+  background-image: linear-gradient(#b9c9e0, #b9c9e0);
+  background-repeat: no-repeat;
+  background-position: 18px 0;
+  background-size: 2px 100%;
+}
+html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > [id$="__ex"]:not(.ZmMsgListExpand) {
+  display: none !important;
+}
+
+/* Même filet dans la liste en colonnes d'origine (volet de lecture en bas) :
+   Zimbra y décale déjà l'expéditeur et le texte de 24 px ; le filet, placé dans
+   la colonne du triangle, rattache ces messages à leur conversation. */
+html.mbn-moderne .DwtListView-Rows > li.ZmConvExpanded > .DwtMsgListMultiCol {
+  background-image: linear-gradient(#b9c9e0, #b9c9e0);
+  background-repeat: no-repeat;
+  background-position: calc(var(--mbn-decalage, 0px) + 11px) 0;
+  background-size: 2px 100%;
+}
+
+/* Rangée de titres, sous la ligne « Trié par… » d'origine. */
+html.mbn-moderne [data-mbn-colonnes] .DwtListView-ColHeader {
+  position: relative;
+  padding-bottom: 24px;
+}
+html.mbn-moderne [data-mbn-colonnes] .mbn-titres {
+  position: absolute;
+  bottom: 0;
+  height: 24px;
+  border-top: 1px solid #e3e7eb;
+  background: #f3f5f6;
+  color: #4a5560;
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+}
+html.mbn-moderne [data-mbn-colonnes] .mbn-titre-de { grid-column: 3; }
+html.mbn-moderne [data-mbn-colonnes] .mbn-titre-objet { grid-column: 4; }
+html.mbn-moderne [data-mbn-colonnes] .mbn-titre-date { grid-column: 6; text-align: right; }
+html.mbn-moderne [data-mbn-colonnes] .DwtListView-Rows {
+  height: var(--mbn-lignes-haut) !important;
 }
 
 /* ==== Bandeau du haut sur une seule rangée (option « Bandeau compact ») ====

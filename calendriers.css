@@ -1,0 +1,381 @@
+/* MBN modernisé — calendriers des anciennes pages (évaluations, notamment) :
+   1. le calendrier de choix d'une date (composant « yui-calendar ») ;
+   2. le calendrier de choix d'une séance (fenêtre « popinCharge »).
+   Présentation seulement : les cases, les listes et les flèches restent celles
+   de MBN. Ces pages ne sont pas en « border-box » : on l'impose ici. */
+
+/* ==== 1. Choix d'une date ==== */
+html.mbn-moderne .parent_container_calendar,
+html.mbn-moderne .parent_container_calendar * {
+  box-sizing: border-box;
+}
+html.mbn-moderne .parent_container_calendar .yui-panel-container {
+  margin-top: 4px;
+  padding: 0 !important;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(31, 41, 51, .28);
+  z-index: 1000 !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-panel-container > .underlay {
+  display: none !important;
+}
+html.mbn-moderne .parent_container_calendar .container_calendar {
+  overflow: hidden;
+  border: 1px solid #cfd6dd !important;
+  border-radius: 12px;
+  background: #fff !important;
+  font-family: system-ui, sans-serif;
+}
+html.mbn-moderne .parent_container_calendar .container_calendar > .hd {
+  height: auto !important;
+  margin: 0 !important;
+  padding: 10px 40px 8px 14px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e3e7eb !important;
+  background: #f6f8fa !important;
+  color: #1f2933 !important;
+  font-size: 13px !important;
+  line-height: 1.3 !important;
+  white-space: nowrap;
+}
+html.mbn-moderne .parent_container_calendar .container_calendar > .hd .kuiwindow_hd {
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: 13px !important;
+}
+html.mbn-moderne .parent_container_calendar .container_calendar > .container-close {
+  top: 9px !important;
+  right: 10px !important;
+}
+html.mbn-moderne .parent_container_calendar .container_calendar > .bd {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #fff !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-calcontainer {
+  float: none !important;
+  padding: 10px 12px 12px !important;
+  border: 0 !important;
+  background: #fff !important;
+}
+html.mbn-moderne .parent_container_calendar table.yui-calendar {
+  width: auto !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 2px !important;
+  font: 13px/1.2 system-ui, sans-serif !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar th,
+html.mbn-moderne .parent_container_calendar .yui-calendar td {
+  border: 0 !important;
+}
+/* Mois affiché et flèches */
+html.mbn-moderne .parent_container_calendar .yui-calendar .calhead {
+  padding: 0 0 6px !important;
+  background: transparent !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar .calheader {
+  position: relative;
+  height: 30px !important;
+  padding: 0 34px !important;
+  background: transparent !important;
+  color: #1f2933 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar :is(.calnavleft, .calnavright) {
+  top: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
+  margin: 0 !important;
+  overflow: hidden;
+  border: 1px solid #cfd6dd;
+  border-radius: 8px;
+  background: #fff !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 28px !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar .calnavleft { right: auto !important; left: 0 !important; }
+html.mbn-moderne .parent_container_calendar .yui-calendar .calnavright { right: 0 !important; left: auto !important; }
+html.mbn-moderne .parent_container_calendar .yui-calendar .calnavleft::before { content: "‹"; }
+html.mbn-moderne .parent_container_calendar .yui-calendar .calnavright::before { content: "›"; }
+html.mbn-moderne .parent_container_calendar .yui-calendar :is(.calnavleft, .calnavright)::before {
+  color: #1d5fd1;
+  font-size: 20px;
+  font-weight: 700;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar :is(.calnavleft, .calnavright):hover {
+  border-color: #1d5fd1;
+  background: #e7f1fd !important;
+}
+/* Jours de la semaine */
+html.mbn-moderne .parent_container_calendar .yui-calendar .calweekdaycell {
+  width: 36px !important;
+  min-width: 36px;
+  height: 24px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #7b8794 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  text-transform: capitalize;
+}
+/* Jours */
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell {
+  width: 36px !important;
+  min-width: 36px;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px;
+  background: #fff !important;
+  color: #1f2933 !important;
+  font-size: 13px !important;
+  line-height: 32px !important;
+  text-align: center !important;
+  cursor: pointer;
+  transition: background-color .1s;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell a {
+  display: block;
+  padding: 0 !important;
+  border-radius: 8px;
+  background: transparent !important;
+  color: inherit !important;
+  text-decoration: none !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell:is(:hover, .calcellhover) {
+  background: #e7f1fd !important;
+  color: #123f8f !important;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell.today {
+  box-shadow: inset 0 0 0 2px #1d5fd1;
+  font-weight: 700;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell.selected {
+  background: #1d5fd1 !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+/* Jours des mois voisins, et jours que MBN ne laisse pas choisir (« previous ») */
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell.oom {
+  background: transparent !important;
+  color: #c5ccd3 !important;
+  cursor: default;
+}
+html.mbn-moderne .parent_container_calendar .yui-calendar td.calcell.previous {
+  background: #fff !important;
+  color: #b0b8c1 !important;
+  cursor: not-allowed;
+}
+
+/* ==== 2. Choix d'une séance ==== */
+html.mbn-moderne [id^="popinCharge_"],
+html.mbn-moderne [id^="popinCharge_"] * {
+  box-sizing: border-box;
+}
+/* La fenêtre est centrée par MBN d'après sa taille d'origine (588 × 340) :
+   on la recentre de la moitié de ce qu'elle gagne. */
+html.mbn-moderne .yui-panel-container[id^="popinCharge_"] {
+  margin: -30px 0 0 -48px;
+  padding: 0 !important;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(31, 41, 51, .28);
+}
+html.mbn-moderne .yui-panel-container[id^="popinCharge_"] > .underlay {
+  display: none !important;
+}
+html.mbn-moderne .yui-panel[id^="popinCharge_"] {
+  overflow: hidden;
+  border: 1px solid #cfd6dd !important;
+  border-radius: 12px;
+  background: #fff !important;
+  font-family: system-ui, sans-serif;
+}
+html.mbn-moderne .yui-panel[id^="popinCharge_"] > .hd {
+  height: auto !important;
+  margin: 0 !important;
+  padding: 12px 44px 10px 16px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e3e7eb !important;
+  background: #f6f8fa !important;
+  color: #1f2933 !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+}
+html.mbn-moderne .yui-panel[id^="popinCharge_"] > .hd .kuiwindow_hd {
+  color: inherit !important;
+  font-size: 14px !important;
+}
+html.mbn-moderne .yui-panel[id^="popinCharge_"] > .container-close {
+  top: 11px !important;
+  right: 12px !important;
+}
+html.mbn-moderne .yui-panel[id^="popinCharge_"] > .bd {
+  margin: 0 !important;
+  padding: 12px 16px 14px !important;
+  border: 0 !important;
+  background: #fff !important;
+  color: #1f2933;
+  font-size: 13px;
+}
+
+/* ---- Bandeau : semaine, flèches, groupe ---- */
+html.mbn-moderne [id^="popinCharge_"] .entete-popin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-bottom: 10px;
+}
+html.mbn-moderne [id^="popinCharge_"] .entete-popin .selecteur-semaine {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+}
+html.mbn-moderne [id^="popinCharge_"] .entete-popin select {
+  height: 30px !important;
+  padding: 0 8px;
+  border: 1px solid #b8c2cb;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #1f2933;
+  font-size: 13px;
+}
+html.mbn-moderne [id^="popinCharge_"] .entete-popin select:focus-visible {
+  outline: 2px solid rgba(29, 95, 209, .5);
+  outline-offset: 1px;
+}
+/* Flèches de semaine : de petites images de 7 à 10 px, agrandies en boutons. */
+html.mbn-moderne [id^="popinCharge_"] .navigation_selecteur_semaine {
+  box-sizing: content-box;
+  width: 10px;
+  height: 10px;
+  margin: 0 !important;
+  padding: 9px;
+  border: 1px solid #cfd6dd;
+  border-radius: 8px;
+  background-color: #fff;
+  object-fit: contain;
+  cursor: pointer;
+}
+html.mbn-moderne [id^="popinCharge_"] .navigation_selecteur_semaine:hover {
+  border-color: #1d5fd1;
+  background-color: #e7f1fd;
+}
+
+/* ---- Grille : une colonne de numéros de semaine, puis une colonne par jour ---- */
+html.mbn-moderne [id^="popinCharge_"] .contenu-calendar {
+  display: flex;
+  gap: 4px;
+  padding: 0 !important;
+}
+html.mbn-moderne [id^="popinCharge_"] .contenu-calendar::after {
+  display: none !important;
+}
+html.mbn-moderne [id^="popinCharge_"] .contenu-calendar > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+html.mbn-moderne [id^="popinCharge_"] .contenu-calendar > ul > li {
+  height: 48px !important;
+  margin: 0 !important;
+  list-style: none;
+}
+/* Rangée des jours de la semaine */
+html.mbn-moderne [id^="popinCharge_"] .contenu-calendar > ul > li:first-child {
+  height: 22px !important;
+  color: #52606d;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 22px;
+  text-transform: capitalize;
+}
+html.mbn-moderne [id^="popinCharge_"] .colonne-semaine > li {
+  width: 30px;
+  color: #7b8794;
+  font-size: 11px;
+  line-height: 48px;
+  text-align: center;
+}
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  width: 84px !important;
+  padding: 4px 6px !important;
+  overflow: hidden;
+  border: 1px solid #e3e7eb !important;
+  border-radius: 8px;
+  background: #fff !important;
+  color: #52606d;
+  font-size: 12px;
+  line-height: 1.25;
+  transition: background-color .12s, border-color .12s, box-shadow .12s;
+}
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour .libelle-jour-cellule-charge {
+  font-size: 13px;
+  font-weight: 600 !important;
+}
+/* Jours « fermés » : légèrement en retrait, mais lisibles, car MBN en laisse
+   certains cliquables. */
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour.jour-ferme {
+  border-color: #eef1f4 !important;
+  background: #f6f8fa !important;
+  color: #7b8794;
+}
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour:is(.clickable-element, .clickable_element) {
+  cursor: pointer;
+}
+/* Jours où vous avez une séance avec ce groupe : ceux qu'on vient chercher */
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour.seance-utilisateur {
+  border-color: #8fca4a !important;
+  background: #ecf8d9 !important;
+  color: #2f5a0c;
+  cursor: pointer;
+}
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour.seance-utilisateur:hover {
+  border-color: #5e9f1c !important;
+  background: #dcf2bb !important;
+  box-shadow: 0 2px 8px rgba(47, 90, 12, .22);
+}
+html.mbn-moderne [id^="popinCharge_"] .cellule-jour:not(.seance-utilisateur):is(.clickable-element, .clickable_element):hover {
+  border-color: #b8c2cb !important;
+  background: #eef1f4 !important;
+}
+
+/* ---- Légende ---- */
+html.mbn-moderne [id^="popinCharge_"] .legende-popin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 12px;
+  color: #52606d;
+  font-size: 12px;
+}
+html.mbn-moderne [id^="popinCharge_"] .legende-popin .vos_seance {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: -8px;
+  border: 1px solid #8fca4a;
+  border-radius: 4px;
+  background: #ecf8d9 !important;
+}
