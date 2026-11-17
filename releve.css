@@ -1,0 +1,289 @@
+/* MBN modernisé — relevé de notes d'une classe (enseignant).
+   releve.js pose la classe « mbn-releve » sur #module_notes. */
+
+.mbn-releve .mbn-releve-bilan {
+  display: none;
+}
+html.mbn-moderne .mbn-releve,
+html.mbn-moderne .mbn-releve * {
+  box-sizing: border-box;
+}
+html.mbn-moderne .mbn-releve {
+  color: #1f2933;
+  font-size: 13px;
+}
+
+/* Rappel des filtres et bilan */
+html.mbn-moderne .mbn-releve .releve-infos-filtres-export {
+  height: auto;
+  overflow: hidden;
+}
+html.mbn-moderne .mbn-releve .releve-infos-filtres {
+  float: none;
+  width: auto;
+  max-width: none;
+}
+html.mbn-moderne .mbn-releve .releve-infos-filtres-titre {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+html.mbn-moderne .mbn-releve #releve-infos-filtres-texte {
+  max-width: none;
+  color: #52606d;
+}
+html.mbn-couleurs .mbn-releve[data-mbn-classe] .releve-infos-filtres {
+  padding-left: 10px;
+  border-left: 5px solid var(--mbn-classe-bord);
+}
+html.mbn-moderne .mbn-releve .mbn-releve-bilan {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 10px 0 8px;
+  color: #3e4c59;
+  font-size: 13px;
+}
+html.mbn-moderne .mbn-releve .mbn-repartition {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+}
+html.mbn-moderne .mbn-releve .mbn-repartition[hidden] {
+  display: none;
+}
+html.mbn-moderne .mbn-releve .mbn-repartition > i {
+  width: 9px;
+  border-radius: 2px 2px 0 0;
+  background: #9fb3c8;
+}
+
+/* Tableau : à la largeur de son contenu, lignes resserrées, titres qui restent en vue. */
+html.mbn-moderne .mbn-releve #releve-enseignant {
+  overflow: visible !important;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant table {
+  width: auto !important;
+  min-width: 420px;
+  border: 1px solid #e4e7eb;
+  border-spacing: 0;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant :is(th, td) {
+  width: auto !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e4e7eb !important;
+  vertical-align: middle;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant thead th {
+  position: sticky;
+  top: 40px;
+  z-index: 2;
+  background: #f1f4f8 !important;
+  color: #3e4c59;
+  font-size: 13px;
+  font-weight: 600;
+}
+html.mbn-couleurs .mbn-releve[data-mbn-classe] #releve-enseignant thead th {
+  box-shadow: inset 0 3px 0 var(--mbn-classe-bord);
+}
+html.mbn-moderne .mbn-releve #releve-enseignant thead th .yui-dt-liner {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant thead th a {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant thead th:is(.yui-dt-asc, .yui-dt-desc) {
+  color: #1d5fd1;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant tbody td > .yui-dt-liner {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant tbody tr > td {
+  background-color: #fff !important;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant tbody tr.yui-dt-odd > td {
+  background-color: #f9fafb !important;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant tbody tr:hover > td {
+  background-color: #eef4fd !important;
+}
+/* Nom de l'élève en entier, au lieu d'être coupé à 150 px. */
+html.mbn-moderne .mbn-releve #releve-enseignant .releve-notes-eleve {
+  max-width: none !important;
+  overflow: visible !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+/* Moyenne, avec une jauge proportionnelle (releve.js pose --mbn-part). */
+html.mbn-moderne .mbn-releve #releve-enseignant tbody td.yui-dt-col-moyenne {
+  min-width: 76px;
+  background-image: linear-gradient(to right, #d6e4fb var(--mbn-part, 0%), transparent var(--mbn-part, 0%)) !important;
+  background-repeat: no-repeat !important;
+  background-size: calc(100% - 8px) 6px !important;
+  background-position: 4px calc(100% - 3px) !important;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant .bulletin-note-eleve {
+  font-size: 14px;
+}
+/* Notes de chaque évaluation */
+html.mbn-moderne .mbn-releve #releve-enseignant .list-devoirs-eleve {
+  display: flex;
+  gap: 5px;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant .bloc-note-releve {
+  display: inline-flex !important;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  width: auto;
+  min-width: 62px;
+  height: auto;
+  margin: 0;
+  padding: 3px 7px;
+  border: 1px solid #d5dbe1;
+  border-radius: 6px;
+  background: #fff !important;
+  color: #1f2933;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant .bloc-note-releve:hover {
+  border-color: #1d5fd1;
+  background: #e6effc !important;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant .bloc-note-releve > .note-releve {
+  display: inline;
+  font-size: 13px;
+  line-height: 1.4;
+}
+html.mbn-moderne .mbn-releve #releve-enseignant .bloc-note-releve > .note-releve-max {
+  display: inline;
+  padding: 0;
+  background: transparent !important;
+  color: #7b8794 !important;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* ==== Fenêtre de détail d'une note (clic sur une note du relevé) ====
+   Elle est placée hors de #module_notes, directement dans la page. */
+html.mbn-moderne #contenuDevoir_mask {
+  background: #1f2933 !important;
+  opacity: .45 !important;
+  cursor: pointer;
+}
+html.mbn-moderne #contenuDevoir_c,
+html.mbn-moderne #contenuDevoir_c * {
+  box-sizing: border-box;
+}
+html.mbn-moderne #contenuDevoir_c {
+  padding: 0 !important;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(31, 41, 51, .32);
+}
+html.mbn-moderne #contenuDevoir_c > .underlay {
+  display: none !important;
+}
+html.mbn-moderne #contenuDevoir {
+  overflow: hidden;
+  border: 1px solid #cfd6dd !important;
+  border-radius: 12px;
+  background: #fff !important;
+  color: #1f2933;
+  font-family: system-ui, sans-serif;
+  font-size: 13.5px;
+}
+html.mbn-moderne #contenuDevoir > .hd {
+  height: auto !important;
+  margin: 0 !important;
+  padding: 12px 44px 10px 18px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e3e7eb !important;
+  background: #f6f8fa !important;
+  color: #1f2933 !important;
+  line-height: 1.3 !important;
+}
+html.mbn-moderne #contenuDevoir > .hd .kuiwindow_hd {
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: 15px !important;
+  white-space: normal;
+}
+html.mbn-moderne #contenuDevoir > .container-close {
+  top: 13px !important;
+  right: 12px !important;
+}
+html.mbn-moderne #contenuDevoir > .bd {
+  margin: 0 !important;
+  padding: 12px 18px 16px !important;
+  border: 0 !important;
+  background: #fff !important;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+html.mbn-moderne #contenuDevoir > .bd :is(div, span) {
+  height: auto;
+  font-size: inherit;
+  line-height: inherit;
+}
+html.mbn-moderne #contenuDevoir > .bd h4 {
+  height: auto;
+  margin: 12px 0 2px;
+  padding: 0;
+  color: #52606d;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+/* Date et matière de l'évaluation, en tête */
+html.mbn-moderne #contenuDevoir > .bd h4.tooltip-date-matiere {
+  margin: 0 0 4px;
+  color: #3e4c59;
+  font-size: 13px;
+}
+/* Note de l'élève, mise en avant */
+html.mbn-moderne #contenuDevoir > .bd h4.tooltip-note-eleve.d-inbl {
+  display: block;
+}
+html.mbn-moderne #contenuDevoir > .bd div.tooltip-note-eleve {
+  margin-left: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+html.mbn-moderne #contenuDevoir > .bd .tooltip-commentaire-eleve {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f6f8fa;
+  white-space: pre-wrap;
+}
+html.mbn-moderne #contenuDevoir > .bd .tooltip-commentaire-eleve:empty {
+  display: none;
+}
+/* Moyenne, minimum et maximum de la classe, côte à côte */
+html.mbn-moderne #contenuDevoir > .bd div.tooltip-note-classe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
+  margin-left: 0;
+}
+html.mbn-moderne #contenuDevoir > .bd div.tooltip-note-classe > span {
+  width: auto;
+  min-width: 0;
+}
+html.mbn-moderne #contenuDevoir > .bd div.tooltip-note-classe > .tooltip-libelle-moy {
+  color: #52606d;
+}
+html.mbn-moderne #contenuDevoir > .bd div.tooltip-note-classe > span:not(.tooltip-libelle-moy) {
+  margin-right: 14px;
+  font-weight: 700;
+}
+html.mbn-moderne #contenuDevoir > .bd > .ml1 {
+  margin-left: 0;
+  color: #3e4c59;
+}

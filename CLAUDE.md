@@ -63,7 +63,8 @@ d'établissement ou de classe réelle, ni une capture.
   page.
 - Choix d'une heure : toujours par les molettes de `roue-heure.js`
   (`globalThis.mbnRoue`), que l'utilisateur préfère à une liste ou à une grille
-  d'heures (demande du 2026-11-17). Les anciennes pages ne sont pas en
+  d'heures (demande du 2026-11-17). Pour régler un champ d'heure d'une ancienne
+  page depuis un autre script : `globalThis.mbnHeuresAnciennes.regler(champ, 'HH:MM')`. Les anciennes pages ne sont pas en
   « border-box » : tout composant ajouté doit l'imposer lui-même.
 - Raccourcis clavier : n'accepter que les frappes réelles (`isTrusted`), et rien
   quand une fenêtre modale est ouverte.

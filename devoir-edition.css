@@ -1,0 +1,895 @@
+/* MBN modernisé — édition d'une évaluation : paramètres et saisie des notes.
+   devoir-edition.js pose la classe « mbn-edition-devoir » sur #module_notes. */
+
+html.mbn-moderne .mbn-edition-devoir,
+html.mbn-moderne .mbn-edition-devoir * {
+  box-sizing: border-box;
+}
+html.mbn-moderne .mbn-edition-devoir {
+  color: #1f2933;
+  font-size: 13px;
+}
+
+/* ---- Éléments ajoutés ---- */
+.mbn-edition-devoir :is(.mbn-raccourcis, .mbn-avancement, .mbn-repartition, .mbn-navigation, .mbn-choix, .mbn-aide-raccourci) {
+  display: none;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-raccourcis {
+  display: inline-flex !important;
+  float: none;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: auto;
+  margin: 0 0 0 10px;
+  padding: 0 !important;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-puce {
+  height: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 3px 10px;
+  border: 1px solid #c5ccd3;
+  border-radius: 12px;
+  background: #fff;
+  color: #3e4c59;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-puce:hover {
+  border-color: #1d5fd1;
+  color: #1d5fd1;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-puce-active {
+  border-color: #1d5fd1;
+  background: #e6effc;
+  color: #1d5fd1;
+  font-weight: 700;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-puce-echec {
+  border-color: #d9480f;
+  color: #d9480f;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-aide-raccourci {
+  display: inline-block;
+  margin: 0 10px;
+  color: #7b8794;
+  font-size: 11.5px;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+/* ---- Onglets ---- */
+html.mbn-moderne .mbn-edition-devoir #devoir-tabView > .yui-nav {
+  height: auto;
+  padding: 8px 12px 0 !important;
+  border-bottom: 1px solid #d5dbe1;
+  background: #f1f4f8 !important;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tabView > .yui-nav > li {
+  margin: 0 4px -1px 0;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tabView > .yui-nav > li.selected {
+  border-color: #d5dbe1;
+  background: #fff !important;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tabView > .yui-nav em {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tabView > .yui-content {
+  margin: 0;
+  padding: 14px 12px 0;
+}
+html.mbn-couleurs .mbn-edition-devoir[data-mbn-classe] #devoir-tabView > .yui-nav {
+  box-shadow: inset 0 4px 0 var(--mbn-classe-bord);
+}
+
+/* ---- Champs ---- */
+html.mbn-moderne .mbn-edition-devoir :is(select, input[type="text"], textarea) {
+  height: auto;
+  padding: 4px 7px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 13px;
+  line-height: 1.4;
+}
+html.mbn-moderne .mbn-edition-devoir :is(select, input[type="text"], textarea):focus {
+  border-color: #1d5fd1;
+  outline: 2px solid rgba(29, 95, 209, .25);
+}
+html.mbn-moderne .mbn-edition-devoir .datefield input {
+  width: 96px;
+}
+html.mbn-moderne .mbn-edition-devoir .hourfield {
+  width: auto !important;
+  min-width: 64px;
+  padding-right: 0 !important;
+}
+html.mbn-moderne .mbn-edition-devoir .hourfield > input {
+  width: 64px;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .hourfield > .displayHourSelector {
+  display: none !important;
+}
+
+/* ---- Diffusion des résultats (les deux onglets) ---- */
+html.mbn-moderne .mbn-edition-devoir .date-diffusion-resultats {
+  height: auto;
+  min-height: 32px;
+  margin: 8px 0 4px;
+  padding: 0;
+  line-height: 30px;
+}
+html.mbn-moderne .mbn-edition-devoir .date-diffusion-resultats > label {
+  line-height: 1.3;
+  padding-top: 7px;
+}
+html.mbn-moderne .mbn-edition-devoir .ligne_parametre.slug {
+  height: auto;
+  margin: 4px 0 12px;
+  overflow: hidden;
+}
+html.mbn-moderne .mbn-edition-devoir .ligne_parametre.slug > .libelle {
+  display: none;
+}
+html.mbn-moderne .mbn-edition-devoir .ligne_parametre.slug > :is(.js-date-visibilite, .js-date-visibilite-outdated):not(.hide) {
+  display: inline-block;
+  margin-left: 204px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #e6effc;
+  color: #1c4fa3;
+  font-size: 12.5px;
+}
+html.mbn-moderne .mbn-edition-devoir .ligne_parametre.slug > .js-date-visibilite-outdated:not(.hide) {
+  background: #fff4e0;
+  color: #8a4b00;
+}
+
+/* ---- Barre de validation, toujours visible ---- */
+html.mbn-moderne .mbn-edition-devoir .valider-formulaire {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: 12px;
+  padding: 8px 12px !important;
+  border-top: 1px solid #d5dbe1;
+  background: rgba(247, 249, 251, .96) !important;
+}
+html.mbn-moderne .mbn-edition-devoir .valider-formulaire input {
+  height: 32px !important;
+  padding: 0 16px !important;
+  border: 1px solid #c5ccd3 !important;
+  border-radius: 6px;
+  background: #fff !important;
+  color: #3e4c59 !important;
+  font-size: 13px;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .valider-formulaire input[type="submit"] {
+  border-color: #1d5fd1 !important;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+}
+
+/* ==== Onglet des paramètres ==== */
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres:not(.yui-hidden) > .gestion,
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres:not(.yui-hidden) > .valider-formulaire {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres fieldset {
+  margin: 0 0 14px;
+  padding: 12px 16px !important;
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  background: #fff !important;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres legend {
+  width: auto;
+  padding: 0 8px 0 0;
+  color: #1f2933;
+  font-size: 14px;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres legend.clickable_element {
+  padding-left: 18px;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres :is(.ligne_parametre, .ligne_parametre_grisee):not(.date-diffusion-resultats, .slug) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  height: auto;
+  min-height: 30px;
+  margin: 6px 0;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres :is(.ligne_parametre, .ligne_parametre_grisee) > label {
+  flex: 0 0 204px;
+  width: 204px;
+  color: #3e4c59;
+  font-weight: 600;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres :is(.ligne_parametre, .ligne_parametre_grisee) > :is(select, input[type="text"]) {
+  flex: 0 1 auto;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres .ligne_parametre > select {
+  width: 300px;
+  max-width: 100%;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres .ligne_parametre > span.checkbox {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 0;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres :is(#DEVOIR_BAREME, #DEVOIR_COEFF) {
+  width: 64px;
+  text-align: right;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres .mbn-raccourcis {
+  margin-left: 2px;
+}
+/* Les deux moitiés des paramètres avancés, l'une sous l'autre. */
+html.mbn-moderne .mbn-edition-devoir #param_avances_conteneur > div:not(.msg-information) {
+  display: block;
+  float: none;
+  width: auto;
+  margin: 0;
+  border: 0;
+}
+html.mbn-moderne .mbn-edition-devoir #param_avances_conteneur .ligne_parametre.ml1 {
+  margin-left: 0;
+  align-items: flex-start;
+}
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres textarea {
+  flex: 1 1 300px;
+  width: auto;
+  min-height: 70px;
+}
+
+/* ==== Onglet de saisie des notes ==== */
+html.mbn-moderne .mbn-edition-devoir #devoir-tab-notes > .en-colonne > .date-diffusion-resultats > label {
+  width: 204px;
+}
+html.mbn-moderne .mbn-edition-devoir #js-ecran-eval {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 16px;
+  width: auto;
+  max-width: 1560px;
+  border: 0;
+}
+html.mbn-moderne .mbn-edition-devoir #js-ecran-eval > .grille-eleves {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  width: auto;
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+html.mbn-moderne .mbn-edition-devoir .grille-eleves__header {
+  display: flex;
+  flex: 0 0 calc(100% + 20px);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  height: auto;
+  margin: 0 -10px 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e4e7eb;
+  border-radius: 10px 10px 0 0;
+  background: #f7f9fb !important;
+}
+html.mbn-moderne .mbn-edition-devoir .grille-eleves__header > label {
+  font-weight: 600;
+}
+html.mbn-moderne .mbn-edition-devoir #js-recherche-eleve {
+  width: 200px;
+  font-weight: 400;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-avancement {
+  display: flex;
+  flex: 1 1 160px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 400;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-jauge {
+  flex: 1 1 0;
+  height: 6px;
+  border-radius: 3px;
+  background: #e4e7eb;
+  overflow: hidden;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-jauge-valeur {
+  display: block;
+  height: 100%;
+  background: #d9780f;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-complet .mbn-jauge-valeur {
+  background: #2b8a3e;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-compte {
+  color: #52606d;
+  white-space: nowrap;
+}
+html.mbn-moderne .mbn-edition-devoir .filtre_saisie_notes {
+  float: none;
+  width: auto;
+  height: auto;
+  margin-left: auto;
+  color: transparent;
+  font-size: 0;
+  white-space: nowrap;
+}
+html.mbn-moderne .mbn-edition-devoir .filtre_saisie_notes > span {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 3px 10px;
+  border: 1px solid #c5ccd3;
+  border-radius: 12px;
+  background: #fff;
+  color: #3e4c59;
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .filtre_saisie_notes > span[style*="none"],
+html.mbn-moderne .mbn-edition-devoir .filtre_saisie_notes > span.hide {
+  display: none;
+}
+html.mbn-moderne .mbn-edition-devoir .filtre_saisie_notes > span:hover {
+  border-color: #1d5fd1;
+  color: #1d5fd1;
+}
+
+html.mbn-moderne .mbn-edition-devoir .colonne_eleves {
+  float: none;
+  flex: 1 1 230px;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve {
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0 0 4px;
+  border: 1px solid #e4e7eb;
+  border-radius: 6px;
+  background: #fff;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve:hover {
+  border-color: #9fb3c8;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve[data-mbn-vide] {
+  border-color: #f0c98a;
+  background: #fff7e8;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve.eleve--is-selected {
+  border-color: #1d5fd1;
+  background: #e6effc !important;
+  box-shadow: inset 0 0 0 1px #1d5fd1;
+  color: #1f2933;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve.eleve--is-selected .eleve__name {
+  color: #12366f;
+  font-weight: 700;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve > .selection__multiple {
+  float: none;
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  padding: 0 4px 0 8px;
+  border: 0;
+  line-height: 0;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve > .selection__multiple input {
+  margin: 0;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve > .selection__simple {
+  display: flex;
+  float: none;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  padding: 5px 8px 5px 4px;
+  border: 0;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__name {
+  float: none;
+  flex: 1 1 0;
+  order: 1;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__comp {
+  float: none;
+  flex: 0 0 auto;
+  order: 2;
+  margin: 0;
+  border-spacing: 2px 0;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__comp-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__note_affichee {
+  display: flex;
+  float: none;
+  flex: 0 0 auto;
+  order: 3;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 3px;
+  min-width: 62px;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: #1f2933;
+}
+/* MBN dessine une barre de fraction au-dessus du barème et un cadre autour
+   de la note de l'élève choisi : inutiles ici, la note et le barème sont côte à côte. */
+html.mbn-moderne .mbn-edition-devoir .eleve :is(.eleve__note_affichee, .eleve__note, .eleve__bareme) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__note {
+  margin: 0;
+  font-size: 14px;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__bareme {
+  margin: 0;
+  color: #7b8794;
+  font-size: 11px;
+  font-weight: 400;
+}
+html.mbn-moderne .mbn-edition-devoir .eleve .eleve__bareme::before {
+  content: "/ ";
+}
+
+html.mbn-moderne .mbn-edition-devoir .grille-eleves__footer {
+  display: flex;
+  flex: 0 0 calc(100% + 20px);
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: auto;
+  margin: 4px -10px 0;
+  padding: 7px 10px;
+  border-top: 1px solid #e4e7eb;
+  border-radius: 0 0 10px 10px;
+  background: #f7f9fb !important;
+  font-size: 13px;
+}
+html.mbn-moderne .mbn-edition-devoir .grille-eleves__footer > strong {
+  margin-left: 12px;
+  color: #52606d;
+  font-weight: 400;
+}
+html.mbn-moderne .mbn-edition-devoir .grille-eleves__footer > span[id] {
+  font-weight: 700;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-repartition {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+  margin-left: 16px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-repartition > i {
+  width: 9px;
+  border-radius: 2px 2px 0 0;
+  background: #9fb3c8;
+}
+
+/* Fiche de l'élève */
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve {
+  display: block;
+  position: sticky;
+  top: 48px;
+  flex: 0 0 400px;
+  width: 400px;
+  padding-bottom: 8px;
+  border: 1px solid #d5dbe1;
+  border-radius: 10px;
+  background: #fff;
+}
+html.mbn-moderne .mbn-edition-devoir .evaluations-eleve__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e4e7eb;
+  border-radius: 10px 10px 0 0;
+  background: #e6effc !important;
+  color: #12366f;
+  font-size: 14px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-navigation {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 3px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-navigation .mbn-puce {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .form-field {
+  height: auto;
+  padding: 8px 12px 0;
+  overflow: hidden;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .form-label {
+  display: block;
+  float: none;
+  width: auto;
+  height: auto;
+  margin: 0 0 3px;
+  padding: 0;
+  overflow: visible;
+  color: #52606d;
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: normal;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .form-field--inline {
+  display: flex;
+  flex-direction: column;
+}
+/* La note d'abord, les motifs de non-notation ensuite. */
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .form-field--inline > :is(label:first-of-type, .mbn-liste-remplacee, .mbn-choix) {
+  order: 2;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .form-field--inline > label:first-of-type {
+  margin-top: 10px;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve__note {
+  align-self: flex-start;
+  width: 110px;
+  padding: 5px 10px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: right;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve .mbn-aide-raccourci {
+  margin: 4px 0 0;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve select.mbn-liste-remplacee {
+  display: none !important;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve select.select_competence {
+  float: none;
+  width: 100%;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  clear: both;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-bouton {
+  flex: 0 1 auto;
+  height: auto;
+  min-width: 34px;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3e4c59;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-niveaux {
+  align-items: center;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-niveaux > :is(.mbn-choix-code, .mbn-choix-aucun) {
+  flex: 0 0 38px;
+  padding: 5px 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-descriptif {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 6px;
+  color: #52606d;
+  font-size: 12px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-bouton:focus-visible {
+  outline: 3px solid #f59f00;
+  outline-offset: 2px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-bouton:hover {
+  border-color: #1d5fd1;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-colore {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--mbn-niveau-fond) 28%, #fff);
+  color: #1f2933;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-actif {
+  border-color: #1d5fd1;
+  background: #e6effc;
+  box-shadow: 0 0 0 2px #1d5fd1;
+  color: #12366f;
+  font-weight: 700;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-colore.mbn-choix-actif {
+  background: var(--mbn-niveau-fond);
+  color: var(--mbn-niveau-texte, #1f2933);
+  box-shadow: 0 0 0 2px #1f2933;
+  border-color: #fff;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-choix-aucun.mbn-choix-actif {
+  box-shadow: none;
+  border-color: #9aa5b1;
+  background: #f1f4f8;
+  color: #7b8794;
+  font-weight: 400;
+}
+html.mbn-moderne .mbn-edition-devoir #js-eval-eleve__appreciation {
+  width: 100%;
+  height: 90px;
+}
+@media (max-width: 1100px) {
+  html.mbn-moderne .mbn-edition-devoir #js-ecran-eval { flex-direction: column; align-items: stretch; }
+  html.mbn-moderne .mbn-edition-devoir #js-eval-eleve { position: static; flex: none; width: auto; }
+}
+
+/* ==== Fenêtre de choix des compétences ====
+   Placée hors de #module_notes, directement dans la page. */
+html.mbn-moderne #selecteur_competences_popin_mask {
+  background: #1f2933 !important;
+  opacity: .45 !important;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin_c,
+html.mbn-moderne #selecteur_competences_popin_c * {
+  box-sizing: border-box;
+}
+/* Centrée dans la fenêtre, quelle que soit sa nouvelle taille. */
+html.mbn-moderne #selecteur_competences_popin_c {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  padding: 0 !important;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(31, 41, 51, .32);
+}
+html.mbn-moderne #selecteur_competences_popin_c > .underlay {
+  display: none !important;
+}
+html.mbn-moderne #selecteur_competences_popin {
+  width: min(920px, 94vw) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: hidden;
+  border: 1px solid #cfd6dd !important;
+  border-radius: 12px;
+  background: #fff !important;
+  color: #1f2933;
+  font-family: system-ui, sans-serif;
+  font-size: 13.5px;
+}
+html.mbn-moderne #selecteur_competences_popin > .hd {
+  height: auto !important;
+  margin: 0 !important;
+  padding: 12px 44px 10px 18px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e3e7eb !important;
+  background: #f6f8fa !important;
+  color: #1f2933 !important;
+  line-height: 1.3 !important;
+}
+html.mbn-moderne #selecteur_competences_popin > .hd .kuiwindow_hd {
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: 15px !important;
+}
+html.mbn-moderne #selecteur_competences_popin > .container-close {
+  top: 13px !important;
+  right: 12px !important;
+}
+html.mbn-moderne #selecteur_competences_popin > .bd {
+  margin: 0 !important;
+  padding: 14px 18px !important;
+  border: 0 !important;
+  background: #fff !important;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+/* Référentiel et discipline */
+html.mbn-moderne #selecteur_competences_popin .filtre {
+  padding: 0;
+}
+html.mbn-moderne #selecteur_competences_popin .filtre > div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 2px 10px;
+  align-items: center;
+  height: auto;
+  margin: 0 0 8px;
+}
+html.mbn-moderne #selecteur_competences_popin .filtre label {
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  color: #52606d;
+  font-size: 13px;
+  font-weight: 600;
+}
+html.mbn-moderne #selecteur_competences_popin .filtre select {
+  width: 100%;
+  height: auto;
+  padding: 5px 8px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 13.5px;
+}
+html.mbn-moderne #selecteur_competences_popin .desc-referentiel-competence-conteneur {
+  grid-column: 2;
+  margin: 0;
+  color: #7b8794;
+  font-size: 12px;
+}
+html.mbn-moderne #selecteur_competences_popin .mbn-filtre-competences {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 4px 0 8px;
+  padding: 6px 10px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f2933;
+  font: inherit;
+}
+#selecteur_competences_popin .mbn-filtre-competences {
+  display: none;
+}
+html.mbn-moderne #selecteur_competences_popin .mbn-masque {
+  display: none !important;
+}
+/* Liste des compétences */
+html.mbn-moderne #selecteur_competences_popin #body_selection_competence {
+  max-height: min(58vh, 640px) !important;
+  padding-right: 6px;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+html.mbn-moderne #selecteur_competences_popin .competence_section_accordeon {
+  height: auto;
+  margin: 8px 0 4px;
+  padding: 6px 10px 6px 26px;
+  border-radius: 6px;
+  background-color: #f1f4f8;
+  color: #1f2933;
+  font-size: 13.5px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin .competence_section_accordeon > button {
+  height: auto;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  white-space: normal;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin .js-cb-sous-comp {
+  width: 16px;
+  height: 16px;
+  margin: 0 0 0 12px !important;
+  vertical-align: middle;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin .ligne-cb-competence {
+  width: calc(100% - 36px);
+  height: auto;
+  border-radius: 6px;
+  vertical-align: middle;
+}
+html.mbn-moderne #selecteur_competences_popin .ligne-cb-competence:hover {
+  background: #eef4fd;
+}
+html.mbn-moderne #selecteur_competences_popin .ligne-cb-competence > label {
+  display: block;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 5px 8px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin .js-cb-sous-comp:checked + .ligne-cb-competence > label {
+  font-weight: 700;
+}
+html.mbn-moderne #selecteur_competences_popin .js-indicateur-nb-devoir:not(:empty) {
+  margin-left: 10px;
+  padding: 0 8px;
+  border-radius: 10px;
+  background: #e6effc;
+  color: #1c4fa3;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+/* Boutons */
+html.mbn-moderne #selecteur_competences_popin .valider-formulaire {
+  margin: 12px -18px -14px;
+  padding: 10px 18px !important;
+  border-top: 1px solid #e3e7eb;
+  background: #f6f8fa !important;
+  text-align: right;
+}
+html.mbn-moderne #selecteur_competences_popin .valider-formulaire :is(button, input) {
+  height: 32px !important;
+  margin-left: 6px;
+  padding: 0 16px !important;
+  border: 1px solid #c5ccd3 !important;
+  border-radius: 6px;
+  background: #fff !important;
+  color: #3e4c59 !important;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+html.mbn-moderne #selecteur_competences_popin .valider-formulaire .submit {
+  border-color: #1d5fd1 !important;
+  background: #1d5fd1 !important;
+  color: #fff !important;
+}

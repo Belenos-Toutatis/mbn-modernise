@@ -42,6 +42,11 @@
     champ.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
   };
 
+  // Pour les raccourcis d'autres scripts : règle un champ d'heure sur « HH:MM ».
+  globalThis.mbnHeuresAnciennes = {
+    regler: (champ, heure) => { if (champ.value !== heure) transmettre(champ, champ.value, heure); },
+  };
+
   const ouvrir = (champ) => {
     if (!document.documentElement.classList.contains('mbn-moderne')) return;
     if (champ.disabled || champ.readOnly || roue.champOuvert() === champ) return;

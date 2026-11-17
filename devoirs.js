@@ -1,12 +1,19 @@
-// MBN modernisé — liste des évaluations (devoirs) de l'enseignant :
+// MBN modernisé — listes des évaluations (devoirs) et des relevés de notes de
+// l'enseignant, bâties sur le même tableau :
 //   1. mémorise les filtres choisis et le tri du tableau, et les rétablit à
 //      chaque chargement de la page (y compris après un rafraîchissement) ;
 //   2. repère la classe de chaque ligne pour la colorer (devoirs.css).
 
 (() => {
-  const formulaire = document.getElementById('filtre-liste-devoirs-enseignant');
-  const tableau = document.getElementById('liste-devoir');
+  const releves = !!document.getElementById('liste-releves-enseignant') ||
+    !!document.getElementById('filtre-liste-releves-enseignant');
+  const formulaire = document.getElementById(releves ? 'filtre-liste-releves-enseignant' : 'filtre-liste-devoirs-enseignant');
+  const tableau = document.getElementById(releves ? 'liste-releves-enseignant' : 'liste-devoir');
   if (!formulaire && !tableau) return;
+  // Chaque liste mémorise ses propres filtres et son propre tri.
+  const CLE_FILTRES = releves ? 'relevesFiltres' : 'devoirsFiltres';
+  const CLE_TRI = releves ? 'relevesTri' : 'devoirsTri';
+  const GARDE = releves ? 'mbnReleves' : 'mbnDevoirs';
 
   const attendre = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -47,9 +54,9 @@
     formulaire.addEventListener('change', async (e) => {
       const champ = e.target;
       if (!e.isTrusted || champ.tagName !== 'SELECT' || !champ.id) return;
-      const { devoirsFiltres } = await chrome.storage.local.get({ devoirsFiltres: {} });
-      devoirsFiltres[champ.id] = champ.value;
-      chrome.storage.local.set({ devoirsFiltres });
+      const memorises = (await chrome.storage.local.get({ [CLE_FILTRES]: {} }))[CLE_FILTRES];
+      memorises[champ.id] = champ.value;
+      chrome.storage.local.set({ [CLE_FILTRES]: memorises });
     }, true);
   }
 
@@ -64,7 +71,7 @@
       const parDefaut = [...champ.options].find((o) => o.defaultSelected) || champ.options[0];
       return valeursRestaurees && !!parDefaut && parDefaut.value !== voulu;
     });
-    if (!aChanger.length || dejaTente('mbnDevoirsFiltres2')) return;
+    if (!aChanger.length || dejaTente(GARDE + 'Filtres2')) return;
     // Toutes les valeurs d'abord, puis les signaux : si le premier signal
     // envoie le formulaire, il part avec tous les filtres.
     aChanger.forEach((champ) => { champ.value = memorises[champ.id]; });
@@ -82,7 +89,7 @@
         const th = colonneTriee();
         if (!th) return;
         chrome.storage.local.set({
-          devoirsTri: { colonne: cleColonne(th), sens: th.classList.contains('yui-dt-desc') ? 'desc' : 'asc' },
+          [CLE_TRI]: { colonne: cleColonne(th), sens: th.classList.contains('yui-dt-desc') ? 'desc' : 'asc' },
         });
       }, 500);
     }, true);
@@ -91,7 +98,7 @@
   const retablirTri = async (tri) => {
     if (!tableau || !tri || !tri.colonne) return;
     const th = tableau.querySelector('thead th.yui-dt-col-' + CSS.escape(tri.colonne));
-    if (!th || th.classList.contains('yui-dt-' + tri.sens) || dejaTente('mbnDevoirsTri2')) return;
+    if (!th || th.classList.contains('yui-dt-' + tri.sens) || dejaTente(GARDE + 'Tri2')) return;
     // Un clic trie dans un sens, un second inverse.
     for (let i = 0; i < 2 && !th.classList.contains('yui-dt-' + tri.sens); i++) {
       const lien = th.querySelector('a.yui-dt-sortable');
@@ -133,10 +140,10 @@
     new MutationObserver(planifier).observe(tableau, { childList: true, subtree: true, characterData: true });
   }
 
-  chrome.storage.local.get({ devoirsFiltres: {}, devoirsTri: null }).then(async ({ devoirsFiltres, devoirsTri }) => {
-    retablirFiltres(devoirsFiltres);
+  chrome.storage.local.get({ [CLE_FILTRES]: {}, [CLE_TRI]: null }).then(async (memoire) => {
+    retablirFiltres(memoire[CLE_FILTRES]);
     // Le tri n'est rétabli qu'une fois le tableau rempli et filtré.
     if (tableau) await attendreCalme(tableau);
-    retablirTri(devoirsTri);
+    retablirTri(memoire[CLE_TRI]);
   });
 })();

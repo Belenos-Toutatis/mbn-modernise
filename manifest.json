@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.34.2",
+  "version": "0.35.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "icons": {
     "16": "icones/icone-16.png",
@@ -41,6 +41,9 @@
         "agenda-moderne.css",
         "cahier-liste.css",
         "devoirs.css",
+        "devoir-edition.css",
+        "releve.css",
+        "fiche-eleve.css",
         "appels.css",
         "seance.css",
         "copier-vers.css",
@@ -79,6 +82,9 @@
         "cahier-criteres.js",
         "cahier-choix.js",
         "devoirs.js",
+        "devoir-edition.js",
+        "releve.js",
+        "fiche-eleve.js",
         "appels.js",
         "menu.js",
         "rafraichissement.js",

@@ -17,6 +17,7 @@
   let cible = null;
   let libelle = '';
   let titreRetire = false;
+  let retires = []; // éléments dont le « title » est retiré le temps du survol
   let minuterie = 0;
   let x = 0;
   let y = 0;
@@ -24,12 +25,13 @@
   const cacher = () => {
     clearTimeout(minuterie);
     if (bulle) bulle.style.display = 'none';
-    if (cible && titreRetire) {
-      if (cible.dataset.mbnTitre !== undefined && !cible.hasAttribute('title')) {
-        cible.setAttribute('title', cible.dataset.mbnTitre);
+    for (const el of retires) {
+      if (el.dataset.mbnTitre !== undefined && !el.hasAttribute('title')) {
+        el.setAttribute('title', el.dataset.mbnTitre);
       }
-      delete cible.dataset.mbnTitre;
+      delete el.dataset.mbnTitre;
     }
+    retires = [];
     cible = null;
     libelle = '';
     titreRetire = false;
@@ -81,8 +83,13 @@
       cible = el;
       libelle = texte;
       titreRetire = true;
-      el.dataset.mbnTitre = texte;
-      el.removeAttribute('title');
+      // Les « title » des éléments englobants sont retirés aussi : sinon le
+      // navigateur afficherait le leur par-dessus notre infobulle.
+      for (let parent = el; parent; parent = parent.parentElement && parent.parentElement.closest('[title]')) {
+        parent.dataset.mbnTitre = parent.getAttribute('title');
+        parent.removeAttribute('title');
+        retires.push(parent);
+      }
     } else {
       const texte = libelleCache(el);
       if (!texte) return;

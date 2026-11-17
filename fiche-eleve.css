@@ -1,0 +1,152 @@
+/* MBN modernisé — fiche d'un élève.
+   fiche-eleve.js pose la classe « mbn-fiche-eleve » sur <main>.
+   La page d'origine s'étire sur toute la largeur de l'écran : un résumé de
+   840 px presque vide, et à droite des lignes dont le libellé et la valeur
+   sont séparés par plus d'un mètre de blanc sur un grand écran. */
+
+/* ---- Résumé étroit à gauche, contenu à une largeur de lecture ----
+   Le cadre de la page (résumé, onglets) reste identique d'un onglet à
+   l'autre : seul le contenu sous les onglets est limité en largeur, sauf
+   l'emploi du temps qui profite de tout l'écran. */
+html.mbn-moderne main.mbn-fiche-eleve > .grid--md {
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  align-items: start;
+}
+html.mbn-moderne main.mbn-fiche-eleve > .grid--md > .grid__item:not(.col--border) {
+  grid-column: 2 / 3 !important;
+  min-height: calc(100vh - 132px);
+}
+html.mbn-moderne main.mbn-fiche-eleve > .grid--md > .grid__item:not(.col--border) > :not(.content-filter, :has(#agenda-eleve)) {
+  max-width: 1200px;
+}
+@media (max-width: 1000px) {
+  html.mbn-moderne main.mbn-fiche-eleve > .grid--md {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html.mbn-moderne main.mbn-fiche-eleve > .grid--md > .grid__item:not(.col--border) {
+    grid-column: 1 / 2 !important;
+  }
+}
+
+/* ---- Résumé de l'élève ---- */
+html.mbn-moderne main.mbn-fiche-eleve > .grid--md > .grid__item.col--border {
+  position: sticky;
+  top: 40px;
+  border: 0;
+}
+html.mbn-moderne main.mbn-fiche-eleve .col--border > .panel {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 0 12px;
+  align-items: center;
+  width: auto;
+  padding: 16px;
+}
+html.mbn-moderne main.mbn-fiche-eleve .col--border > .panel > .avatar {
+  width: 72px;
+  height: 72px;
+}
+html.mbn-moderne main.mbn-fiche-eleve .col--border > .panel > .avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Le nom à côté de la photo, le reste dessous sur toute la largeur. */
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume {
+  display: contents;
+}
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume > h2 {
+  margin: 0;
+  padding: 0;
+}
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume > :not(h2) {
+  grid-column: 1 / -1;
+}
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume > h2 + * {
+  margin-top: 12px;
+}
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume .cartouche {
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+html.mbn-couleurs main.mbn-fiche-eleve #sele--ficheeleve_resume .mbn-pastille-classe {
+  background: var(--mbn-classe-fond) !important;
+  color: var(--mbn-classe-texte) !important;
+  box-shadow: inset 0 0 0 1px var(--mbn-classe-bord);
+}
+html.mbn-moderne main.mbn-fiche-eleve #sele--ficheeleve_resume summary {
+  cursor: pointer;
+}
+
+/* ---- Onglet des contacts : un cadre par responsable ---- */
+html.mbn-moderne main.mbn-fiche-eleve .panel.bg--slate-lighter {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: transparent !important;
+}
+html.mbn-moderne main.mbn-fiche-eleve .panel.bg--slate-lighter > h2 {
+  color: #52606d;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur {
+  margin: 0 16px 12px;
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur > .panel {
+  padding: 12px 14px;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur + hr.divider {
+  display: none;
+}
+/* Libellé et valeur côte à côte, au lieu d'être alignés aux deux bords. */
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur li.grid--template-columns-sm-2 {
+  grid-template-columns: 170px minmax(0, 1fr) !important;
+  align-items: center;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur .text--right-sm {
+  text-align: left !important;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur .text--right-sm > .cartouche:first-child {
+  margin-left: 0;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur address {
+  font-style: normal;
+}
+
+/* ---- Onglet de la vie scolaire : compteurs en cartes ---- */
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content > .flex\@xsb > .flex__item {
+  padding: 4px 14px 10px;
+  border: 1px solid #e4e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content > .flex\@xsb > .col {
+  display: none;
+}
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content > .divider {
+  visibility: hidden;
+}
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content h3 {
+  color: #52606d;
+}
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content .js-analyseur-evt-detail {
+  padding: 2px 6px;
+  margin-left: -6px;
+  border-radius: 6px;
+}
+html.mbn-moderne main.mbn-fiche-eleve .analyseurEvenements-content .js-analyseur-evt-detail:hover {
+  background: #e6effc;
+  text-decoration: none;
+}
+
+/* ---- Onglet des résultats : arbre des bulletins ---- */
+html.mbn-moderne main.mbn-fiche-eleve #arbre-resultats .jstree-leaf > .jstree-wholerow {
+  border-bottom: 1px solid #eef1f4;
+}
+html.mbn-moderne main.mbn-fiche-eleve #arbre-resultats .js-tree {
+  max-height: none;
+}
