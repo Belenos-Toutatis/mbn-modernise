@@ -1,17 +1,17 @@
-/* MBN modernisé — listes des évaluations (devoirs) et des relevés de notes
-   de l'enseignant : même tableau, mêmes filtres. */
+/* MBN modernisé — listes des évaluations (devoirs), des relevés de notes, des
+   appréciations (bulletins) et des conseils de classe de l'enseignant : même tableau, mêmes filtres. */
 
 /* ---- Couleurs par classe (option « Couleurs ») ----
    devoirs.js pose sur chaque ligne l'attribut data-mbn-classe et les
    variables --mbn-classe-fond / -bord / -pale. */
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe],
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe] > td {
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe],
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe] > td {
   background-color: var(--mbn-classe-pale) !important;
 }
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe] > td:first-child {
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe] > td:first-child {
   box-shadow: inset 5px 0 0 var(--mbn-classe-bord);
 }
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe] > td.yui-dt-col-libelleGroupe .yui-dt-liner {
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe] > td:is(.yui-dt-col-libelleGroupe, .yui-dt-col-classeLibelle) .yui-dt-liner {
   max-width: none !important;
   margin-left: 8px;
   padding: 2px 10px !important;
@@ -20,7 +20,7 @@ html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mb
   color: var(--mbn-classe-texte, #1f2933) !important;
   font-weight: 700;
 }
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe]:hover > td {
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe]:hover > td {
   filter: brightness(.96);
 }
 
@@ -31,17 +31,17 @@ html.mbn-moderne #module_notes {
 }
 
 /* Filtres */
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) fieldset {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) fieldset {
   padding: 10px 14px !important;
   border: 1px solid #e4e7eb;
   border-radius: 8px;
   background: #f7f9fb !important;
   line-height: 2.6;
 }
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) :is(legend, label) {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) :is(legend, label) {
   font-size: 14px;
 }
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) select {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) select {
   height: auto !important;
   max-width: 240px !important;
   padding: 5px 8px;
@@ -54,70 +54,70 @@ html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-ens
 }
 
 /* Tableau */
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) table {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) table {
   width: 100%;
   border: 1px solid #e4e7eb;
   border-radius: 8px;
   border-spacing: 0;
   overflow: hidden;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) :is(th, td) {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) :is(th, td) {
   border: 0 !important;
   border-bottom: 1px solid #e4e7eb !important;
   font-size: 14px;
   vertical-align: middle;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) thead th {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) thead th {
   background: #f1f4f8 !important;
   color: #3e4c59;
   font-weight: 600;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) thead th .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) thead th .yui-dt-liner {
   padding-top: 8px;
   padding-bottom: 8px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) thead th a {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) thead th a {
   color: inherit;
   font-size: inherit;
   text-decoration: none;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) thead th:is(.yui-dt-asc, .yui-dt-desc) {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) thead th:is(.yui-dt-asc, .yui-dt-desc) {
   color: #1d5fd1;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody td .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody td .yui-dt-liner {
   padding-top: 7px;
   padding-bottom: 7px;
   font-size: 14px;
 }
 /* Titres et périodes en entier, au lieu d'être coupés à 137 px et 66 px. */
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody td:is(.yui-dt-col-titreDevoir, .yui-dt-col-libellePeriode,
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody td:is(.yui-dt-col-titreDevoir, .yui-dt-col-libellePeriode,
   .yui-dt-col-libelleMatiere, .yui-dt-col-dateDevoir) .yui-dt-liner {
   max-width: none !important;
   white-space: normal !important;
   overflow: visible !important;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody td.yui-dt-col-titreDevoir .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody td.yui-dt-col-titreDevoir .yui-dt-liner {
   font-weight: 600;
 }
-html.mbn-moderne:not(.mbn-couleurs) :is(#liste-devoir, #liste-releves-enseignant) tbody tr:hover > td,
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody tr:not([data-mbn-classe]):hover > td {
+html.mbn-moderne:not(.mbn-couleurs) :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr:hover > td,
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr:not([data-mbn-classe]):hover > td {
   background-color: #eef4fd !important;
 }
 
 /* Avancement de la saisie : vert si complet, orange sinon. */
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress {
   height: 16px;
   border-radius: 8px;
   background: #9aa5b1 !important;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress-value {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress-value {
   height: 100%;
   background: #d9480f !important;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress-value[style*="100%"] {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress-value[style*="100%"] {
   background: #2b8a3e !important;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress span {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress span {
   color: #fff;
   font-size: 11px;
   line-height: 16px;
@@ -125,13 +125,13 @@ html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress spa
 }
 
 /* Actions */
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) td.yui-dt-col-actionsDevoir a {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) td:is(.yui-dt-col-actionsDevoir, .yui-dt-col-actions) a {
   display: inline-block;
   padding: 4px;
   border-radius: 6px;
   line-height: 0;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) td.yui-dt-col-actionsDevoir a:hover {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) td:is(.yui-dt-col-actionsDevoir, .yui-dt-col-actions) a:hover {
   background: rgba(31, 41, 51, .12);
 }
 
@@ -139,37 +139,104 @@ html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) td.yui-dt-col-act
 html.mbn-moderne #module_notes {
   font-size: 12.5px;
 }
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) fieldset {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) fieldset {
   padding: 6px 12px !important;
   line-height: 2.3;
 }
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) :is(legend, label),
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) select {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) :is(legend, label),
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) select {
   font-size: 12.5px;
 }
-html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant) select {
+html.mbn-moderne :is(#filtre-liste-devoirs-enseignant, #filtre-liste-releves-enseignant, #filtre-liste-bulletins-enseignant, #filtre-liste-conseils-classe) select {
   padding: 3px 6px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) :is(th, td),
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody td .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) :is(th, td),
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody td .yui-dt-liner {
   font-size: 12.5px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) thead th .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) thead th .yui-dt-liner {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) tbody td .yui-dt-liner {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody td .yui-dt-liner {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant) tbody tr[data-mbn-classe] > td.yui-dt-col-libelleGroupe .yui-dt-liner {
+html.mbn-couleurs :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) tbody tr[data-mbn-classe] > td:is(.yui-dt-col-libelleGroupe, .yui-dt-col-classeLibelle) .yui-dt-liner {
   padding: 1px 9px !important;
   font-size: 12px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress {
   height: 14px;
 }
-html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant) .kde-progress span {
+html.mbn-moderne :is(#liste-devoir, #liste-releves-enseignant, #liste-bulletins-enseignant, #gestion-conseils-classes) .kde-progress span {
   font-size: 10.5px;
   line-height: 14px;
+}
+
+/* ==== Liste des conseils de classe ====
+   Cette page n'est pas dans #module_notes : mêmes réglages de texte. */
+html.mbn-moderne #contenu:has(> #gestion-conseils-classes) {
+  color: #1f2933;
+  font-size: 12.5px;
+}
+html.mbn-moderne #filtre-liste-conseils-classe fieldset {
+  margin-bottom: 10px !important;
+}
+/* Pastille de classe à la largeur de son texte, dans une colonne étroite. */
+html.mbn-couleurs :is(#gestion-conseils-classes, #liste-bulletins-enseignant) tbody tr[data-mbn-classe] > td:is(.yui-dt-col-classeLibelle, .yui-dt-col-libelleGroupe) .yui-dt-liner {
+  width: fit-content;
+}
+/* Appréciations : l'en-tête des deux colonnes de dates tenait sur deux lignes
+   serrées ; les icônes d'action restent côte à côte. */
+html.mbn-moderne #liste-bulletins-enseignant td.yui-dt-col-actions .yui-dt-liner {
+  white-space: nowrap;
+}
+html.mbn-moderne #gestion-conseils-classes tbody td.yui-dt-col-libellePresident .yui-dt-liner {
+  max-width: none !important;
+  white-space: normal !important;
+}
+html.mbn-moderne #gestion-conseils-classes td.yui-dt-col-actions .yui-dt-liner {
+  max-width: none !important;
+}
+/* Actions sur les conseils cochés : liste et bouton alignés, plus lisibles. */
+html.mbn-moderne #zone-actions-masses {
+  margin-bottom: 8px;
+}
+html.mbn-moderne #actions-masse-conseils-classe > .inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html.mbn-moderne #actions-masse-conseils-classe label {
+  color: #3e4c59;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+html.mbn-moderne #actions-masse-conseils-classe select {
+  box-sizing: border-box;
+  height: auto !important;
+  padding: 3px 6px;
+  border: 1px solid #c5ccd3;
+  border-radius: 6px;
+  background-color: #fff !important;
+  color: #1f2933;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+html.mbn-moderne #actions-masse-conseils-classe input[type="submit"] {
+  box-sizing: border-box;
+  height: auto;
+  padding: 3px 12px;
+  border: 1px solid #1d5fd1;
+  border-radius: 6px;
+  background: #1d5fd1 !important;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+html.mbn-moderne #actions-masse-conseils-classe input[type="submit"]:hover {
+  background: #174ea6 !important;
 }

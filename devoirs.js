@@ -1,19 +1,25 @@
-// MBN modernisé — listes des évaluations (devoirs) et des relevés de notes de
-// l'enseignant, bâties sur le même tableau :
+// MBN modernisé — listes des évaluations (devoirs), des relevés de notes, des
+// appréciations (bulletins) et des conseils de classe de l'enseignant, bâties
+// sur le même tableau :
 //   1. mémorise les filtres choisis et le tri du tableau, et les rétablit à
 //      chaque chargement de la page (y compris après un rafraîchissement) ;
 //   2. repère la classe de chaque ligne pour la colorer (devoirs.css).
 
 (() => {
-  const releves = !!document.getElementById('liste-releves-enseignant') ||
-    !!document.getElementById('filtre-liste-releves-enseignant');
-  const formulaire = document.getElementById(releves ? 'filtre-liste-releves-enseignant' : 'filtre-liste-devoirs-enseignant');
-  const tableau = document.getElementById(releves ? 'liste-releves-enseignant' : 'liste-devoir');
-  if (!formulaire && !tableau) return;
   // Chaque liste mémorise ses propres filtres et son propre tri.
-  const CLE_FILTRES = releves ? 'relevesFiltres' : 'devoirsFiltres';
-  const CLE_TRI = releves ? 'relevesTri' : 'devoirsTri';
-  const GARDE = releves ? 'mbnReleves' : 'mbnDevoirs';
+  const LISTES = [
+    { filtres: 'filtre-liste-releves-enseignant', tableau: 'liste-releves-enseignant', cle: 'releves', garde: 'mbnReleves', classe: 'libelleGroupe' },
+    { filtres: 'filtre-liste-conseils-classe', tableau: 'gestion-conseils-classes', cle: 'conseils', garde: 'mbnConseils', classe: 'classeLibelle' },
+    { filtres: 'filtre-liste-bulletins-enseignant', tableau: 'liste-bulletins-enseignant', cle: 'bulletins', garde: 'mbnBulletins', classe: 'libelleGroupe' },
+    { filtres: 'filtre-liste-devoirs-enseignant', tableau: 'liste-devoir', cle: 'devoirs', garde: 'mbnDevoirs', classe: 'libelleGroupe' },
+  ];
+  const liste = LISTES.find((l) => document.getElementById(l.filtres) || document.getElementById(l.tableau));
+  if (!liste) return;
+  const formulaire = document.getElementById(liste.filtres);
+  const tableau = document.getElementById(liste.tableau);
+  const CLE_FILTRES = liste.cle + 'Filtres';
+  const CLE_TRI = liste.cle + 'Tri';
+  const GARDE = liste.garde;
 
   const attendre = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -113,7 +119,7 @@
   const marquer = () => {
     prevu = false;
     for (const ligne of tableau.querySelectorAll('tbody.yui-dt-data > tr')) {
-      const cellule = ligne.querySelector('td.yui-dt-col-libelleGroupe .yui-dt-liner');
+      const cellule = ligne.querySelector('td.yui-dt-col-' + liste.classe + ' .yui-dt-liner');
       const libelle = cellule ? cellule.textContent.replace(/\s+/g, ' ').trim() : '';
       const couleur = libelle ? globalThis.mbnCouleurs.pour(libelle, true) : null;
       if (ligne.dataset.mbnClasse === libelle) continue;
