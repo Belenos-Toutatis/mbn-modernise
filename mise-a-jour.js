@@ -70,15 +70,28 @@ const versionDuDossier = async (dossier, nomAttendu) => {
   } catch { return ''; }
 };
 
+// Écrit un fichier, sauf s'il est déjà identique : chaque écriture passe par
+// un fichier temporaire que Chrome fait contrôler avant de le mettre en place,
+// ce qui est lent (surtout avec un antivirus). D'une version à l'autre, la
+// plupart des fichiers ne changent pas. Renvoie vrai si le fichier a été écrit.
 const ecrire = async (dossier, chemin, octets) => {
   let ou = dossier;
   for (const partie of chemin.slice(0, -1)) ou = await ou.getDirectoryHandle(partie, { create: true });
-  const flux = await (await ou.getFileHandle(chemin[chemin.length - 1], { create: true })).createWritable();
+  const fichier = await ou.getFileHandle(chemin[chemin.length - 1], { create: true });
+  try {
+    const actuel = await fichier.getFile();
+    if (actuel.size === octets.length) {
+      const anciens = new Uint8Array(await actuel.arrayBuffer());
+      if (anciens.every((o, i) => o === octets[i])) return false;
+    }
+  } catch { /* illisible : on réécrit */ }
+  const flux = await fichier.createWritable();
   await flux.write(octets);
   await flux.close();
+  return true;
 };
 
-// Copie l'archive dans le dossier. Renvoie la version installée.
+// Copie l'archive dans le dossier. Renvoie { version, ecrits, total }.
 const installerArchive = async (dossier, tampon, nomAttendu, suivre = () => {}) => {
   const fichiers = chemins(lireZip(tampon));
   const manifeste = fichiers.find((f) => f.chemin.join('/') === 'manifest.json');
@@ -88,15 +101,24 @@ const installerArchive = async (dossier, tampon, nomAttendu, suivre = () => {}) 
   if (publie.name !== nomAttendu || !/^\d+(\.\d+)*$/.test(String(publie.version))) throw new Error('l\'archive ne contient pas l\'extension');
   // Tout décompresser avant d'écrire : une archive abîmée ne touche à rien.
   const autres = fichiers.filter((f) => f !== manifeste);
-  const contenus = [];
-  for (const f of autres) contenus.push(await f.lire());
-  for (let i = 0; i < autres.length; i += 1) {
-    await ecrire(dossier, autres[i].chemin, contenus[i]);
-    suivre((i + 1) / (autres.length + 1));
-  }
-  await ecrire(dossier, manifeste.chemin, octetsManifeste);
+  const contenus = await Promise.all(autres.map((f) => f.lire()));
+  // Plusieurs fichiers à la fois : l'attente du contrôle de Chrome se partage.
+  let suivant = 0;
+  let faits = 0;
+  let ecrits = 0;
+  const ouvrier = async () => {
+    while (suivant < autres.length) {
+      const i = suivant;
+      suivant += 1;
+      if (await ecrire(dossier, autres[i].chemin, contenus[i])) ecrits += 1;
+      faits += 1;
+      suivre(faits / (autres.length + 1));
+    }
+  };
+  await Promise.all(Array.from({ length: 6 }, ouvrier));
+  if (await ecrire(dossier, manifeste.chemin, octetsManifeste)) ecrits += 1;
   suivre(1);
-  return String(publie.version);
+  return { version: String(publie.version), ecrits, total: autres.length + 1 };
 };
 
 // ---- Mémoire du dossier (IndexedDB : seul endroit où ranger ce type d'objet) ----
@@ -170,11 +192,12 @@ const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() 
       const tampon = await reponse.arrayBuffer();
       etat('Copie des fichiers…');
       $('avancement').hidden = false;
-      const version = await installerArchive(dossier, tampon, moi.name, (part) => { $('avancement').value = part; });
+      const { version, ecrits, total } = await installerArchive(dossier, tampon, moi.name, (part) => { $('avancement').value = part; });
       await chrome.storage.local.set({ majDisponible: '' });
+      const bilan = ecrits ? `${ecrits} fichier${ecrits > 1 ? 's' : ''} remplacé${ecrits > 1 ? 's' : ''} sur ${total}` : 'tous les fichiers étaient déjà à jour';
       etat(version === moi.version
-        ? `Les fichiers de la version ${version} ont été recopiés. Rechargez l'extension, puis les pages MBN ouvertes.`
-        : `Version ${version} copiée. Il reste à recharger l'extension, puis les pages MBN ouvertes.`, 'succes');
+        ? `Version ${version} : ${bilan}. Rechargez l'extension, puis les pages MBN ouvertes.`
+        : `Version ${version} copiée (${bilan}). Il reste à recharger l'extension, puis les pages MBN ouvertes.`, 'succes');
       $('recharger').hidden = false;
       $('installer').hidden = true;
       $('choisir').hidden = true;
