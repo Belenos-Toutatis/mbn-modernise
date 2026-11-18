@@ -25,6 +25,13 @@
     }
   }
 
+  // ---- Contacts : numéros de téléphone ----
+  // Repérés par leur forme (chiffres, espaces, « + »), pour que fiche-eleve.css
+  // les garde sur une seule ligne quand la fenêtre est étroite.
+  for (const valeur of principal.querySelectorAll('.js-tuteur li .grid__item span:not(.cartouche):not(.icon)')) {
+    if (valeur.childElementCount === 0 && /^\+?[\d\s.()-]{8,}$/.test(texte(valeur))) valeur.classList.add('mbn-telephone');
+  }
+
   // ---- Dernier onglet consulté ----
   // Seul le nom de l'onglet (paramètre TAB du lien) est mémorisé, jamais l'élève.
   const onglets = () => [...principal.querySelectorAll('.grid__item .content-filter a.tabs__link[href]')];

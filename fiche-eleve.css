@@ -104,8 +104,26 @@ html.mbn-moderne main.mbn-fiche-eleve .js-tuteur + hr.divider {
 }
 /* Libellé et valeur côte à côte, au lieu d'être alignés aux deux bords. */
 html.mbn-moderne main.mbn-fiche-eleve .js-tuteur li.grid--template-columns-sm-2 {
-  grid-template-columns: 170px minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 170px) minmax(max-content, 1fr) !important;
   align-items: center;
+}
+/* Fenêtre étroite (écran en portrait) : un numéro de téléphone reste sur une
+   seule ligne, à côté de sa pastille « SMS » ; c'est le libellé qui cède de
+   la place. fiche-eleve.js pose « mbn-telephone » sur les numéros. */
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur li .grid__item:has(> .mbn-telephone) {
+  white-space: nowrap;
+}
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur .mbn-telephone {
+  font-variant-numeric: tabular-nums;
+}
+/* Cadre trop étroit pour deux colonnes : l'adresse passe sous les numéros. */
+html.mbn-moderne main.mbn-fiche-eleve .js-tuteur {
+  container-type: inline-size;
+}
+@container (max-width: 560px) {
+  html.mbn-moderne main.mbn-fiche-eleve .js-tuteur .grid--template-columns-md-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }
 html.mbn-moderne main.mbn-fiche-eleve .js-tuteur .text--right-sm {
   text-align: left !important;
