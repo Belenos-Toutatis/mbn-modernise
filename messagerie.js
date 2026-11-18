@@ -17,7 +17,21 @@
       document.querySelectorAll('.ZToolbar').forEach(ajusterBarre);
       volets().forEach(etendreListe);
       document.querySelectorAll('.ZmOverview').forEach(compterNonLus);
+      document.querySelectorAll('iframe.ZmHtmlEditorIFrame[title]').forEach(sansInfobulle);
     });
+  };
+
+  // ---- Cadres : pas d'infobulle ----
+  // Le cadre de la messagerie et celui de l'éditeur de message portent un
+  // attribut « title ». Le navigateur l'affiche en infobulle dès que la souris
+  // entre dans le cadre, et ne la retire plus tant qu'elle y reste : elle
+  // masque le texte en cours de rédaction. Le nom passe dans « aria-label »,
+  // que les lecteurs d'écran lisent de la même façon, sans infobulle.
+  const sansInfobulle = (cadre) => {
+    const nom = cadre.getAttribute('title');
+    if (nom === null) return;
+    if (nom && !cadre.hasAttribute('aria-label')) cadre.setAttribute('aria-label', nom);
+    cadre.removeAttribute('title');
   };
 
   // ---- Barre latérale : nombre de non-lus en pastille ----
@@ -326,6 +340,7 @@
   // cadre dépasse d'autant en bas : la page défile et le bas de la messagerie
   // est caché. On cale donc sa hauteur sur sa position réelle.
   const ajusterCadre = (cadre) => {
+    sansInfobulle(cadre);
     const haut = Math.round(cadre.getBoundingClientRect().top + window.scrollY);
     // On compare la position mémorisée, pas le texte du style : le navigateur
     // réécrit la formule à sa façon, ce qui relancerait le calcul sans fin.
@@ -338,11 +353,13 @@
     ajusterCadres();
     window.addEventListener('resize', ajusterCadres);
     new MutationObserver(ajusterCadres).observe(document.body, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'],
+      childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden', 'title'],
     });
   }
 
   planifier();
   window.addEventListener('resize', planifier);
   new MutationObserver(planifier).observe(document.documentElement, { childList: true, subtree: true });
+  // L'éditeur peut poser son « title » après coup (voir sansInfobulle).
+  new MutationObserver(planifier).observe(document.documentElement, { attributes: true, attributeFilter: ['title'], subtree: true });
 })();
