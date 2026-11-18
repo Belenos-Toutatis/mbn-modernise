@@ -135,7 +135,11 @@ globalThis.__mbnCapture = function () {
       if (IGNORER.has(enfant.tagName)) continue;
       // Les lignes de liste sont regroupées par classes : une ligne « non lue »
       // ou « sélectionnée » est ainsi détaillée même si elle arrive tard.
-      const signature = nom(enfant, false);
+      // Un bloc vide et sans hauteur ne compte pas parmi les exemplaires : sinon
+      // trois conteneurs vides suffisaient à faire abréger celui qui est rempli
+      // (l'arborescence des dossiers de la messagerie, par exemple).
+      const vide = enfant.children.length === 0 && enfant.getBoundingClientRect().height === 0;
+      const signature = nom(enfant, false) + (vide ? ' (vide)' : '');
       const n = (vus.get(signature) || 0) + 1;
       vus.set(signature, n);
       // Les cellules d'une ligne de tableau sont toutes détaillées : ce sont
