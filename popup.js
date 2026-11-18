@@ -78,10 +78,14 @@ caseMenu.addEventListener('change', () => chrome.storage.local.set({ menuSurvol:
 
 // ---- Mises à jour ----
 // La vérification est faite par arriere-plan.js ; ici on affiche son résultat.
+const ouvrirMaj = () => chrome.tabs.create({ url: chrome.runtime.getURL('mise-a-jour.html') });
 const caseMaj = document.getElementById('verifierMaj');
 const blocMaj = document.getElementById('maj');
 const ligneVersion = document.getElementById('version');
-const afficherMaj = async () => {
+// « verdict » : on vient de cliquer sur « Vérifier maintenant ». Le bandeau du
+// haut est alors hors de vue (la fenêtre a défilé) : le résultat s'affiche
+// aussi juste à côté du bouton.
+const afficherMaj = async (verdict = false) => {
   const installee = chrome.runtime.getManifest().version;
   const v = await chrome.storage.local.get({ verifierMaj: true, majDisponible: '', majVerifiee: 0, majErreur: '' });
   caseMaj.checked = v.verifierMaj !== false;
@@ -97,10 +101,24 @@ const afficherMaj = async () => {
   bouton.textContent = 'Vérifier maintenant';
   bouton.addEventListener('click', async () => {
     bouton.disabled = true;
+    bouton.textContent = 'Vérification…';
     try { await chrome.runtime.sendMessage({ mbn: 'verifier-maj' }); } catch { /* arrière-plan indisponible */ }
-    afficherMaj();
+    afficherMaj(true);
   });
   ligneVersion.append(bouton);
+  if (!verdict) return;
+  const resultat = document.createElement('span');
+  resultat.setAttribute('role', 'status');
+  resultat.className = 'verdict ' + (v.majErreur ? 'erreur' : nouvelle ? 'nouvelle' : 'a-jour');
+  resultat.textContent = v.majErreur ? 'Vérification impossible' : nouvelle ? `Version ${nouvelle} disponible` : '✓ Vous êtes à jour';
+  ligneVersion.append(resultat);
+  if (nouvelle && !v.majErreur) {
+    const installer = document.createElement('button');
+    installer.className = 'principal';
+    installer.textContent = 'Mettre à jour…';
+    installer.addEventListener('click', ouvrirMaj);
+    ligneVersion.append(installer);
+  }
 };
 caseMaj.addEventListener('change', async () => {
   await chrome.storage.local.set({ verifierMaj: caseMaj.checked });
@@ -109,7 +127,6 @@ caseMaj.addEventListener('change', async () => {
 afficherMaj();
 // La mise à jour elle-même se fait dans un onglet (mise-a-jour.html) : cette
 // fenêtre se ferme dès qu'elle perd le focus, donc au premier choix de dossier.
-const ouvrirMaj = () => chrome.tabs.create({ url: chrome.runtime.getURL('mise-a-jour.html') });
 document.getElementById('maj-installer').addEventListener('click', ouvrirMaj);
 document.getElementById('page-maj').addEventListener('click', ouvrirMaj);
 document.getElementById('recharger-extension').addEventListener('click', () => chrome.runtime.reload());
