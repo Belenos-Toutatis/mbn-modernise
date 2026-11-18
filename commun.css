@@ -84,3 +84,17 @@
     display: none !important;
   }
 }
+
+/* Visionneuse PDF de la messagerie (pdf.js) : l'aperçu d'impression d'un
+   document d'une page annonçait deux pages, la seconde blanche. Tentative de
+   correction, limitée au conteneur d'impression de la visionneuse : pas de
+   saut de page forcé après la dernière page, et rien qui dépasse d'une page. */
+@media print {
+  body > #printContainer > :last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+  body > #printContainer > * {
+    overflow: hidden !important;
+  }
+}

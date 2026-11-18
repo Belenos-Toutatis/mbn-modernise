@@ -2,6 +2,8 @@
 //
 // Ce qui est relevé : balises, identifiants et classes CSS, position et taille
 // des blocs, quelques propriétés de mise en page.
+// S'y ajoutent les règles de style d'impression de la page (@page, @media
+// print), adresses et textes masqués.
 // Ce qui n'est JAMAIS relevé : le texte de la page (remplacé par sa longueur),
 // les adresses des liens, images et documents, les valeurs des champs.
 // Seule exception : les libellés d'interface de la liste MOTS ci-dessous
@@ -169,6 +171,30 @@ globalThis.__mbnCapture = function () {
 
   if (document.body) visiter(document.body, 0);
   if (tronque) lignes.push(`# capture tronquée à ${MAX_LIGNES} lignes`);
+
+  // Règles d'impression de la page (@page et @media print) : elles expliquent
+  // une page blanche ou un élément en trop à l'impression. Ce sont des règles
+  // de style, sans donnée de la page ; adresses et textes y sont masqués.
+  const MAX_REGLES = 120;
+  const regles = [];
+  const nettoyer = (css) => css.replace(/url\([^)]*\)/g, 'url(…)').replace(/"[^"]*"|'[^']*'/g, '"…"').replace(/\s+/g, ' ').slice(0, 300);
+  const relever = (liste, dansImpression) => {
+    for (const regle of liste) {
+      if (regles.length >= MAX_REGLES) return;
+      if (regle instanceof CSSPageRule) regles.push('  ' + nettoyer(regle.cssText));
+      else if (regle instanceof CSSMediaRule) relever(regle.cssRules, dansImpression || /\bprint\b/.test(regle.conditionText));
+      else if (regle instanceof CSSSupportsRule) relever(regle.cssRules, dansImpression);
+      else if (dansImpression && regle.cssText) regles.push('  ' + nettoyer(regle.cssText));
+    }
+  };
+  let illisibles = 0;
+  for (const feuille of document.styleSheets) {
+    try { relever(feuille.cssRules, /\bprint\b/.test(feuille.media.mediaText)); } catch { illisibles += 1; }
+  }
+  if (regles.length || illisibles) {
+    lignes.push('', `# règles d'impression (${regles.length}${regles.length >= MAX_REGLES ? ', liste tronquée' : ''}${illisibles ? `, ${illisibles} feuille(s) illisible(s)` : ''})`);
+    lignes.push(...regles);
+  }
   return entete.concat(lignes).join('\n');
 };
 
