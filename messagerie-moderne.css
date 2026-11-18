@@ -82,13 +82,74 @@ html.mbn-moderne .ZToolbar .vertSep {
   opacity: .4;
 }
 
-/* ---- Arborescence des dossiers ---- */
+/* ---- Arborescence des dossiers (barre latérale de la messagerie) ----
+   Cette colonne défile d'elle-même et la messagerie n'y mesure rien : on peut
+   donc y toucher aux hauteurs et aux marges, contrairement au reste. */
 html.mbn-moderne .ZmOverview .DwtTreeItem {
+  margin: 1px 6px;
   border-radius: 6px;
   transition: background-color .12s ease;
 }
+html.mbn-moderne .ZmOverview .DwtTreeItem > table {
+  height: 28px;
+}
+html.mbn-moderne .ZmOverview .DwtTreeItem td[id$="_textCell"] {
+  color: var(--mbn-texte);
+  font-size: 13px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 html.mbn-moderne .ZmOverview .DwtTreeItem:hover:not([class*="selected"]) {
   background-color: var(--mbn-survol) !important;
+}
+/* Dossier ouvert : fond plus franc, liseré et nom dans la couleur d'accent. */
+html.mbn-moderne .ZmOverview .DwtTreeItem[class*="selected"] {
+  background-color: #dbe9fd !important;
+  box-shadow: inset 3px 0 0 var(--mbn-accent);
+}
+html.mbn-moderne .ZmOverview .DwtTreeItem[class*="selected"] td[id$="_textCell"] {
+  color: var(--mbn-accent);
+  font-weight: 600;
+}
+/* Titres de section (Dossiers, Recherches, Libellés) : discrets, en petites
+   capitales, séparés d'un trait. */
+html.mbn-moderne .ZmOverview div.overviewHeader {
+  margin: 10px 6px 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--mbn-trait);
+}
+html.mbn-moderne .ZmOverview div.overviewHeader.FirstOverviewHeader {
+  margin-top: 2px;
+  padding-top: 0;
+  border-top: 0;
+}
+html.mbn-moderne .ZmOverview div.overviewHeader td {
+  background: transparent !important;
+}
+html.mbn-moderne .ZmOverview td.overviewHeader-Text[id$="_textCell"] {
+  color: var(--mbn-texte-doux);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+/* Nombre de messages non lus : pastille à droite du nom, posée par
+   messagerie.js à la place du « (3) » d'origine. Hors « mbn-moderne » aussi,
+   pour rester lisible si l'apparence est coupée entre deux rafraîchissements. */
+.mbn-nonlus {
+  box-sizing: border-box;
+  float: right;
+  min-width: 18px;
+  margin: 0 2px 0 6px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: #1d5fd1;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
 }
 
 /* ---- Barres de défilement fines ---- */

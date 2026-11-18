@@ -75,3 +75,12 @@
   background: #e7f1fd !important;
   color: #1d5fd1;
 }
+
+/* Pastille du rafraîchissement automatique (rafraichissement.js) : utile à
+   l'écran, jamais sur le papier ni dans un PDF imprimé (pièce jointe ouverte
+   dans la visionneuse, par exemple). */
+@media print {
+  .mbn-pastille-rafraichissement {
+    display: none !important;
+  }
+}

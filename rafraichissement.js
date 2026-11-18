@@ -105,6 +105,8 @@
   const afficher = (texte, aide) => {
     if (!pastille) {
       pastille = document.createElement('div');
+      // Classe utilisée par commun.css pour retirer la pastille des impressions.
+      pastille.className = 'mbn-pastille-rafraichissement';
       pastille.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:2147483000;' +
         'padding:2px 8px;border-radius:10px;background:rgba(31,41,51,.72);color:#fff;' +
         'font:11px/1.5 system-ui,sans-serif;pointer-events:none;';

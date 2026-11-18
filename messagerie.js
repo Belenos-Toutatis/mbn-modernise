@@ -16,7 +16,31 @@
       document.querySelectorAll('.DwtListView-ColHeader').forEach(aligner);
       document.querySelectorAll('.ZToolbar').forEach(ajusterBarre);
       volets().forEach(etendreListe);
+      document.querySelectorAll('.ZmOverview').forEach(compterNonLus);
     });
+  };
+
+  // ---- Barre latérale : nombre de non-lus en pastille ----
+  // La messagerie écrit « Nom (3) », en gras, pour un dossier qui contient des
+  // messages non lus. On sépare le nombre du nom pour l'afficher en pastille
+  // (messagerie-moderne.css). Seul ce texte en gras est touché : un dossier
+  // dont le nom finit par une parenthèse reste intact. La messagerie réécrit
+  // la cellule à chaque changement ; on repasse alors dessus.
+  const compterNonLus = (arbre) => {
+    if (!document.documentElement.classList.contains('mbn-moderne')) return;
+    for (const gras of arbre.querySelectorAll('.DwtTreeItem td[id$="_textCell"] > span[style*="bold"]')) {
+      const cellule = gras.parentElement;
+      if (cellule.querySelector('.mbn-nonlus')) continue;
+      const noeud = gras.lastChild;
+      const trouve = noeud && noeud.nodeType === 3 ? /^(.*\S)\s*\((\d+)\)\s*$/.exec(noeud.data) : null;
+      if (!trouve) continue;
+      noeud.data = trouve[1];
+      const pastille = document.createElement('span');
+      pastille.className = 'mbn-nonlus';
+      pastille.textContent = trouve[2];
+      pastille.title = trouve[2] + (trouve[2] === '1' ? ' message non lu' : ' messages non lus');
+      cellule.prepend(pastille);
+    }
   };
 
   // Barre d'outils : si ses boutons dépassent la largeur disponible, on la
