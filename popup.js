@@ -107,3 +107,9 @@ caseMaj.addEventListener('change', async () => {
   setTimeout(afficherMaj, 400);
 });
 afficherMaj();
+// La mise à jour elle-même se fait dans un onglet (mise-a-jour.html) : cette
+// fenêtre se ferme dès qu'elle perd le focus, donc au premier choix de dossier.
+const ouvrirMaj = () => chrome.tabs.create({ url: chrome.runtime.getURL('mise-a-jour.html') });
+document.getElementById('maj-installer').addEventListener('click', ouvrirMaj);
+document.getElementById('page-maj').addEventListener('click', ouvrirMaj);
+document.getElementById('recharger-extension').addEventListener('click', () => chrome.runtime.reload());

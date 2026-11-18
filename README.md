@@ -7,9 +7,10 @@ Elle agit uniquement dans votre navigateur : elle ne transmet aucune donnée à
 l'extérieur. Elle n'enregistre rien dans MBN de sa propre initiative : elle
 n'agit sur un formulaire que lorsque vous cliquez sur un de ses raccourcis.
 
-Sa seule requête vers l'extérieur est la lecture, deux fois par jour, du numéro
-de version publié dans ce dépôt, pour vous signaler une mise à jour. Cette
-vérification se désactive dans la fenêtre de l'extension.
+Sa seule requête automatique vers l'extérieur est la lecture, deux fois par jour,
+du numéro de version publié dans ce dépôt, pour vous signaler une mise à jour.
+Cette vérification se désactive dans la fenêtre de l'extension. Le
+téléchargement d'une nouvelle version n'a lieu que si vous le demandez.
 
 ## Ce qu'elle fait
 
@@ -45,10 +46,19 @@ Les couleurs de classe suivent une règle unique : une teinte par niveau
 
 Une extension installée de cette façon ne se met pas à jour toute seule. Elle vous
 prévient en revanche quand une nouvelle version est publiée : une pastille « ↑ »
-apparaît sur son icône, et sa fenêtre rappelle la marche à suivre.
+apparaît sur son icône, et sa fenêtre propose alors deux boutons.
 
-1. Dans le dossier, récupérez la dernière version : `git pull`.
-2. Dans `chrome://extensions`, cliquez sur la flèche de rechargement de la carte « MBN modernisé ».
+**En un clic** — « Mettre à jour… » ouvre une page de l'extension qui télécharge
+la dernière version et la copie dans le dossier de l'extension. La première
+fois, Chrome vous demande de désigner ce dossier (celui qui contient
+`manifest.json`) ; ensuite il ne redemande que l'autorisation d'y écrire. Il
+reste à cliquer sur « Recharger l'extension », puis à recharger les pages MBN.
+
+**À la main** — « Télécharger le ZIP » récupère
+[l'archive du dépôt](https://github.com/Belenos-Toutatis/mbn-modernise/archive/refs/heads/main.zip).
+
+1. Décompressez l'archive par-dessus le dossier de l'extension (ou, si vous l'avez clonée, lancez `git pull`).
+2. Dans `chrome://extensions`, cliquez sur la flèche de rechargement de la carte « MBN modernisé », ou sur « Recharger l'extension » dans sa fenêtre.
 3. Rechargez les pages MBN ouvertes.
 
 ## Réglages
@@ -79,6 +89,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `icones/` | icône de l'extension (source SVG et PNG aux quatre tailles) |
 | `popup.html`, `popup.js`, `capture.js` | fenêtre de réglages et capture anonymisée |
 | `arriere-plan.js` | vérifie deux fois par jour si une version plus récente est publiée |
+| `mise-a-jour.html`, `mise-a-jour.js` | page de mise à jour : télécharge l'archive du dépôt et la copie dans le dossier de l'extension |
 | `moderne.js` | applique les réglages d'apparence à chaque page |
 | `commun.css`, `infobulles.js`, `menu.*`, `rafraichissement.js` | correctifs communs à toutes les pages |
 | `couleurs-classes.js` | couleurs par niveau et par classe |

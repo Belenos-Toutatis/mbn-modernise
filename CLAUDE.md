@@ -70,7 +70,14 @@ d'établissement ou de classe réelle, ni une capture.
   quand une fenêtre modale est ouverte.
 - `rafraichissement.js` ne doit jamais recharger une page pendant une saisie :
   ajouter à `bloque()` tout nouveau formulaire.
-- Aucune requête vers l'extérieur, hormis la lecture du `manifest.json` publié.
+- Aucune requête vers l'extérieur, hormis la lecture du `manifest.json` publié
+  et, sur un clic de l'utilisateur dans `mise-a-jour.html`, le téléchargement
+  de l'archive ZIP du dépôt (mise à jour en un clic, demandée le 2026-11-18).
+- `mise-a-jour.js` écrit dans le dossier de l'extension : il doit toujours
+  vérifier que le dossier choisi et l'archive contiennent bien cette extension
+  (même `name` dans `manifest.json`), ne rien supprimer, et écrire
+  `manifest.json` en dernier. Tout fichier ajouté au dépôt est copié tel quel
+  chez les utilisateurs : n'y laisser que ce qui doit l'être.
 
 ## Démarche attendue
 

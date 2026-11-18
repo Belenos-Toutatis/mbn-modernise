@@ -18,8 +18,10 @@
     #etat { min-height: 1.4em; margin: 8px 0 0; }
     #maj { margin: 0 0 14px; padding: 10px 12px; border: 1px solid #f0b37e; border-radius: 8px; background: #fff4e5; color: #7a3b00; }
     #maj strong { display: block; margin-bottom: 4px; }
-    #maj ol { margin: 4px 0 0; padding-left: 20px; }
-    #maj code { padding: 1px 4px; border-radius: 4px; background: #fde3c4; font: 12px ui-monospace, monospace; }
+    #maj .boutons { margin: 6px 0 8px; }
+    a.bouton { padding: 7px 12px; border: 1px solid #c5ccd3; border-radius: 6px; background: #fff; color: #1f2933; text-decoration: none; }
+    #actions-maj { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    #actions-maj button { padding: 3px 9px; font-size: 12.5px; }
     #version { margin: 6px 0 0; font-size: 12.5px; }
     #version button { padding: 2px 8px; font-size: 12px; }
   </style>
@@ -27,12 +29,11 @@
 <body>
   <div id="maj" hidden>
     <strong id="maj-titre"></strong>
-    Pour l'installer :
-    <ol>
-      <li>dans le dossier de l'extension, lancez <code>git pull</code> (ou téléchargez l'archive ZIP du dépôt) ;</li>
-      <li>dans <code>chrome://extensions</code>, cliquez sur la flèche de rechargement de « MBN modernisé » ;</li>
-      <li>rechargez les pages MBN ouvertes.</li>
-    </ol>
+    <div class="boutons">
+      <button id="maj-installer" class="principal">Mettre à jour…</button>
+      <a class="bouton" href="https://github.com/Belenos-Toutatis/mbn-modernise/archive/refs/heads/main.zip" target="_blank" rel="noopener">Télécharger le ZIP</a>
+    </div>
+    « Mettre à jour » ouvre une page qui télécharge la nouvelle version et la copie dans le dossier de l'extension. Avec le ZIP : décompressez-le par-dessus ce dossier, puis rechargez l'extension.
   </div>
   <section>
     <h1>Apparence</h1>
@@ -62,6 +63,10 @@
     <h1>Mises à jour</h1>
     <label><input type="checkbox" id="verifierMaj"> Signaler les nouvelles versions (pastille sur l'icône)</label>
     <p id="version"></p>
+    <div id="actions-maj">
+      <button id="page-maj">Page de mise à jour</button>
+      <button id="recharger-extension" title="À faire après avoir remplacé les fichiers du dossier">Recharger l'extension</button>
+    </div>
   </section>
   <script src="popup.js"></script>
 </body>

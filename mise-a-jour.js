@@ -1,0 +1,190 @@
+// MBN modernisé — page de mise à jour.
+//
+// Une extension chargée depuis un dossier ne peut pas se mettre à jour seule.
+// Cette page le fait à sa place, sur un clic : elle télécharge l'archive ZIP
+// du dépôt public, puis en copie les fichiers dans le dossier de l'extension,
+// que l'utilisateur désigne une fois (Chrome retient ce choix, pas le droit
+// d'écriture, qu'il redemande à chaque fois).
+//
+// Rien n'est envoyé : la seule requête est le téléchargement de l'archive.
+// Garde-fous : le dossier choisi doit déjà contenir cette extension, l'archive
+// aussi, et le « manifest.json » n'est remplacé qu'en dernier, pour qu'une
+// copie interrompue laisse l'ancienne version en état de marche.
+
+const ARCHIVE = 'https://codeload.github.com/Belenos-Toutatis/mbn-modernise/zip/refs/heads/main';
+
+// ---- Lecture d'une archive ZIP (sans dépendance) ----
+// Renvoie [{ nom, lire() }] pour chaque fichier, d'après le répertoire central.
+const lireZip = (tampon) => {
+  const vue = new DataView(tampon);
+  const octets = new Uint8Array(tampon);
+  let fin = -1;
+  for (let i = tampon.byteLength - 22; i >= Math.max(0, tampon.byteLength - 66000); i -= 1) {
+    if (vue.getUint32(i, true) === 0x06054b50) { fin = i; break; }
+  }
+  if (fin < 0) throw new Error('archive illisible');
+  const nombre = vue.getUint16(fin + 10, true);
+  let p = vue.getUint32(fin + 16, true);
+  const decodeur = new TextDecoder('utf-8');
+  const fichiers = [];
+  for (let n = 0; n < nombre; n += 1) {
+    if (vue.getUint32(p, true) !== 0x02014b50) throw new Error('archive illisible');
+    const methode = vue.getUint16(p + 10, true);
+    const tailleCompressee = vue.getUint32(p + 20, true);
+    const longueurNom = vue.getUint16(p + 28, true);
+    const longueurExtra = vue.getUint16(p + 30, true);
+    const longueurCommentaire = vue.getUint16(p + 32, true);
+    const debut = vue.getUint32(p + 42, true);
+    const nom = decodeur.decode(octets.subarray(p + 46, p + 46 + longueurNom));
+    p += 46 + longueurNom + longueurExtra + longueurCommentaire;
+    if (nom.endsWith('/')) continue;
+    fichiers.push({
+      nom,
+      lire: async () => {
+        const donnees = debut + 30 + vue.getUint16(debut + 26, true) + vue.getUint16(debut + 28, true);
+        const brut = octets.subarray(donnees, donnees + tailleCompressee);
+        if (methode === 0) return brut;
+        if (methode !== 8) throw new Error('compression non prise en charge');
+        const flux = new Blob([brut]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+        return new Uint8Array(await new Response(flux).arrayBuffer());
+      },
+    });
+  }
+  return fichiers;
+};
+
+// Retire le dossier de tête que GitHub ajoute (« depot-branche/ ») et écarte
+// tout chemin qui sortirait du dossier ou toucherait à Git.
+const chemins = (fichiers) => fichiers
+  .map((f) => ({ ...f, chemin: f.nom.split('/').slice(1) }))
+  .filter((f) => f.chemin.length && f.chemin.every((m) => m && m !== '.' && m !== '..' && !m.includes('\\')) && !f.chemin[0].startsWith('.git'));
+
+const lireManifeste = (octets) => JSON.parse(new TextDecoder('utf-8').decode(octets));
+
+// Le dossier désigné contient-il bien cette extension ?
+const versionDuDossier = async (dossier, nomAttendu) => {
+  try {
+    const fichier = await (await dossier.getFileHandle('manifest.json')).getFile();
+    const manifeste = JSON.parse(await fichier.text());
+    return manifeste.name === nomAttendu ? String(manifeste.version || '?') : '';
+  } catch { return ''; }
+};
+
+const ecrire = async (dossier, chemin, octets) => {
+  let ou = dossier;
+  for (const partie of chemin.slice(0, -1)) ou = await ou.getDirectoryHandle(partie, { create: true });
+  const flux = await (await ou.getFileHandle(chemin[chemin.length - 1], { create: true })).createWritable();
+  await flux.write(octets);
+  await flux.close();
+};
+
+// Copie l'archive dans le dossier. Renvoie la version installée.
+const installerArchive = async (dossier, tampon, nomAttendu, suivre = () => {}) => {
+  const fichiers = chemins(lireZip(tampon));
+  const manifeste = fichiers.find((f) => f.chemin.join('/') === 'manifest.json');
+  if (!manifeste) throw new Error('l\'archive ne contient pas l\'extension');
+  const octetsManifeste = await manifeste.lire();
+  const publie = lireManifeste(octetsManifeste);
+  if (publie.name !== nomAttendu || !/^\d+(\.\d+)*$/.test(String(publie.version))) throw new Error('l\'archive ne contient pas l\'extension');
+  // Tout décompresser avant d'écrire : une archive abîmée ne touche à rien.
+  const autres = fichiers.filter((f) => f !== manifeste);
+  const contenus = [];
+  for (const f of autres) contenus.push(await f.lire());
+  for (let i = 0; i < autres.length; i += 1) {
+    await ecrire(dossier, autres[i].chemin, contenus[i]);
+    suivre((i + 1) / (autres.length + 1));
+  }
+  await ecrire(dossier, manifeste.chemin, octetsManifeste);
+  suivre(1);
+  return String(publie.version);
+};
+
+// ---- Mémoire du dossier (IndexedDB : seul endroit où ranger ce type d'objet) ----
+const base = () => new Promise((ok, non) => {
+  const demande = indexedDB.open('mbn-maj', 1);
+  demande.onupgradeneeded = () => demande.result.createObjectStore('dossier');
+  demande.onsuccess = () => ok(demande.result);
+  demande.onerror = () => non(demande.error);
+});
+const memoire = async (mode, action) => {
+  const bd = await base();
+  try {
+    return await new Promise((ok, non) => {
+      const demande = action(bd.transaction('dossier', mode).objectStore('dossier'));
+      demande.onsuccess = () => ok(demande.result);
+      demande.onerror = () => non(demande.error);
+    });
+  } finally { bd.close(); }
+};
+const retenir = (dossier) => memoire('readwrite', (s) => s.put(dossier, 'extension'));
+const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() => null);
+
+// ---- Page ----
+(async () => {
+  if (!globalThis.chrome || !chrome.runtime || !chrome.runtime.getManifest) return; // hors extension (essais)
+  const $ = (id) => document.getElementById(id);
+  const moi = chrome.runtime.getManifest();
+  const etat = (texte, genre = '') => { $('etat').textContent = texte; $('etat').className = genre; };
+  let dossier = await retrouver();
+
+  const { majDisponible = '' } = await chrome.storage.local.get({ majDisponible: '' });
+  $('versions').textContent = majDisponible
+    ? `Version ${majDisponible} disponible — vous avez la ${moi.version}.`
+    : `Version installée : ${moi.version}. Aucune version plus récente n'est signalée.`;
+
+  const decrire = () => {
+    $('dossier').textContent = dossier
+      ? `Dossier retenu : « ${dossier.name} ».`
+      : 'La première fois, Chrome vous demandera de désigner le dossier de l\'extension.';
+    $('choisir').textContent = dossier ? 'Changer de dossier…' : 'Choisir le dossier de l\'extension…';
+  };
+  decrire();
+
+  const choisir = async () => {
+    if (!window.showDirectoryPicker) throw new Error('ce navigateur ne permet pas d\'écrire dans un dossier : suivez la méthode à la main');
+    const choix = await window.showDirectoryPicker({ id: 'mbn-modernise', mode: 'readwrite' });
+    if (!await versionDuDossier(choix, moi.name)) throw new Error(`le dossier « ${choix.name} » ne contient pas l'extension (pas de manifest.json « ${moi.name} »)`);
+    dossier = choix;
+    await retenir(dossier).catch(() => {});
+    decrire();
+  };
+
+  const signaler = (erreur) => {
+    if (erreur && erreur.name === 'AbortError') { etat('Choix annulé.'); return; }
+    etat('Échec : ' + String(erreur && erreur.message || erreur) + '.', 'erreur');
+  };
+
+  $('choisir').addEventListener('click', async () => {
+    try { await choisir(); etat('Dossier retenu.'); } catch (erreur) { signaler(erreur); }
+  });
+
+  $('installer').addEventListener('click', async () => {
+    $('installer').disabled = true;
+    try {
+      if (!dossier) await choisir();
+      if (await dossier.requestPermission({ mode: 'readwrite' }) !== 'granted') throw new Error('Chrome n\'a pas reçu l\'autorisation d\'écrire dans le dossier');
+      if (!await versionDuDossier(dossier, moi.name)) throw new Error(`le dossier « ${dossier.name} » ne contient plus l'extension : choisissez-le de nouveau`);
+      etat('Téléchargement…');
+      const reponse = await fetch(ARCHIVE, { cache: 'no-store', credentials: 'omit' });
+      if (!reponse.ok) throw new Error('téléchargement impossible (HTTP ' + reponse.status + ')');
+      const tampon = await reponse.arrayBuffer();
+      etat('Copie des fichiers…');
+      $('avancement').hidden = false;
+      const version = await installerArchive(dossier, tampon, moi.name, (part) => { $('avancement').value = part; });
+      await chrome.storage.local.set({ majDisponible: '' });
+      etat(version === moi.version
+        ? `Les fichiers de la version ${version} ont été recopiés. Rechargez l'extension, puis les pages MBN ouvertes.`
+        : `Version ${version} copiée. Il reste à recharger l'extension, puis les pages MBN ouvertes.`, 'succes');
+      $('recharger').hidden = false;
+      $('installer').hidden = true;
+      $('choisir').hidden = true;
+    } catch (erreur) {
+      signaler(erreur);
+      $('installer').disabled = false;
+    }
+  });
+
+  // Recharge l'extension : cette page se ferme d'elle-même.
+  $('recharger').addEventListener('click', () => chrome.runtime.reload());
+  $('extensions').addEventListener('click', () => chrome.tabs.create({ url: 'chrome://extensions' }));
+})();

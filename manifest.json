@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.35.1",
+  "version": "0.36.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "icons": {
     "16": "icones/icone-16.png",
@@ -16,7 +16,8 @@
     "alarms"
   ],
   "host_permissions": [
-    "*://*.monbureaunumerique.fr/*"
+    "*://*.monbureaunumerique.fr/*",
+    "https://codeload.github.com/Belenos-Toutatis/mbn-modernise/*"
   ],
   "action": {
     "default_title": "MBN modernisé",

@@ -6,8 +6,9 @@
 // quand une version plus récente existe. La fenêtre de l'extension dit alors
 // comment la récupérer.
 //
-// La seule requête faite est la lecture du fichier « manifest.json » public
-// du dépôt : rien n'est envoyé, ni sur vous ni sur MBN.
+// La seule requête faite ici est la lecture du fichier « manifest.json » public
+// du dépôt : rien n'est envoyé, ni sur vous ni sur MBN. Le téléchargement de la
+// nouvelle version, lui, n'a lieu que sur un clic, dans mise-a-jour.html.
 
 const SOURCE = 'https://raw.githubusercontent.com/Belenos-Toutatis/mbn-modernise/main/manifest.json';
 const ALARME = 'mbn-verifier-maj';

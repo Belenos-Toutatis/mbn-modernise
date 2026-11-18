@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>MBN modernisé — mise à jour</title>
+  <link rel="icon" href="icones/icone-32.png">
+  <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; padding: 32px 16px 48px; background: #f4f6f9; color: #1f2933; font: 15px/1.5 system-ui, sans-serif; }
+    main { max-width: 680px; margin: 0 auto; }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    h2 { margin: 0 0 8px; font-size: 16px; }
+    p { margin: 0 0 10px; color: #52606d; }
+    section { margin-top: 16px; padding: 18px 20px; border: 1px solid #e1e5ea; border-radius: 10px; background: #fff; }
+    button, a.bouton { display: inline-block; font: inherit; padding: 8px 14px; border: 1px solid #c5ccd3; border-radius: 6px; background: #fff; color: #1f2933; text-decoration: none; cursor: pointer; }
+    button.principal { background: #1d5fd1; border-color: #1d5fd1; color: #fff; font-weight: 600; }
+    button:disabled { opacity: .5; cursor: default; }
+    .boutons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+    #versions { font-weight: 600; color: #1f2933; }
+    #dossier { margin: 10px 0 0; font-size: 13.5px; }
+    #etat { min-height: 1.5em; margin: 12px 0 0; padding: 0; font-weight: 600; color: #1f2933; }
+    #etat.erreur { color: #b42318; }
+    #etat.succes { color: #18794e; }
+    progress { display: block; width: 100%; height: 8px; margin-top: 8px; }
+    ol { margin: 0; padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    code { padding: 1px 5px; border-radius: 4px; background: #eef2f8; font: 13px ui-monospace, monospace; }
+    details { margin-top: 10px; font-size: 13.5px; color: #52606d; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mise à jour de MBN modernisé</h1>
+    <p id="versions"></p>
+
+    <section>
+      <h2>Mise à jour en un clic</h2>
+      <p>L'extension télécharge la dernière version publiée sur GitHub et la copie dans son propre dossier, à la place de l'ancienne.</p>
+      <p id="dossier"></p>
+      <div class="boutons">
+        <button id="installer" class="principal">Mettre à jour maintenant</button>
+        <button id="choisir">Choisir le dossier de l'extension…</button>
+        <button id="recharger" class="principal" hidden>Recharger l'extension</button>
+      </div>
+      <progress id="avancement" value="0" max="1" hidden></progress>
+      <p id="etat" role="status"></p>
+      <details>
+        <summary>Quel dossier choisir ?</summary>
+        Celui que vous avez indiqué à Chrome lors de l'installation : il contient le fichier <code>manifest.json</code>. Son emplacement est rappelé dans <code>chrome://extensions</code>, sur la carte « MBN modernisé » (bouton « Détails », ligne « Source »). Le choix est retenu pour les prochaines mises à jour ; Chrome redemande seulement l'autorisation d'y écrire.
+      </details>
+    </section>
+
+    <section>
+      <h2>À la main, si le clic ne suffit pas</h2>
+      <ol>
+        <li>Téléchargez l'archive, puis décompressez-la <strong>par-dessus</strong> le dossier de l'extension, en remplaçant les fichiers.</li>
+        <li>Dans <code>chrome://extensions</code>, cliquez sur la flèche de rechargement de la carte « MBN modernisé ».</li>
+        <li>Rechargez les pages MBN ouvertes.</li>
+      </ol>
+      <div class="boutons">
+        <a class="bouton" id="archive" href="https://github.com/Belenos-Toutatis/mbn-modernise/archive/refs/heads/main.zip">Télécharger l'archive ZIP</a>
+        <button id="extensions">Ouvrir chrome://extensions</button>
+        <a class="bouton" href="https://github.com/Belenos-Toutatis/mbn-modernise" target="_blank" rel="noopener">Voir le dépôt sur GitHub</a>
+      </div>
+    </section>
+  </main>
+  <script src="mise-a-jour.js"></script>
+</body>
+</html>
