@@ -86,15 +86,15 @@
 }
 
 /* Visionneuse PDF de la messagerie (pdf.js) : l'aperçu d'impression d'un
-   document d'une page annonçait deux pages, la seconde blanche. Tentative de
-   correction, limitée au conteneur d'impression de la visionneuse : pas de
-   saut de page forcé après la dernière page, et rien qui dépasse d'une page. */
+   document d'une page annonçait deux pages, la seconde blanche. La visionneuse
+   force un saut de page après chaque page, y compris la dernière ; dès qu'un
+   élément en position fixe suit dans <body> (une autre extension du navigateur
+   en ajoute un, même vide), Chrome ouvre une page de plus pour lui. On retire
+   donc le saut après la dernière page. Cause reproduite et correction
+   vérifiée par une impression dans Chrome sans écran. */
 @media print {
   body > #printContainer > :last-child {
     break-after: auto !important;
     page-break-after: auto !important;
-  }
-  body > #printContainer > * {
-    overflow: hidden !important;
   }
 }
