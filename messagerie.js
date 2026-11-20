@@ -263,7 +263,10 @@
     const actif = document.documentElement.classList.contains('mbn-moderne');
     let titres = entete.querySelector(':scope > .mbn-titres');
 
-    if (!actif || !modele || lignes.clientWidth < LARGEUR_COLONNES) {
+    // On juge sur la largeur de la liste, fixée par Zimbra ou par la vue, et non
+    // sur celle des lignes : celle-ci dépend de leur contenu, donc de l'affichage
+    // choisi ici, et la liste alternait alors sans fin entre les deux affichages.
+    if (!actif || !modele || liste.clientWidth < LARGEUR_COLONNES) {
       if (titres) titres.remove();
       if (liste.dataset.mbnColonnes) {
         delete liste.dataset.mbnColonnes;
