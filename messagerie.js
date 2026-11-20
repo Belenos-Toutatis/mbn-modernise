@@ -227,6 +227,8 @@
     const ferme = vue.dataset.mbnFerme === '1';
     surveillerVolet(volet);
 
+    borner(vue, liste, volet, actif && !(place && (vide || ferme)));
+
     if (actif && place === 'bas' && (vide || ferme)) {
       const entete = liste.querySelector('.DwtListView-ColHeader');
       const haut = Math.max(100, vue.clientHeight - (entete ? entete.offsetHeight : 0) - 2);
@@ -242,6 +244,33 @@
       // La liste retrouve sa taille réduite : le message choisi doit rester visible.
       const choisi = lignes.querySelector(':scope > [class*="selected"]');
       if (choisi) requestAnimationFrame(() => choisi.scrollIntoView({ block: 'nearest' }));
+    }
+  };
+
+  // Volet de lecture ouvert à droite : la liste doit s'arrêter à la barre de
+  // séparation. Quand Zimbra lui a laissé une largeur plus grande (relevée
+  // pendant qu'elle occupait toute la place), on la ramène à cette limite, par
+  // le style seulement (messagerie-moderne.css).
+  const borner = (vue, liste, volet, voulu) => {
+    const barre = vue.querySelector(':scope > .AppSash-horiz');
+    if (barre && !suivis.has(barre)) {
+      suivis.add(barre);
+      new MutationObserver(planifier).observe(barre, { attributes: true, attributeFilter: ['style'] });
+    }
+    const gauche = parseFloat(volet.style.left) || 0;
+    const limite = (barre && parseFloat(barre.style.left)) || gauche - 5;
+    // Seulement si le volet est bien à droite : sa barre de séparation est
+    // alors affichée, et celle du volet en bas ne l'est pas.
+    const autre = vue.querySelector(':scope > .AppSash-vert');
+    const aDroite = barre && barre.style.display !== 'none' && !(autre && autre.style.display === 'block');
+    const trop = voulu && aDroite && gauche > 0 && limite > 100 && volet.style.display !== 'none' &&
+      parseFloat(liste.style.width) > limite + 1;
+    if (trop) {
+      ecrire(vue, '--mbn-liste-large', limite + 'px');
+      if (vue.dataset.mbnBorne !== '1') vue.dataset.mbnBorne = '1';
+    } else if (vue.dataset.mbnBorne) {
+      delete vue.dataset.mbnBorne;
+      vue.style.removeProperty('--mbn-liste-large');
     }
   };
 

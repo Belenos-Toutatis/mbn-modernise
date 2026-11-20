@@ -236,6 +236,33 @@ html.mbn-moderne .DwtListView-Rows > li:not([class*="selected"]) > .ZmRowDoubleH
   box-shadow: inset 4px 0 0 #1d5fd1;
 }
 
+/* ==== Conversation dépliée, liste sur deux lignes ====
+   Rien ne distingue d'origine les messages d'une conversation dépliée de ceux
+   qui suivent. Une barre court dans la marge de gauche, de la conversation à
+   son dernier message, et ces messages reçoivent un fond légèrement teinté.
+   La barre est une ombre portée dans la marge : la mise en page ne bouge pas. */
+html.mbn-moderne .DwtListView:not([data-mbn-colonnes]) .DwtListView-Rows > li.RowDouble:has(> .ZmRowDoubleHeader .ZmMsgListExpand > .ImgNodeExpanded),
+html.mbn-moderne .DwtListView:not([data-mbn-colonnes]) .DwtListView-Rows > li.RowDouble.ZmConvExpanded {
+  box-shadow: -5px 0 0 #6f8fcf;
+}
+html.mbn-moderne .DwtListView:not([data-mbn-colonnes]) .DwtListView-Rows > li.RowDouble.ZmConvExpanded:not([class*="selected"]),
+html.mbn-moderne .DwtListView:not([data-mbn-colonnes]) .DwtListView-Rows > li.RowDouble.ZmConvExpanded:not([class*="selected"]) > .ZmRowDoubleHeader:not(.Unread) :is(.ZmMsgListDate, .ZmListFlagsWrapper) {
+  background-color: #f1f5fb !important;
+}
+/* Dernier message de la conversation : un filet referme le groupe. */
+html.mbn-moderne .DwtListView:not([data-mbn-colonnes]) .DwtListView-Rows > li.RowDouble.ZmConvExpanded:not(:has(+ li.ZmConvExpanded)) {
+  box-shadow: -5px 0 0 #6f8fcf, -5px 2px 0 #6f8fcf, 0 2px 0 #c3d1ea;
+}
+
+/* ==== Volet de lecture à droite : la liste s'arrête au volet ====
+   Après un passage en pleine largeur, la liste garde parfois cette largeur :
+   sa partie droite (date, icônes) reste alors cachée sous le volet rouvert.
+   messagerie.js pose data-mbn-borne et la largeur attendue (--mbn-liste-large). */
+html.mbn-moderne [data-mbn-borne] > .DwtListView,
+html.mbn-moderne [data-mbn-borne] > .DwtListView .DwtListView-Rows {
+  width: var(--mbn-liste-large) !important;
+}
+
 /* ==== Volet de lecture à droite, liste large : une ligne par message ====
    Zimbra affiche alors chaque message sur deux lignes, sans titre de colonne.
    messagerie.js pose data-mbn-colonnes sur la liste quand elle est assez large,
@@ -316,14 +343,21 @@ html.mbn-moderne [data-mbn-colonnes] .ZmRowDoubleHeader > .TopRow > [id$="__ex"]
   display: none !important;
 }
 
-/* Même filet dans la liste en colonnes d'origine (volet de lecture en bas) :
-   Zimbra y décale déjà l'expéditeur et le texte de 24 px ; le filet, placé dans
-   la colonne du triangle, rattache ces messages à leur conversation. */
-html.mbn-moderne .DwtListView-Rows > li.ZmConvExpanded > .DwtMsgListMultiCol {
-  background-image: linear-gradient(#b9c9e0, #b9c9e0);
-  background-repeat: no-repeat;
-  background-position: calc(var(--mbn-decalage, 0px) + 11px) 0;
-  background-size: 2px 100%;
+/* Même repère dans la liste en colonnes d'origine (volet de lecture en bas) :
+   une barre sur le bord gauche, de la conversation dépliée à son dernier
+   message, et un fond légèrement teinté pour ces messages. La barre est une
+   ombre intérieure : les colonnes ne bougent pas. Un message non lu garde sa
+   propre barre, plus soutenue. */
+html.mbn-moderne .DwtListView-Rows > li.Row:has(> .DwtMsgListMultiCol > .ZmMsgListColExpand > .ImgNodeExpanded) > .DwtMsgListMultiCol,
+html.mbn-moderne .DwtListView-Rows > li.Row.ZmConvExpanded > .DwtMsgListMultiCol {
+  box-shadow: inset 5px 0 0 #6f8fcf;
+}
+html.mbn-moderne .DwtListView-Rows > li.Row.ZmConvExpanded:not(:hover):not([class*="selected"]):not(:has(> [class*="selected"])) {
+  background-color: #f1f5fb !important;
+}
+/* Dernier message de la conversation : un filet referme le groupe. */
+html.mbn-moderne .DwtListView-Rows > li.Row.ZmConvExpanded:not(:has(+ li.ZmConvExpanded)) {
+  border-bottom-color: #6f8fcf !important;
 }
 
 /* Rangée de titres, sous la ligne « Trié par… » d'origine. */
