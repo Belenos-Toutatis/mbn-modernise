@@ -1,6 +1,7 @@
 // MBN modernisé — édition d'une évaluation (onglets des paramètres et de la
 // saisie des notes). Repère la page (pour devoir-edition.css) et ajoute :
-//   1. des raccourcis de date et d'heure de diffusion des résultats ;
+//   1. des raccourcis de date et d'heure de diffusion des résultats ; l'énoncé
+//      et le corrigé suivent cette date (jamais avant), avec leurs raccourcis ;
 //   2. des valeurs toutes faites pour le barème et le coefficient ;
 //   3. dans la saisie des notes : avancement, élèves sans évaluation repérés,
 //      boutons à la place des listes de la fiche de l'élève, passage à l'élève
@@ -44,6 +45,13 @@
   // ---- 1. Diffusion des résultats ----
   const DATE = /^\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s*$/;
   const HEURE = /^\s*(\d{1,2})\s*[h:]\s*(\d{2})\s*$/i;
+  // Écrit une date (et une heure « HH:MM » s'il y en a une) dans les champs de MBN.
+  const ecrireMoment = (champDate, champHeure, d, heure) => {
+    regler(champDate, `${deux(d.getDate())}/${deux(d.getMonth() + 1)}/${d.getFullYear()}`);
+    if (!heure || !champHeure) return;
+    if (globalThis.mbnHeuresAnciennes) globalThis.mbnHeuresAnciennes.regler(champHeure, heure);
+    else regler(champHeure, heure);
+  };
   const parametres = document.getElementById('devoir-tab-parametres');
 
   // Date et heure de fin de l'évaluation elle-même. MBN les donne selon les cas
@@ -136,17 +144,120 @@
           bouton.title = 'Date de l’évaluation introuvable dans la page';
           return;
         }
-        const d = voulu.date;
-        regler(champDate, `${deux(d.getDate())}/${deux(d.getMonth() + 1)}/${d.getFullYear()}`);
-        if (voulu.heure) {
-          if (globalThis.mbnHeuresAnciennes) globalThis.mbnHeuresAnciennes.regler(champHeure, voulu.heure);
-          else regler(champHeure, voulu.heure);
-        }
+        ecrireMoment(champDate, champHeure, voulu.date, voulu.heure);
       });
       barre.append(bouton);
     }
     bloc.after(barre);
   }
+
+  // ---- 1 bis. Diffusion de l'énoncé et du corrigé ----
+  // MBN refuse qu'ils soient diffusés avant les résultats. Quand l'utilisateur
+  // change la diffusion des résultats (ou joint un fichier), une date d'énoncé
+  // ou de corrigé devenue trop précoce est donc reportée à celle des résultats.
+  // Des raccourcis la placent en même temps que les résultats ou quelques jours
+  // après. Rien ne bouge au chargement : une date trop précoce y est seulement
+  // signalée, pour ne pas déclencher d'enregistrement sans geste de l'utilisateur.
+  (() => {
+    const champsDe = (ligne) => {
+      const date = ligne && ligne.querySelector('.datefield input');
+      return date ? { ligne, date, heure: ligne.querySelector('.hourfield input') } : null;
+    };
+    const lireMoment = (champs) => {
+      const m = champs && DATE.exec(champs.date.value);
+      if (!m) return null;
+      const h = champs.heure ? HEURE.exec(champs.heure.value) : null;
+      const valide = !!h && Number(h[1]) < 24 && Number(h[2]) < 60;
+      const date = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+      if (Number.isNaN(date.getTime())) return null;
+      const instant = new Date(date);
+      if (valide) instant.setHours(Number(h[1]), Number(h[2]));
+      return { date, heure: valide ? `${deux(Number(h[1]))}:${h[2]}` : null, instant: instant.getTime() };
+    };
+    const resultats = [...formulaire.querySelectorAll('.date-diffusion-resultats')].map(champsDe).filter(Boolean);
+    const documents = [['DATE_DIFFUSION_DEVOIR', 'fichiers_devoirs'], ['DATE_DIFFUSION_CORRIGE', 'fichiers_corriges']]
+      .map(([id, zone]) => ({ champs: champsDe(document.getElementById(id)), zone: document.getElementById(zone) }))
+      .filter((doc) => doc.champs);
+    if (!resultats.length || !documents.length) return;
+
+    // Les deux onglets ont chacun leurs champs de diffusion des résultats : on
+    // suit ceux que l'utilisateur a modifiés en dernier.
+    let reference = resultats[0];
+    const etatDe = (champs) => champs.date.value + ' ' + (champs.heure ? champs.heure.value : '');
+    let etats = resultats.map(etatDe);
+    const fichiersDe = (doc) => (doc.zone ? doc.zone.querySelectorAll('.fichierJoint').length : 0);
+    const decale = (moment, jours) => {
+      const d = new Date(moment.date);
+      d.setDate(d.getDate() + jours);
+      return d;
+    };
+
+    const DECALAGES = [
+      [0, '= résultats', 'En même temps que la diffusion des résultats'],
+      [1, '+1 j', 'Un jour après la diffusion des résultats'],
+      [2, '+2 j', 'Deux jours après la diffusion des résultats'],
+      [3, '+3 j', 'Trois jours après la diffusion des résultats'],
+      [7, '+1 sem.', 'Une semaine après la diffusion des résultats'],
+    ];
+    for (const doc of documents) {
+      doc.fichiers = fichiersDe(doc);
+      const barre = creer('span', 'mbn-raccourcis');
+      doc.boutons = DECALAGES.map(([jours, nom, aide]) => {
+        const bouton = creer('button', 'mbn-puce', nom);
+        bouton.title = aide;
+        bouton.addEventListener('click', () => {
+          const ref = lireMoment(reference);
+          bouton.classList.toggle('mbn-puce-echec', !ref);
+          bouton.title = ref ? aide : 'Date de diffusion des résultats non renseignée';
+          if (!ref) return;
+          ecrireMoment(doc.champs.date, doc.champs.heure, decale(ref, jours), ref.heure);
+          controler();
+        });
+        barre.append(bouton);
+        return { bouton, jours };
+      });
+      doc.champs.ligne.append(barre);
+    }
+
+    const controler = () => {
+      const nouveaux = resultats.map(etatDe);
+      const change = nouveaux.findIndex((etat, rang) => etat !== etats[rang]);
+      if (change >= 0) reference = resultats[change];
+      etats = nouveaux;
+      const ref = lireMoment(reference);
+      for (const doc of documents) {
+        const fichiers = fichiersDe(doc);
+        const tropTot = () => {
+          const actuel = lireMoment(doc.champs);
+          if (!ref) return false;
+          return actuel ? actuel.instant < ref.instant : !doc.champs.date.value.trim() && fichiers > 0;
+        };
+        if (tropTot() && (change >= 0 || fichiers !== doc.fichiers) && moderne()) {
+          ecrireMoment(doc.champs.date, doc.champs.heure, ref.date, ref.heure);
+        }
+        doc.fichiers = fichiers;
+        const actuel = lireMoment(doc.champs);
+        const alerte = !!ref && !!actuel && actuel.instant < ref.instant;
+        if (doc.champs.ligne.classList.contains('mbn-trop-tot') !== alerte) doc.champs.ligne.classList.toggle('mbn-trop-tot', alerte);
+        for (const { bouton, jours } of doc.boutons) {
+          const actif = !!ref && !!actuel && actuel.date.getTime() === decale(ref, jours).getTime() &&
+            (!ref.heure || actuel.heure === ref.heure);
+          if (bouton.classList.contains('mbn-puce-active') !== actif) bouton.classList.toggle('mbn-puce-active', actif);
+        }
+      }
+    };
+
+    // Le calendrier et les molettes écrivent dans les champs sans prévenir :
+    // on relit donc les valeurs après chaque geste de l'utilisateur.
+    let prevu = 0;
+    const surGeste = (e) => {
+      if (!e.isTrusted) return;
+      clearTimeout(prevu);
+      prevu = setTimeout(controler, 200);
+    };
+    for (const type of ['click', 'change', 'keyup', 'focusout', 'drop']) document.addEventListener(type, surGeste, true);
+    controler();
+  })();
 
   // ---- 2. Barème et coefficient ----
   const puces = (id, valeurs) => {

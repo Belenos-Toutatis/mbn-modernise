@@ -66,6 +66,11 @@ d'établissement ou de classe réelle, ni une capture.
   d'heures (demande du 2026-11-17). Pour régler un champ d'heure d'une ancienne
   page depuis un autre script : `globalThis.mbnHeuresAnciennes.regler(champ, 'HH:MM')`. Les anciennes pages ne sont pas en
   « border-box » : tout composant ajouté doit l'imposer lui-même.
+- Évaluation : l'énoncé et le corrigé ne peuvent pas être diffusés avant les
+  résultats. `devoir-edition.js` les reporte à la date des résultats quand
+  l'utilisateur la change ou joint un fichier (demande du 2026-11-22), jamais
+  au chargement de la page : le formulaire porte l'enregistrement automatique
+  de MBN (`js-autosaved`), un changement sans geste pourrait donc enregistrer.
 - Raccourcis clavier : n'accepter que les frappes réelles (`isTrusted`), et rien
   quand une fenêtre modale est ouverte.
 - `rafraichissement.js` ne doit jamais recharger une page pendant une saisie :

@@ -245,6 +245,15 @@ html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres :is(#DEVOIR_BAREME, 
 html.mbn-moderne .mbn-edition-devoir #devoir-tab-parametres .mbn-raccourcis {
   margin-left: 2px;
 }
+/* Énoncé et corrigé : raccourcis sous les champs, date trop précoce signalée. */
+html.mbn-moderne .mbn-edition-devoir #enonce_corrige_conteneur .ligne_parametre > .mbn-raccourcis {
+  flex: 1 0 100%;
+  margin: 0 0 4px;
+}
+html.mbn-moderne .mbn-edition-devoir .mbn-trop-tot :is(.datefield, .hourfield) > input {
+  border-color: #d9480f;
+  outline: 2px solid rgba(217, 72, 15, .2);
+}
 /* Les deux moitiés des paramètres avancés, l'une sous l'autre. */
 html.mbn-moderne .mbn-edition-devoir #param_avances_conteneur > div:not(.msg-information) {
   display: block;
