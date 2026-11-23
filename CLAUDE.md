@@ -83,6 +83,11 @@ d'établissement ou de classe réelle, ni une capture.
   (même `name` dans `manifest.json`), ne rien supprimer, et écrire
   `manifest.json` en dernier. Tout fichier ajouté au dépôt est copié tel quel
   chez les utilisateurs : n'y laisser que ce qui doit l'être.
+- Dans `mise-a-jour.js`, toute attente sur un dossier est bornée (`borner`), sauf
+  le sélecteur et `requestPermission`, qui attendent l'utilisateur : un dossier
+  relu d'IndexedDB peut ne jamais répondre (signalé le 2026-11-23). Ne jamais
+  laisser un bouton grisé sans issue. Ne rien copier si le dossier contient déjà
+  la version publiée : la copie écraserait un travail en cours.
 
 ## Démarche attendue
 

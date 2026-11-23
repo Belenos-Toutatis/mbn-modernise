@@ -53,6 +53,9 @@ la dernière version et la copie dans le dossier de l'extension. La première
 fois, Chrome vous demande de désigner ce dossier (celui qui contient
 `manifest.json`) ; ensuite il ne redemande que l'autorisation d'y écrire. Il
 reste à cliquer sur « Recharger l'extension », puis à recharger les pages MBN.
+Si Chrome ne répond plus pour le dossier mémorisé, la page propose de le choisir
+de nouveau. Si le dossier contient déjà la dernière version (copie à la main,
+`git pull`), elle ne copie rien et propose seulement de recharger l'extension.
 
 **À la main** — « Télécharger le ZIP » récupère
 [l'archive du dépôt](https://github.com/Belenos-Toutatis/mbn-modernise/archive/refs/heads/main.zip).

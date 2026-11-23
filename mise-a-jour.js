@@ -59,7 +59,33 @@ const chemins = (fichiers) => fichiers
   .map((f) => ({ ...f, chemin: f.nom.split('/').slice(1) }))
   .filter((f) => f.chemin.length && f.chemin.every((m) => m && m !== '.' && m !== '..' && !m.includes('\\')) && !f.chemin[0].startsWith('.git'));
 
+// Vrai si la version « a » est plus récente que « b » (comparaison nombre à nombre).
+const plusRecente = (a, b) => {
+  const x = String(a).split('.').map(Number);
+  const y = String(b).split('.').map(Number);
+  for (let i = 0; i < Math.max(x.length, y.length); i += 1) {
+    const d = (x[i] || 0) - (y[i] || 0);
+    if (d) return d > 0;
+  }
+  return false;
+};
+
 const lireManifeste = (octets) => JSON.parse(new TextDecoder('utf-8').decode(octets));
+
+// Un dossier relu dans la mémoire de Chrome peut ne plus jamais répondre, sans
+// erreur : toute attente sur un dossier est donc bornée, sauf les fenêtres où
+// Chrome attend l'utilisateur (choix du dossier, autorisation d'écrire).
+const borner = (promesse, ms, quoi) => {
+  let minuteur;
+  const limite = new Promise((_, non) => {
+    minuteur = setTimeout(() => {
+      const erreur = new Error(`Chrome ne répond plus (${quoi}) : choisissez de nouveau le dossier de l'extension`);
+      erreur.name = 'DossierMuet';
+      non(erreur);
+    }, ms);
+  });
+  return Promise.race([promesse, limite]).finally(() => clearTimeout(minuteur));
+};
 
 // Le dossier désigné contient-il bien cette extension ?
 const versionDuDossier = async (dossier, nomAttendu) => {
@@ -85,10 +111,24 @@ const ecrire = async (dossier, chemin, octets) => {
       if (anciens.every((o, i) => o === octets[i])) return false;
     }
   } catch { /* illisible : on réécrit */ }
-  const flux = await fichier.createWritable();
-  await flux.write(octets);
-  await flux.close();
-  return true;
+  // Chrome refuse parfois l'écriture si le fichier vient de changer sur le
+  // disque : on réessaie deux fois, avec un accès neuf.
+  for (let tour = 0; ; tour += 1) {
+    let flux;
+    try {
+      const cible = tour ? await ou.getFileHandle(chemin[chemin.length - 1], { create: true }) : fichier;
+      flux = await cible.createWritable();
+      await flux.write(octets);
+      await flux.close();
+      return true;
+    } catch (erreur) {
+      if (flux) flux.abort().catch(() => {});
+      if (tour >= 2 || !['InvalidStateError', 'NoModificationAllowedError'].includes(erreur.name)) {
+        throw new Error(`« ${chemin.join('/')} » n’a pas pu être écrit (${erreur.name}) : réessayez`);
+      }
+      await new Promise((ok) => setTimeout(ok, 400 * (tour + 1)));
+    }
+  }
 };
 
 // Copie l'archive dans le dossier. Renvoie { version, ecrits, total }.
@@ -106,17 +146,20 @@ const installerArchive = async (dossier, tampon, nomAttendu, suivre = () => {}) 
   let suivant = 0;
   let faits = 0;
   let ecrits = 0;
+  let arret = false; // une écriture en échec arrête aussi les autres ouvriers
   const ouvrier = async () => {
-    while (suivant < autres.length) {
+    while (!arret && suivant < autres.length) {
       const i = suivant;
       suivant += 1;
-      if (await ecrire(dossier, autres[i].chemin, contenus[i])) ecrits += 1;
+      try {
+        if (await borner(ecrire(dossier, autres[i].chemin, contenus[i]), 60000, 'écriture de ' + autres[i].chemin.join('/'))) ecrits += 1;
+      } catch (erreur) { arret = true; throw erreur; }
       faits += 1;
       suivre(faits / (autres.length + 1));
     }
   };
   await Promise.all(Array.from({ length: 6 }, ouvrier));
-  if (await ecrire(dossier, manifeste.chemin, octetsManifeste)) ecrits += 1;
+  if (await borner(ecrire(dossier, manifeste.chemin, octetsManifeste), 60000, 'écriture de manifest.json')) ecrits += 1;
   suivre(1);
   return { version: String(publie.version), ecrits, total: autres.length + 1 };
 };
@@ -147,12 +190,31 @@ const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() 
   const $ = (id) => document.getElementById(id);
   const moi = chrome.runtime.getManifest();
   const etat = (texte, genre = '') => { $('etat').textContent = texte; $('etat').className = genre; };
-  let dossier = await retrouver();
+  let dossier = await borner(retrouver(), 3000, 'mémoire du dossier').catch(() => null);
+  let essai = 0; // choisir un autre dossier abandonne l'essai resté en attente
 
   const { majDisponible = '' } = await chrome.storage.local.get({ majDisponible: '' });
   $('versions').textContent = majDisponible
     ? `Version ${majDisponible} disponible — vous avez la ${moi.version}.`
     : `Version installée : ${moi.version}. Aucune version plus récente n'est signalée.`;
+
+  // Le dossier contient déjà la dernière version (copiée à la main, par Git…) :
+  // rien à copier, il suffit de recharger l'extension.
+  const dejaCopiee = (version) => Boolean(version) && plusRecente(version, moi.version) && !plusRecente(majDisponible, version);
+  const proposerRechargement = (version) => {
+    etat(`La version ${version} est déjà dans le dossier : rien à copier. Rechargez l’extension, puis les pages MBN ouvertes.`, 'succes');
+    $('recharger').hidden = false;
+    $('installer').hidden = true;
+    $('choisir').hidden = true;
+  };
+  // Chrome sert le manifeste depuis le disque : c'est la version du dossier, qui
+  // peut être plus récente que celle en cours d'exécution.
+  const versionSurDisque = async () => {
+    try {
+      const reponse = await fetch(chrome.runtime.getURL('manifest.json'), { cache: 'no-store' });
+      return String((await reponse.json()).version || '');
+    } catch { return ''; }
+  };
 
   const decrire = () => {
     $('dossier').textContent = dossier
@@ -165,9 +227,9 @@ const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() 
   const choisir = async () => {
     if (!window.showDirectoryPicker) throw new Error('ce navigateur ne permet pas d\'écrire dans un dossier : suivez la méthode à la main');
     const choix = await window.showDirectoryPicker({ id: 'mbn-modernise', mode: 'readwrite' });
-    if (!await versionDuDossier(choix, moi.name)) throw new Error(`le dossier « ${choix.name} » ne contient pas l'extension (pas de manifest.json « ${moi.name} »)`);
+    if (!await borner(versionDuDossier(choix, moi.name), 5000, 'lecture du dossier')) throw new Error(`le dossier « ${choix.name} » ne contient pas l'extension (pas de manifest.json « ${moi.name} »)`);
     dossier = choix;
-    await retenir(dossier).catch(() => {});
+    await borner(retenir(dossier), 2000, 'mémorisation du dossier').catch(() => {});
     decrire();
   };
 
@@ -177,15 +239,48 @@ const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() 
   };
 
   $('choisir').addEventListener('click', async () => {
-    try { await choisir(); etat('Dossier retenu.'); } catch (erreur) { signaler(erreur); }
+    try {
+      await choisir();
+      essai += 1;
+      $('installer').disabled = false;
+      etat('Dossier retenu. Cliquez sur « Mettre à jour maintenant ».');
+    } catch (erreur) { signaler(erreur); }
   });
 
   $('installer').addEventListener('click', async () => {
     $('installer').disabled = true;
+    essai += 1;
+    const numero = essai;
+    const abandonne = () => numero !== essai;
     try {
+      if (dossier) {
+        etat('Vérification du dossier…');
+        // Délai court : le sélecteur doit pouvoir s'ouvrir dans le même clic.
+        let droit;
+        try {
+          droit = await borner(dossier.queryPermission({ mode: 'readwrite' }), 1500, 'dossier mémorisé');
+        } catch (erreur) {
+          if (abandonne()) return;
+          if (erreur.name !== 'DossierMuet') throw erreur;
+          dossier = null;
+          decrire();
+          etat('Chrome ne répond plus pour le dossier mémorisé : choisissez-le de nouveau.');
+        }
+        if (abandonne()) return;
+        if (dossier && droit !== 'granted') {
+          etat('Autorisez l’écriture dans la fenêtre de Chrome. Si rien ne s’affiche, choisissez de nouveau le dossier.');
+          droit = await dossier.requestPermission({ mode: 'readwrite' });
+          if (abandonne()) return;
+          if (droit !== 'granted') throw new Error("Chrome n'a pas reçu l'autorisation d'écrire dans le dossier");
+        }
+      }
       if (!dossier) await choisir();
-      if (await dossier.requestPermission({ mode: 'readwrite' }) !== 'granted') throw new Error('Chrome n\'a pas reçu l\'autorisation d\'écrire dans le dossier');
-      if (!await versionDuDossier(dossier, moi.name)) throw new Error(`le dossier « ${dossier.name} » ne contient plus l'extension : choisissez-le de nouveau`);
+      if (abandonne()) return;
+      const presente = await borner(versionDuDossier(dossier, moi.name), 5000, 'lecture du dossier');
+      if (abandonne()) return;
+      if (!presente) throw new Error(`le dossier « ${dossier.name} » ne contient plus l'extension : choisissez-le de nouveau`);
+      if (dejaCopiee(presente)) { proposerRechargement(presente); return; }
+      $('choisir').disabled = true; // plus de changement pendant la copie
       etat('Téléchargement…');
       const reponse = await fetch(ARCHIVE, { cache: 'no-store', credentials: 'omit' });
       if (!reponse.ok) throw new Error('téléchargement impossible (HTTP ' + reponse.status + ')');
@@ -202,12 +297,22 @@ const retrouver = () => memoire('readonly', (s) => s.get('extension')).catch(() 
       $('installer').hidden = true;
       $('choisir').hidden = true;
     } catch (erreur) {
+      if (abandonne()) return;
+      if (erreur && erreur.name === 'DossierMuet') { dossier = null; decrire(); }
+      $('avancement').hidden = true;
       signaler(erreur);
-      $('installer').disabled = false;
+    } finally {
+      if (!abandonne()) {
+        $('installer').disabled = false;
+        $('choisir').disabled = false;
+      }
     }
   });
 
   // Recharge l'extension : cette page se ferme d'elle-même.
   $('recharger').addEventListener('click', () => chrome.runtime.reload());
   $('extensions').addEventListener('click', () => chrome.tabs.create({ url: 'chrome://extensions' }));
+
+  const surDisque = await borner(versionSurDisque(), 3000, 'manifeste').catch(() => '');
+  if (!essai && dejaCopiee(surDisque)) proposerRechargement(surDisque);
 })();
