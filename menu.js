@@ -1,7 +1,8 @@
 // MBN modernisé — menu latéral réduit qui se déplie au survol.
 //
 // Quand le menu de gauche est réduit à ses icônes, le survoler le déplie
-// par-dessus la page, sans la décaler ; il se replie quand la souris le quitte.
+// par-dessus la page, sans la décaler ; il se replie quand la souris le quitte
+// (une vérification régulière rattrape une sortie que le navigateur n'a pas signalée).
 // Le script pose simplement sur le menu la classe que MBN utilise lui-même
 // pour le menu déplié (« menu--expanded »), sans toucher à celle du contenu :
 // c'est donc l'affichage de MBN, mais en surimpression.
@@ -26,6 +27,28 @@
     clearTimeout(fin);
     if (survole()) { menu.classList.remove('mbn-menu-repli'); return; } // revenu pendant le repli
     menu.classList.add('mbn-menu-deplie', 'menu--expanded');
+    surveiller();
+  };
+  // Filet de sécurité : il arrive que le navigateur ne signale pas la sortie
+  // de la souris (sortie rapide par le bord de la fenêtre, page qui change
+  // sous le pointeur…) et le menu restait alors déplié. Tant qu'il l'est, on
+  // vérifie donc régulièrement qu'il est toujours survolé, ou parcouru au
+  // clavier ; deux absences de suite le replient.
+  const VEILLE = 250; // ms entre deux vérifications
+  let veille = 0;
+  const auClavier = () => {
+    const el = document.activeElement;
+    return !!el && menu.contains(el) && el.matches(':focus-visible');
+  };
+  const surveiller = () => {
+    if (veille) return;
+    let absences = 0;
+    veille = setInterval(() => {
+      if (!survole()) { clearInterval(veille); veille = 0; return; }
+      if (menu.matches(':hover') || auClavier()) { absences = 0; return; }
+      absences += 1;
+      if (absences >= 2 && !menu.classList.contains('mbn-menu-repli')) replier();
+    }, VEILLE);
   };
   // Repli en deux temps : la largeur glisse d'abord (menu.css), puis les
   // classes sont retirées. « tout de suite » sert quand MBN doit reprendre la main.
@@ -58,4 +81,9 @@
     if (survole() && e.target instanceof Element && e.target.closest('.js-trigger-menu') && !menu.contains(e.target)) replier(true);
   }, true);
   addEventListener('blur', () => replier());
+  // La souris quitte la page (bord de la fenêtre) : même effet que quitter le menu.
+  document.documentElement.addEventListener('mouseleave', () => {
+    clearTimeout(minuterie);
+    minuterie = setTimeout(() => replier(), FERMER);
+  });
 })();
