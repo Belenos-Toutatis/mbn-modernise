@@ -71,6 +71,33 @@ d'établissement ou de classe réelle, ni une capture.
   l'utilisateur la change ou joint un fichier (demande du 2026-11-22), jamais
   au chargement de la page : le formulaire porte l'enregistrement automatique
   de MBN (`js-autosaved`), un changement sans geste pourrait donc enregistrer.
+- Connexion (demandes du 2026-11-28), seule exception à la règle du clic :
+  - `connexion.js` valide seul le profil retenu sur l'écran de choix de MBN
+    (réglage `connexionRapide`) ; « Annuler » rend l'onglet classique. Jamais
+    après une déconnexion volontaire (`connexionDeconnexion`, effacé à la
+    prochaine validation à la main) ni deux fois en une minute dans un onglet ;
+  - connexion sans clic (réglage `connexionAuto`, désactivé par défaut) : la
+    fenêtre `connexion-saisie.html` (cadre de l'extension, jamais de champ de
+    mot de passe dans la page de MBN) enregistre profil, identifiant, mot de
+    passe et date de naissance ; `coffre.js` (arrière-plan) les chiffre
+    (AES-GCM 256) et est **seul** à les déchiffrer. Protection choisie par
+    ordinateur (demande du 2026-11-28) : `phrase` (par défaut ; clé PBKDF2-
+    SHA-256 600 000 tours, gardée seulement dans `chrome.storage.session`,
+    jamais sur le disque ; déverrouillage une fois par ouverture de Chrome dans
+    la fenêtre de l'extension) ou `appareil` (clé non exportable en IndexedDB,
+    pour un ordinateur personnel au disque chiffré). L'extension ne peut pas
+    détecter le chiffrement du disque : c'est à l'utilisateur de choisir. Il ne donne le mot de passe qu'à une page `/idp/` d'une
+    académie de MBN (adresse vérifiée côté arrière-plan), un écran par onglet
+    en deux minutes ; un deuxième essai ou une erreur affichée suspend tout
+    (`connexionEchec`) jusqu'à un nouvel enregistrement. Jamais le mot de passe
+    aux pages de l'extension, jamais dans un fichier, un journal ou une requête ;
+  - `connexion-academie.js` reconnaît l'écran (identifiants, mot de passe seul,
+    date de naissance par le mot « naissance ») et ne tape rien s'il ne le
+    reconnaît pas. Sans connexion sans clic, il met seulement en avant « Se
+    connecter » quand les champs sont `:autofill` ;
+  - dire à l'utilisateur la limite du chiffrement (clé dans le même profil
+    Chrome), sans le présenter comme équivalent au gestionnaire de mots de
+    passe de Chrome. Ne pas nommer dans le dépôt l'académie de l'utilisateur.
 - Raccourcis clavier : n'accepter que les frappes réelles (`isTrusted`), et rien
   quand une fenêtre modale est ouverte.
 - `rafraichissement.js` ne doit jamais recharger une page pendant une saisie :

@@ -76,6 +76,79 @@ const caseMenu = document.getElementById('menuSurvol');
 chrome.storage.local.get({ menuSurvol: true }).then(({ menuSurvol }) => { caseMenu.checked = menuSurvol !== false; });
 caseMenu.addEventListener('change', () => chrome.storage.local.set({ menuSurvol: caseMenu.checked }));
 
+// ---- Connexion rapide ----
+const caseConnexion = document.getElementById('connexionRapide');
+const ligneProfil = document.getElementById('connexion-profil');
+const afficherProfil = async () => {
+  const { connexionRapide, connexionProfil } = await chrome.storage.local.get({ connexionRapide: true, connexionProfil: null });
+  caseConnexion.checked = connexionRapide !== false;
+  ligneProfil.replaceChildren();
+  if (!connexionProfil) {
+    ligneProfil.textContent = 'Aucun profil retenu : il le sera à votre prochaine connexion.';
+    return;
+  }
+  ligneProfil.append(`Profil retenu : « ${connexionProfil.libelle || connexionProfil.id} ».`);
+  const oublier = document.createElement('button');
+  oublier.textContent = 'Oublier';
+  oublier.addEventListener('click', async () => { await chrome.storage.local.remove('connexionProfil'); afficherProfil(); });
+  ligneProfil.append(oublier);
+};
+afficherProfil();
+caseConnexion.addEventListener('change', () => chrome.storage.local.set({ connexionRapide: caseConnexion.checked }));
+
+// ---- Connexion sans clic (identifiants gardés par coffre.js) ----
+const caseAuto = document.getElementById('connexionAuto');
+const ligneCoffre = document.getElementById('connexion-coffre');
+const ouvrirSaisie = () => chrome.tabs.create({ url: chrome.runtime.getURL('connexion-saisie.html') });
+const petitBouton = (libelle, action) => {
+  const b = document.createElement('button');
+  b.textContent = libelle;
+  b.addEventListener('click', action);
+  return b;
+};
+const etatCoffre = () => chrome.runtime.sendMessage({ mbn: 'coffre-etat' }).catch(() => null).then((etat) => etat || {});
+const afficherCoffre = async () => {
+  const etat = await etatCoffre();
+  caseAuto.checked = !!(etat.enregistre && etat.auto);
+  ligneCoffre.replaceChildren();
+  if (!etat.enregistre) {
+    ligneCoffre.append('Aucun identifiant enregistré.', petitBouton('Enregistrer…', ouvrirSaisie));
+    return;
+  }
+  ligneCoffre.append(etat.verrouille ? 'Identifiants enregistrés.'
+    : `Identifiants enregistrés pour « ${etat.identifiant} »${etat.naissance ? ', avec la date de naissance' : ''}.`,
+  petitBouton(etat.verrouille ? 'Déverrouiller…' : 'Modifier…', ouvrirSaisie),
+  petitBouton('Oublier', async () => { await chrome.runtime.sendMessage({ mbn: 'coffre-oublier' }).catch(() => null); afficherCoffre(); }));
+  // Protection choisie sur cet ordinateur.
+  const protection = document.createElement('span');
+  protection.className = 'protection';
+  if (etat.mode === 'phrase') {
+    protection.textContent = etat.verrouille
+      ? 'Protection : phrase de passe, demandée à la prochaine connexion.'
+      : 'Protection : phrase de passe, déverrouillée jusqu\'à la fermeture de Chrome.';
+    if (!etat.verrouille) {
+      protection.append(petitBouton('Verrouiller', async () => { await chrome.runtime.sendMessage({ mbn: 'coffre-verrouiller' }).catch(() => null); afficherCoffre(); }));
+    }
+  } else {
+    protection.textContent = 'Protection : sans phrase de passe (ordinateur personnel au disque chiffré).';
+  }
+  ligneCoffre.append(protection);
+  if (etat.echec) {
+    const echec = document.createElement('span');
+    echec.className = 'echec';
+    echec.textContent = `Suspendue après un échec le ${new Date(etat.echec).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })} : vérifiez vos identifiants.`;
+    echec.append(petitBouton('Réessayer', async () => { await chrome.runtime.sendMessage({ mbn: 'coffre-reprendre' }).catch(() => null); afficherCoffre(); }));
+    ligneCoffre.append(echec);
+  }
+};
+afficherCoffre();
+caseAuto.addEventListener('change', async () => {
+  const etat = await etatCoffre();
+  if (caseAuto.checked && !etat.enregistre) { caseAuto.checked = false; ouvrirSaisie(); return; }
+  await chrome.storage.local.set({ connexionAuto: caseAuto.checked });
+  afficherCoffre();
+});
+
 // ---- Mises à jour ----
 // La vérification est faite par arriere-plan.js ; ici on affiche son résultat.
 const ouvrirMaj = () => chrome.tabs.create({ url: chrome.runtime.getURL('mise-a-jour.html') });

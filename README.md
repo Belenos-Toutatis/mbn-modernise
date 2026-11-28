@@ -5,7 +5,10 @@ Extension Chrome qui corrige et modernise l'affichage de Mon Bureau Numérique
 
 Elle agit uniquement dans votre navigateur : elle ne transmet aucune donnée à
 l'extérieur. Elle n'enregistre rien dans MBN de sa propre initiative : elle
-n'agit sur un formulaire que lorsque vous cliquez sur un de ses raccourcis.
+n'agit sur un formulaire que lorsque vous cliquez sur un de ses raccourcis. Seule
+exception, réglable : la connexion. Elle valide d'elle-même le profil choisi la
+fois précédente et, si vous lui avez confié vos identifiants, les tape sur la
+page de l'académie (voir « Connexion sans clic » ci-dessous).
 
 Sa seule requête automatique vers l'extérieur est la lecture, deux fois par jour,
 du numéro de version publié dans ce dépôt, pour vous signaler une mise à jour.
@@ -30,6 +33,7 @@ téléchargement d'une nouvelle version n'a lieu que si vous le demandez.
 | Relevé de notes d'une classe | tableau à la largeur de son contenu, lignes resserrées, noms en entier, titres de colonnes qui restent en vue, bilan de la classe (moyenne, extrêmes, répartition), jauge sous chaque moyenne |
 | Fiche d'un élève | résumé étroit qui reste en vue, contenu des onglets à une largeur de lecture sans déplacer le cadre de la page (l'emploi du temps garde toute la largeur), un cadre par responsable avec libellés et valeurs côte à côte, compteurs de vie scolaire en cartes, pastille de classe colorée, dernier onglet consulté rouvert |
 | Appels | feuille d'appel remise dans la page, états colorés, bilan chiffré ; historique avec appels non saisis repérés et raccourcis de période |
+| Connexion | profil choisi la fois précédente (enseignant d'une académie, parent, élève…) validé seul après un court délai, avec un bouton « Annuler » qui garde la connexion classique ; jamais juste après une déconnexion. Connexion sans clic, sur option : profil, identifiant, mot de passe et date de naissance saisis une fois dans une seule fenêtre, puis tapés par l'extension sur la page de l'académie. Sans cette option, quand Chrome a rempli identifiant et mot de passe : « Se connecter » mis en avant et prêt pour la touche Entrée, autres moyens de connexion en retrait |
 | Partout | menu latéral réduit qui se déplie au survol sans décaler la page, infobulles de survol lisibles, rechargement automatique des pages laissées sans activité (jamais pendant une saisie ni quand un formulaire de modification est ouvert) |
 
 Les couleurs de classe suivent une règle unique : une teinte par niveau
@@ -73,9 +77,45 @@ Un clic sur l'icône de l'extension ouvre ses réglages :
 - bandeau de la messagerie sur une seule rangée ;
 - menu latéral réduit qui se déplie au survol ;
 - rechargement automatique et sa durée d'inactivité ;
+- connexion rapide, et le profil retenu (que l'on peut oublier) ;
+- connexion sans clic : identifiants enregistrés, à modifier ou à oublier ;
 - signalement des nouvelles versions.
 
 Chaque réglage se désactive séparément si un écran s'affiche mal.
+
+## Connexion sans clic
+
+Désactivée tant que vous ne l'avez pas configurée : bouton « Configurer… » ou
+« Connexion sans clic… » sur l'écran de choix du profil de MBN, ou rubrique
+« Connexion » de la fenêtre de l'extension.
+
+- **Où sont vos identifiants ?** Dans votre profil Chrome, sur l'ordinateur où
+  vous les avez saisis (au même endroit que les mots de passe enregistrés par
+  Chrome), chiffrés (AES-GCM 256). Jamais dans le dossier de l'extension,
+  jamais envoyés ailleurs qu'à la page de connexion de l'académie. À saisir sur
+  chaque ordinateur.
+- **Protection, choisie sur chaque ordinateur.**
+  - *Phrase de passe à chaque ouverture de Chrome* (par défaut) : la clé est
+    tirée de votre phrase (PBKDF2-SHA-256, 600 000 tours) et n'est jamais
+    écrite sur le disque ; une copie du profil Chrome ne suffit pas à
+    retrouver votre mot de passe. La phrase est demandée une fois, puis la
+    connexion se fait sans clic jusqu'à la fermeture de Chrome. À choisir sur
+    un ordinateur de l'établissement, partagé, ou au disque non chiffré.
+  - *Sans phrase de passe* : la clé est rangée dans le même profil que les
+    données ; seul le chiffrement du disque (BitLocker, « Chiffrement de
+    l'appareil ») protège alors d'une copie. Pour un ordinateur personnel au
+    disque chiffré et à la session Windows protégée par un code.
+  - Dans les deux cas, toute personne qui utilise votre session ouverte (et,
+    avec la phrase, Chrome déverrouillé) se connecte à votre place.
+- **Vérifier le chiffrement du disque.** Paramètres › Confidentialité et
+  sécurité › Chiffrement de l'appareil (ou « Chiffrement de lecteur
+  BitLocker ») doit être activé.
+- **Garde-fous.** Rien d'automatique juste après une déconnexion. Un écran de
+  l'académie n'est jamais rempli deux fois de suite : si la connexion échoue,
+  elle est suspendue (pas de blocage du compte par essais répétés) jusqu'à ce
+  que vous vérifiiez vos identifiants. Un écran non reconnu n'est pas rempli.
+- **Date de naissance.** Demandée de temps en temps par l'académie ; elle est
+  tapée telle que vous l'avez enregistrée.
 
 ## Signaler un défaut d'affichage sans rien divulguer
 
@@ -108,6 +148,7 @@ sur votre ordinateur ; relisez-le avant de le transmettre.
 | `releve.*` | relevé de notes d'une classe |
 | `fiche-eleve.*` | fiche d'un élève |
 | `appels.*` | appels |
+| `connexion.*`, `connexion-academie.*`, `connexion-saisie.*`, `coffre.js` | connexion : choix du profil sur MBN, page de connexion de l'académie, fenêtre de saisie des identifiants, coffre chiffré (chargé par `arriere-plan.js`) |
 
 ## Limites
 

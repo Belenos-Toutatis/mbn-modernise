@@ -24,6 +24,9 @@
     #actions-maj button { padding: 3px 9px; font-size: 12.5px; }
     #version { margin: 6px 0 0; font-size: 12.5px; }
     #version button { padding: 2px 8px; font-size: 12px; }
+    #connexion-profil button, #connexion-coffre button { margin-left: 6px; padding: 2px 8px; font-size: 12px; }
+    #connexion-coffre .protection { display: block; margin-top: 4px; }
+    #connexion-coffre .echec { display: block; margin-top: 4px; color: #b42318; }
     #version .verdict { display: inline-block; margin: 0 6px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
     #version .verdict.a-jour { background: #e3f5ea; color: #18794e; }
     #version .verdict.nouvelle { background: #fff4e5; color: #7a3b00; }
@@ -51,6 +54,14 @@
     <label><input type="checkbox" id="rafraichir"> Recharger les pages MBN laissées sans activité</label>
     <label>après <input type="number" id="minutes" min="1" max="120" step="1"> minutes d'inactivité</label>
     <p>Jamais pendant une saisie ou la rédaction d'un message.</p>
+  </section>
+  <section>
+    <h1>Connexion</h1>
+    <label><input type="checkbox" id="connexionRapide"> Connexion rapide : profil MBN validé seul, « Se connecter » mis en avant</label>
+    <p id="connexion-profil"></p>
+    <label><input type="checkbox" id="connexionAuto"> Connexion sans clic : identifiant et mot de passe tapés par l'extension</label>
+    <p id="connexion-coffre"></p>
+    <p>Jamais juste après une déconnexion. Identifiants chiffrés dans ce profil Chrome, sur cet ordinateur, protégés par une phrase de passe ou, sur un ordinateur personnel au disque chiffré, sans.</p>
   </section>
   <section>
     <h1>Capture de structure anonymisée</h1>

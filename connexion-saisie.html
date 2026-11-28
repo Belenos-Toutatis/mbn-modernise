@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MBN modernisé — connexion automatique</title>
+  <link rel="icon" href="icones/icone-32.png">
+  <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { background: #fff; }
+    body { margin: 0; padding: 22px 24px 20px; color: #1f2933; font: 14.5px/1.45 system-ui, sans-serif; }
+    body.onglet { max-width: 540px; margin: 32px auto; border: 1px solid #e1e5ea; border-radius: 12px; }
+    h1 { margin: 0 0 6px; font-size: 18px; }
+    p { margin: 0 0 12px; color: #52606d; }
+    label { display: block; margin: 12px 0 4px; font-weight: 600; }
+    label small { font-weight: 400; color: #52606d; }
+    input[type="text"], input[type="password"], select { display: block; width: 100%; padding: 8px 10px; border: 1px solid #c5ccd3; border-radius: 6px; font: inherit; color: inherit; background: #fff; }
+    input:focus, select:focus { outline: 2px solid #1d5fd1; outline-offset: 1px; border-color: #1d5fd1; }
+    fieldset { margin: 16px 0 0; padding: 0; border: 0; }
+    legend { padding: 0; font-weight: 600; }
+    .choix { display: flex; align-items: flex-start; gap: 8px; margin: 8px 0 0; padding: 8px 10px; border: 1px solid #e1e5ea; border-radius: 8px; font-weight: 400; cursor: pointer; }
+    .choix:has(input:checked) { border-color: #1d5fd1; background: #f3f7fe; }
+    .choix input { margin: 3px 0 0; }
+    .choix strong { display: block; }
+    .choix small { display: block; color: #52606d; }
+    .note { margin: 16px 0 0; padding: 10px 12px; border-radius: 8px; background: #f5f7fa; font-size: 13px; color: #3e4c59; }
+    .note strong { color: #1f2933; }
+    .attention { margin-top: 6px; color: #7a3b00; }
+    .boutons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; }
+    .boutons .espace { flex: 1; }
+    button { padding: 8px 14px; border: 1px solid #c5ccd3; border-radius: 6px; background: #fff; color: #1f2933; font: inherit; cursor: pointer; }
+    button.principal { background: #1d5fd1; border-color: #1d5fd1; color: #fff; font-weight: 600; }
+    button.lien { padding: 4px 0; border: 0; background: none; color: #1d5fd1; text-decoration: underline; }
+    button:disabled { opacity: .6; cursor: default; }
+    .etat { min-height: 1.4em; margin: 10px 0 0; font-weight: 600; }
+    .etat.erreur { color: #b42318; }
+    .etat.succes { color: #18794e; }
+  </style>
+</head>
+<body>
+  <!-- Déverrouillage : une fois à chaque ouverture de Chrome, en mode « phrase de passe ». -->
+  <form id="deverrouillage" autocomplete="off" hidden>
+    <h1>Connexion automatique à MBN</h1>
+    <p>Tapez votre phrase de passe : elle est demandée une fois à chaque ouverture de Chrome, puis la connexion se fait sans clic jusqu'à sa fermeture.</p>
+    <label for="phrase-ouvrir">Phrase de passe</label>
+    <input id="phrase-ouvrir" type="password" autocomplete="off">
+    <p id="etat-ouvrir" class="etat" role="status"></p>
+    <div class="boutons">
+      <button type="button" id="oubliee" class="lien">Phrase oubliée ?</button>
+      <span class="espace"></span>
+      <button type="button" class="annuler">Annuler</button>
+      <button type="submit" id="ouvrir" class="principal">Déverrouiller et se connecter</button>
+    </div>
+  </form>
+
+  <!-- Enregistrement ou modification des identifiants. -->
+  <form id="saisie" autocomplete="off" hidden>
+    <h1>Connexion automatique à MBN</h1>
+    <p id="intro">L'extension choisit votre profil sur MBN, puis tape elle-même vos identifiants sur la page de connexion de l'académie : plus aucun clic.</p>
+
+    <div id="bloc-profil">
+      <label for="profil">Profil de connexion</label>
+      <select id="profil"></select>
+    </div>
+    <p id="profil-absent" hidden>Le profil sera celui que vous validerez sur l'écran de connexion de MBN.</p>
+
+    <label for="identifiant">Identifiant académique</label>
+    <input id="identifiant" type="text" autocomplete="off" autocapitalize="none" spellcheck="false">
+
+    <label for="mot-de-passe">Mot de passe <small id="mot-de-passe-aide" hidden>(laisser vide pour le garder)</small></label>
+    <input id="mot-de-passe" type="password" autocomplete="new-password">
+
+    <label for="naissance">Date de naissance <small>(demandée de temps en temps par l'académie)</small></label>
+    <input id="naissance" type="text" inputmode="numeric" placeholder="telle que vous la tapez, par exemple 01/02/1980" autocomplete="off">
+
+    <fieldset>
+      <legend>Protection sur cet ordinateur</legend>
+      <label class="choix"><input type="radio" name="mode" value="phrase"><span><strong>Phrase de passe à chaque ouverture de Chrome</strong><small>Conseillé sur un ordinateur de l'établissement, partagé, ou dont le disque n'est pas chiffré.</small></span></label>
+      <label class="choix"><input type="radio" name="mode" value="appareil"><span><strong>Sans phrase de passe</strong><small>Ordinateur personnel au disque chiffré (BitLocker, « Chiffrement de l'appareil »), session Windows protégée par un code.</small></span></label>
+    </fieldset>
+
+    <div id="bloc-phrase">
+      <label for="phrase">Phrase de passe <small id="phrase-aide">(12 caractères au moins)</small></label>
+      <input id="phrase" type="password" autocomplete="new-password">
+      <label for="phrase-confirmation">Confirmation de la phrase de passe</label>
+      <input id="phrase-confirmation" type="password" autocomplete="new-password">
+    </div>
+
+    <div class="note" id="note-phrase">
+      <strong>Enregistré dans Chrome.</strong> Chiffré, dans votre profil Chrome sur cet ordinateur, avec une clé tirée de votre phrase de passe et jamais écrite sur le disque : une copie du profil ne suffit pas à retrouver votre mot de passe. Rien n'est écrit dans le dossier de l'extension, ni envoyé ailleurs qu'à la page de connexion de l'académie.
+      <div class="attention">Une fois la phrase tapée, et jusqu'à la fermeture de Chrome, toute personne qui utilise votre session se connecte à votre place. Phrase oubliée : il suffit de réenregistrer vos identifiants.</div>
+    </div>
+    <div class="note" id="note-appareil">
+      <strong>Enregistré dans Chrome.</strong> Chiffré, dans votre profil Chrome sur cet ordinateur, au même endroit que vos mots de passe enregistrés. Rien n'est écrit dans le dossier de l'extension, ni envoyé ailleurs qu'à la page de connexion de l'académie.
+      <div class="attention">Sans phrase de passe, la clé est rangée dans le même profil que les données : seul le chiffrement du disque protège d'une copie. Toute personne qui utilise ce profil Chrome se connecte à votre place.</div>
+    </div>
+
+    <p id="etat" class="etat" role="status"></p>
+    <div class="boutons">
+      <span class="espace"></span>
+      <button type="button" class="annuler">Annuler</button>
+      <button type="submit" id="enregistrer" class="principal">Enregistrer et se connecter</button>
+    </div>
+  </form>
+  <script src="connexion-saisie.js"></script>
+</body>
+</html>

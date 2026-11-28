@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MBN modernisé",
-  "version": "0.38.9",
+  "version": "0.39.0",
   "description": "Corrige et modernise l'affichage de Mon Bureau Numérique (messagerie, aperçus PDF).",
   "icons": {
     "16": "icones/icone-16.png",
@@ -52,7 +52,8 @@
         "reservations.css",
         "roue-heure.css",
         "calendriers.css",
-        "menu.css"
+        "menu.css",
+        "connexion.css"
       ],
       "all_frames": true,
       "run_at": "document_start",
@@ -89,7 +90,8 @@
         "appels.js",
         "menu.js",
         "rafraichissement.js",
-        "infobulles.js"
+        "infobulles.js",
+        "connexion.js"
       ],
       "all_frames": true,
       "run_at": "document_idle"
@@ -103,6 +105,30 @@
       ],
       "run_at": "document_idle",
       "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://*.ac-nancy-metz.fr/idp/*",
+        "https://*.ac-reims.fr/idp/*",
+        "https://*.ac-strasbourg.fr/idp/*"
+      ],
+      "css": [
+        "connexion-academie.css"
+      ],
+      "js": [
+        "connexion-academie.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "connexion-saisie.html"
+      ],
+      "matches": [
+        "*://*.monbureaunumerique.fr/*"
+      ]
     }
   ],
   "background": {

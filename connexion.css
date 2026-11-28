@@ -1,0 +1,73 @@
+/* MBN modernisé — écran de choix du profil de connexion (connexion.js). */
+
+.mbn-connexion-bandeau {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid #b7cdf0;
+  border-radius: 8px;
+  background: #eef4fd;
+  color: #1f2933;
+  text-align: left;
+}
+.mbn-connexion-bandeau p { flex: 1 1 220px; margin: 0; font-weight: 600; }
+.mbn-connexion-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.mbn-connexion-actions:empty { display: none; }
+.mbn-connexion-bouton {
+  box-sizing: border-box;
+  padding: 4px 12px;
+  border: 1px solid #1d5fd1;
+  border-radius: 6px;
+  background: #fff;
+  color: #1d5fd1;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.mbn-connexion-bouton:hover { background: #e3ecfb; }
+.mbn-connexion-principal { background: #1d5fd1; color: #fff; }
+.mbn-connexion-principal:hover { background: #174ea8; }
+
+/* Barre qui se remplit pendant le délai laissé pour annuler. */
+.mbn-connexion-barre { display: none; flex: 1 0 100%; order: 3; height: 4px; border-radius: 2px; background: #d3e2f8; overflow: hidden; }
+.mbn-connexion-decompte .mbn-connexion-barre { display: block; }
+.mbn-connexion-barre::after {
+  content: "";
+  display: block;
+  height: 100%;
+  background: #1d5fd1;
+  transform-origin: left;
+  animation: mbn-connexion-decompte var(--mbn-connexion-delai, 1s) linear forwards;
+}
+@keyframes mbn-connexion-decompte { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .mbn-connexion-barre::after { animation: none; transform: scaleX(1); } }
+
+.mbn-connexion-manuel, .mbn-connexion-offre { border-color: #e1e5ea; background: #f5f7fa; }
+.mbn-connexion-manuel p, .mbn-connexion-offre p { font-weight: 500; }
+
+/* Fenêtre de saisie de la connexion sans clic : cadre de l'extension. */
+.mbn-saisie-connexion {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, .45);
+}
+.mbn-saisie-connexion iframe {
+  box-sizing: border-box;
+  width: min(480px, 100%);
+  height: 560px;
+  max-height: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+}

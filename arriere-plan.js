@@ -10,6 +10,9 @@
 // du dépôt : rien n'est envoyé, ni sur vous ni sur MBN. Le téléchargement de la
 // nouvelle version, lui, n'a lieu que sur un clic, dans mise-a-jour.html.
 
+// Coffre des identifiants de la connexion sans clic (pages de connexion).
+importScripts('coffre.js');
+
 const SOURCE = 'https://raw.githubusercontent.com/Belenos-Toutatis/mbn-modernise/main/manifest.json';
 const ALARME = 'mbn-verifier-maj';
 
